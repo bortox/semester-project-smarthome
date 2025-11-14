@@ -1,31 +1,39 @@
 #include <Arduino.h>
-#include <Wire.h>
 #include <LiquidCrystal_I2C.h>
 #include "MyMenu.h"      // La nostra classe custom
 #include "lights.h"
 #include "sensors.h"
+extern "C" {
+  #include <i2cmaster.h>
+}
 
 // --- SETUP HARDWARE ---
 LiquidCrystal_I2C lcd(0x27, 20, 4);
 
 // --- DISPOSITIVI (Le tue classi intoccabili) ---
+SimpleLight l_esterno("Outside", 4);
 SimpleLight l_soggiorno("Bad", 5);
 SimpleLight l_cucina("Køkken", 6);
 SimpleLight l_giardino("Garden", 7);
 LM75Sensor t_esterna("Sønderborg"); // Assumiamo che LM75Sensor abbia getValue()
+MovementSensor m_esterno("P1", 1);
+
 
 // --- STRUTTURA DEL MENU ---
 // Usiamo puntatori per mantenere tutto nello heap o globale
 MenuPage* rootPage;
+MenuPage* outside;
+MenuPage* inside;
 MenuPage* subLights;
 MenuPage* subSensors;
+MenuPage* outLights;
 
 // Variabile per tenere traccia di dove siamo
 MenuPage* currentPage;
 
 void setup() {
     Serial.begin(9600);
-    Wire.begin();
+    i2c_init();
     
     // Init LCD
     lcd.init();
@@ -38,17 +46,21 @@ void setup() {
     
     // 1. Crea le Pagine
     rootPage = new MenuPage("Main Menu", nullptr); // Root non ha genitore
-    subLights = new MenuPage("Luci", rootPage);    // Figlio di Root
-    subSensors = new MenuPage("Sensori", rootPage); // Figlio di Root
+    outside = new MenuPage("outside", rootPage);
+    inside = new MenuPage("inside", rootPage);
+    subLights = new MenuPage("Luci", inside);    // Figlio di Root
+    outLights = new MenuPage("Luci", outside);
+    subSensors = new MenuPage("Sensori", outside); // Figlio di Root
 
     // 2. Popola pagina LUCI con i wrapper delle luci
     subLights->addItem(new LightItem(&l_soggiorno));
     subLights->addItem(new LightItem(&l_cucina));
     subLights->addItem(new LightItem(&l_giardino));
-
+    outLights->addItem(new LightItem(&l_esterno));
     // 3. Popola pagina SENSORI
     // Qui sfruttiamo il template SensorItem
     subSensors->addItem(new SensorItem<LM75Sensor>("Esterna", &t_esterna, "C"));
+    subSensors->addItem(new SensorItem<MovementSensor>("Diocane", &m_esterno, ""));
 
     // 4. Collega le sottopagine alla Root
     rootPage->addItem(subLights);
