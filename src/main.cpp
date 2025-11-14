@@ -1,40 +1,101 @@
-#include "Arduino.h"
-#include <LiquidCrystal_I2C.h>
+#include <Arduino.h>
 #include <Wire.h>
-#include <light.h>
+#include <LiquidCrystal_I2C.h>
+#include "MyMenu.h"      // La nostra classe custom
+#include "lights.h"
+#include "sensors.h"
 
-const int ledPin = 3; // Pin PWM collegato al transistor
-LiquidCrystal_I2C lcd(0x27, 16, 2); // I2C address 0x27, 16 columns, 2 rows
+// --- SETUP HARDWARE ---
+LiquidCrystal_I2C lcd(0x27, 20, 4);
 
+// --- DISPOSITIVI (Le tue classi intoccabili) ---
+SimpleLight l_soggiorno("Bad", 5);
+SimpleLight l_cucina("Køkken", 6);
+SimpleLight l_giardino("Garden", 7);
+LM75Sensor t_esterna("Sønderborg"); // Assumiamo che LM75Sensor abbia getValue()
 
-void setupLCD() {
-  lcd.init(); // Initialize the LCD
-  lcd.backlight(); // Turn on the backlight
-  lcd.clear(); // Clear the LCD
-  lcd.setCursor(0, 0);
-  lcd.print("test led transistor");
-}
+// --- STRUTTURA DEL MENU ---
+// Usiamo puntatori per mantenere tutto nello heap o globale
+MenuPage* rootPage;
+MenuPage* subLights;
+MenuPage* subSensors;
 
+// Variabile per tenere traccia di dove siamo
+MenuPage* currentPage;
 
 void setup() {
-  setupLCD();
-  SimpleLight("Diocane",3)
+    Serial.begin(9600);
+    Wire.begin();
+    
+    // Init LCD
+    lcd.init();
+    lcd.backlight();
+
+    // Init Dispositivi
+    t_esterna.begin();
+
+    // --- COSTRUZIONE MENU (BUILDER) ---
+    
+    // 1. Crea le Pagine
+    rootPage = new MenuPage("Main Menu", nullptr); // Root non ha genitore
+    subLights = new MenuPage("Luci", rootPage);    // Figlio di Root
+    subSensors = new MenuPage("Sensori", rootPage); // Figlio di Root
+
+    // 2. Popola pagina LUCI con i wrapper delle luci
+    subLights->addItem(new LightItem(&l_soggiorno));
+    subLights->addItem(new LightItem(&l_cucina));
+    subLights->addItem(new LightItem(&l_giardino));
+
+    // 3. Popola pagina SENSORI
+    // Qui sfruttiamo il template SensorItem
+    subSensors->addItem(new SensorItem<LM75Sensor>("Esterna", &t_esterna, "C"));
+
+    // 4. Collega le sottopagine alla Root
+    rootPage->addItem(subLights);
+    rootPage->addItem(subSensors);
+
+    // Start
+    currentPage = rootPage;
+    currentPage->renderPage(lcd);
 }
 
-
-
 void loop() {
-  //Accendi gradualmente il LED RGB
-  for (int brightness = 0; brightness <= 255; brightness++) {
-    analogWrite(ledPin, brightness);
-    delay(10);
-  }
+    // --- SIMULAZIONE INPUT (Sostituisci con il tuo codice Rotary Encoder) ---
+    // Qui dovresti leggere il tuo encoder e mappare in MenuInput::UP, DOWN, etc.
+    
+    MenuInput input = NONE;
+    
+    if (Serial.available()) {
+        char c = Serial.read();
+        if (c == 'w') input = UP;
+        if (c == 's') input = DOWN;
+        if (c == 'e') input = SELECT;
+        if (c == 'q') input = BACK;
+        
+        // Pulisci input buffer seriale per test puliti
+        while(Serial.available()) Serial.read();
+    }
 
-  delay(250);
+    // --- AGGIORNAMENTO MENU ---
+    // Se c'è stato un input, lo passiamo alla pagina corrente
+    if (input != NONE) {
+        // Passiamo un riferimento a currentPage, così handleInput può cambiarla!
+        MenuItem* active = currentPage; 
+        currentPage->handleInput(input, active); 
+        
+        // Se la pagina è cambiata, aggiorniamo il puntatore globale
+        if (active != currentPage) {
+            currentPage = (MenuPage*)active; // Cast sicuro perché navighiamo solo tra pagine
+        }
 
-  // Spegni gradualmente il LED RGB
-  for (int brightness = 255; brightness >= 0; brightness--) {
-    analogWrite(ledPin, brightness);
-    delay(10);
-  }
+        // Ridisegna solo se c'è stato input
+        currentPage->renderPage(lcd);
+    }
+    
+    // Opzionale: Ridisegna sensori ogni secondo anche senza input
+    static unsigned long lastUpdate = 0;
+    if (millis() - lastUpdate > 1000 && currentPage == subSensors) {
+        currentPage->renderPage(lcd);
+        lastUpdate = millis();
+    }
 }
