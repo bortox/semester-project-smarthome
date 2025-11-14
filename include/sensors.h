@@ -1,6 +1,5 @@
 #pragma once
 #include <Arduino.h>
-#include <Wire.h> // La tua libreria per I2C
 extern "C" {
   #include "i2cmaster.h"
 }
@@ -92,11 +91,12 @@ public:
 };
 
 // Sensore di Movimento (PIR)
+// IN TEORIA, UN BOTTONE HA LA STESSA CLASSE
 class MovementSensor : public Sensor<bool> {
 private:
     uint8_t _pin;
 public:
-    MovementSensor(const char* name, uint8_t digital_pin) : Sensor<bool>(name), _pin(digital_pin) {
+    MovementSensor(const char* name, uint8_t pin) : Sensor<bool>(name), _pin(pin) {
         pinMode(_pin, INPUT);
     }
 

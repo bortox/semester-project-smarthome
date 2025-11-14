@@ -1,144 +1,149 @@
-#pragma once
+#pragma once // Assicurati che questa riga sia all'inizio
+
 #include <Arduino.h>
 #include <LiquidCrystal_I2C.h>
-#include "lights.h"   // Le tue classi originali
-#include "sensors.h"  // Le tue classi originali
+#include <String.h>
+#include "lights.h"
+#include "sensors.h"
 
-// Enum per gli input (dal rotary encoder o tastiera)
+// Enum per gli input
 enum MenuInput { NONE, UP, DOWN, SELECT, BACK };
 
 // --- CLASSE BASE ASTRATTA ---
 class MenuItem {
 protected:
-    const char* name;
+    String name;
 public:
-    MenuItem(const char* n) : name(n) {}
+    MenuItem(const String& n) : name(n) {}
     virtual ~MenuItem() {}
-
-    const char* getName() { return name; }
-
-    // Metodi virtuali che le sottoclassi DEVONO implementare
-    // draw: disegna la riga (es. "> Luce Cucina [ON]")
+    const String& getName() const { return name; }
     virtual void draw(LiquidCrystal_I2C& lcd, int row, bool isSelected) = 0;
-    
-    // select: cosa succede quando premo il pulsante? 
-    // Ritorna un puntatore a una nuova pagina se si cambia menu, o nullptr se si resta qui.
-    virtual MenuItem* select() = 0; 
+    virtual MenuItem* select() = 0;
 };
 
-// --- CLASSE PAGINA (Contenitore di item) ---
+// --- CLASSE PAGINA ---
 class MenuPage : public MenuItem {
 private:
-    MenuItem* items[10]; // Array fisso per semplicità (o usa vector se ti senti audace)
+    MenuItem* items[10];
     int itemCount = 0;
     int selectedIndex = 0;
-    MenuPage* parent = nullptr; // Per tornare indietro
-
+    MenuPage* parent = nullptr;
 public:
-    MenuPage(const char* n, MenuPage* p = nullptr) : MenuItem(n), parent(p) {}
-
+    MenuPage(const String& n, MenuPage* p = nullptr) : MenuItem(n), parent(p) {}
+    ~MenuPage() {
+        for (int i = 0; i < itemCount; ++i) {
+            delete items[i];
+        }
+    }
     void addItem(MenuItem* item) {
         if (itemCount < 10) {
             items[itemCount++] = item;
         }
     }
-
-    // Gestione Navigazione
-    void handleInput(MenuInput input, MenuItem*& currentActivePage) {
-        if (input == UP) {
-            selectedIndex--;
-            if (selectedIndex < 0) selectedIndex = itemCount - 1;
-        } else if (input == DOWN) {
-            selectedIndex++;
-            if (selectedIndex >= itemCount) selectedIndex = 0;
-        } else if (input == BACK && parent != nullptr) {
-            currentActivePage = parent; // Torna al genitore
-        } else if (input == SELECT) {
-            MenuItem* result = items[selectedIndex]->select();
-            if (result != nullptr) {
-                // Se l'item selezionato ritorna una pagina (es. è un sottomenu), cambiamo pagina attiva
-                currentActivePage = result;
-            }
-        }
-    }
-
-    // Implementazione di draw per la Pagina intera
-    void draw(LiquidCrystal_I2C& lcd, int row, bool isSelected) override {
-        // Questo metodo serve se la pagina è vista come una riga in un menu padre
-        lcd.setCursor(1, row);
-        lcd.print(name);
-        lcd.print(" >");
-    }
-
-    // Selezionare una pagina (da un menu padre) significa entrarci
-    MenuItem* select() override {
-        return this;
-    }
-
-    // Metodo specifico per disegnare il contenuto DELLA pagina
-    void renderPage(LiquidCrystal_I2C& lcd) {
-        lcd.clear();
-        // Titolo in alto (opzionale, ruba una riga)
-        // lcd.setCursor(0,0); lcd.print(name); 
-        
-        // Logica di rendering semplificata (mostra 4 righe a partire dall'indice corrente)
-        // Per uno scrolling vero servirebbe una variabile 'scrollOffset'
-        int start = (selectedIndex / 4) * 4; // Paginazione a blocchi di 4
-        
-        for (int i = 0; i < 4; i++) {
-            int idx = start + i;
-            if (idx < itemCount) {
-                bool isCurrent = (idx == selectedIndex);
-                lcd.setCursor(0, i);
-                lcd.print(isCurrent ? ">" : " "); // Cursore
-                items[idx]->draw(lcd, i, isCurrent);
-            }
-        }
-    }
+    void handleInput(MenuInput input, MenuItem*& currentActivePage); // Implementazione sotto
+    void draw(LiquidCrystal_I2C& lcd, int row, bool isSelected) override;
+    MenuItem* select() override;
+    void renderPage(LiquidCrystal_I2C& lcd);
 };
 
-// --- WRAPPER PER LE LUCI (Il cuore della tua richiesta) ---
+// --- WRAPPER PER LUCI ---
 class LightItem : public MenuItem {
 private:
-    Light* light; // Riferimento al tuo oggetto originale (senza toccare la classe)
-
+    Light* light;
 public:
-    LightItem(Light* l) : MenuItem(l->getName()), light(l) {}
-
-    void draw(LiquidCrystal_I2C& lcd, int row, bool isSelected) override {
-        lcd.setCursor(1, row);
-        lcd.print(name);
-        lcd.setCursor(16, row); // Allinea a destra
-        lcd.print(light->getStatus() ? "ON " : "OFF");
-    }
-
-    MenuItem* select() override {
-        // Qui avviene la magia: modifichiamo l'oggetto originale
-        light->setStatus(!light->getStatus());
-        return nullptr; // Rimaniamo in questa pagina
-    }
+    LightItem(Light* l) : MenuItem(String(l->getName())), light(l) {}
+    void draw(LiquidCrystal_I2C& lcd, int row, bool isSelected) override;
+    MenuItem* select() override;
 };
 
-// --- WRAPPER PER I SENSORI ---
+// --- WRAPPER PER SENSORI (TEMPLATE) ---
+// L'INTERA CLASSE E I SUOI METODI DEVONO STARE QUI, NEL .h
 template <typename T>
 class SensorItem : public MenuItem {
 private:
     T* sensor;
     const char* unit;
-
 public:
-    SensorItem(const char* n, T* s, const char* u = "") : MenuItem(n), sensor(s), unit(u) {}
+    SensorItem(const String& n, T* s, const char* u = "") : MenuItem(n), sensor(s), unit(u) {}
 
     void draw(LiquidCrystal_I2C& lcd, int row, bool isSelected) override {
         lcd.setCursor(1, row);
-        lcd.print(name); // Es: "Temp Ext"
+        lcd.print(name);
         lcd.print(":");
-        lcd.print(sensor->getValue()); // Polimorfismo del sensore originale
-        lcd.print(unit);
+
+        String valueStr = String(sensor->getValue()) + unit;
+        int padding = 16 - (1 + name.length() + 1 + valueStr.length());
+        if (padding < 1) padding = 1;
+
+        lcd.setCursor(1 + name.length() + 1 + padding, row);
+        lcd.print(valueStr);
     }
 
     MenuItem* select() override {
-        // Cliccare su un sensore potrebbe forzare una lettura o non fare nulla
-        return nullptr; 
+        return nullptr;
     }
-};
+}; // <-- Controlla che ci sia questo punto e virgola!
+
+
+// ========= IMPLEMENTAZIONI DEI METODI NON-TEMPLATE =========
+// (Possono stare nel .h o in un .cpp, ma per semplicità mettiamoli qui)
+
+inline void MenuPage::handleInput(MenuInput input, MenuItem*& currentActivePage) {
+    if (input == UP) {
+        if (itemCount > 0) {
+            selectedIndex = (selectedIndex - 1 + itemCount) % itemCount;
+        }
+    } else if (input == DOWN) {
+        if (itemCount > 0) {
+            selectedIndex = (selectedIndex + 1) % itemCount;
+        }
+    } else if (input == BACK && parent != nullptr) {
+        currentActivePage = parent;
+    } else if (input == SELECT) {
+        if (itemCount > 0 && selectedIndex < itemCount) {
+            MenuItem* result = items[selectedIndex]->select();
+            if (result != nullptr) {
+                currentActivePage = result;
+            }
+        }
+    }
+}
+
+inline void MenuPage::draw(LiquidCrystal_I2C& lcd, int row, bool isSelected) {
+    lcd.setCursor(1, row);
+    lcd.print(name);
+    lcd.print(" >");
+}
+
+inline MenuItem* MenuPage::select() {
+    return this;
+}
+
+inline void MenuPage::renderPage(LiquidCrystal_I2C& lcd) {
+    lcd.clear();
+    int start = (selectedIndex / 4) * 4;
+    for (int i = 0; i < 4; i++) {
+        int idx = start + i;
+        if (idx < itemCount) {
+            bool isCurrent = (idx == selectedIndex);
+            lcd.setCursor(0, i);
+            lcd.print(isCurrent ? ">" : " ");
+            items[idx]->draw(lcd, i, isCurrent);
+        }
+    }
+}
+
+inline void LightItem::draw(LiquidCrystal_I2C& lcd, int row, bool isSelected) {
+    lcd.setCursor(1, row);
+    lcd.print(name);
+    String statusText = light->getStatus() ? "ON" : "OFF";
+    int padding = 16 - (1 + name.length() + statusText.length());
+    if (padding < 1) padding = 1;
+    lcd.setCursor(1 + name.length() + padding, row);
+    lcd.print(statusText);
+}
+
+inline MenuItem* LightItem::select() {
+    light->toggle();
+    return nullptr;
+}
