@@ -1,82 +1,78 @@
-#pragma once // Evita inclusioni multiple
-
-// Includiamo tutte le librerie necessarie per definire la nostra casa
+#pragma once // Prevent multiple inclusions
+// Include all necessary libraries to define our home system
 #include "MyMenu.h"
 #include "lights.h"
 #include "sensors.h"
 #include "LightController.h"
 
 // ===================================================================
-// DEFINIZIONE HARDWARE (PIN E OGGETTI)
-// Questo è l'unico posto dove dovrai definire i pin.
+// HARDWARE DEFINITION (PINS AND OBJECTS)
+// This is the only place where you need to define the pins.
 // ===================================================================
-
-// Pin dei pulsanti fisici per il controllo diretto
+// Pins for physical buttons for direct control
 const uint8_t BUTTON_RGB_PIN    = A0;
 const uint8_t BUTTON_DIMMER_PIN = A1;
-
-// Pin delle luci (devono essere pin PWM per le funzionalità di dimming)
+// Light pins (must be PWM pins for dimming functionality)
 const uint8_t RGB_R_PIN  = 4;
 const uint8_t RGB_G_PIN  = 5;
 const uint8_t RGB_B_PIN  = 6;
 const uint8_t DIMMER_PIN = 7;
 
-// --- OGGETTI LUCE ---
-// Qui istanziamo gli oggetti che rappresentano le luci fisiche.
-RGBLight      luceRGB("Striscia LED", RGB_R_PIN, RGB_G_PIN, RGB_B_PIN);
-DimmableLight luceDimmer("Luce Spot", DIMMER_PIN);
+// --- LIGHT OBJECTS ---
+// Here we instantiate the objects representing the physical lights.
+RGBLight      rgbLight("LED Strip", RGB_R_PIN, RGB_G_PIN, RGB_B_PIN);
+DimmableLight dimmerLight("Spot Light", DIMMER_PIN);
 
-// --- OGGETTI SENSORI ---
-LM75Sensor sensoreTemp("Temp Esterna");
+// --- SENSOR OBJECTS ---
+LM75Sensor tempSensor("External Temp");
 
-// --- CONTROLLER PER PULSANTI FISICI ---
-// Questi oggetti collegano i pulsanti fisici alle luci.
-ButtonToggleController controllerRGB(&luceRGB, BUTTON_RGB_PIN);
-ButtonToggleController controllerDimmer(&luceDimmer, BUTTON_DIMMER_PIN);
-
+// --- CONTROLLERS FOR PHYSICAL BUTTONS ---
+// These objects connect physical buttons to the lights.
+ButtonToggleController rgbController(&rgbLight, BUTTON_RGB_PIN);
+ButtonToggleController dimmerController(&dimmerLight, BUTTON_DIMMER_PIN);
 
 // ===================================================================
-// COSTRUZIONE DELLA STRUTTURA DEL MENU
-// Questa funzione definisce l'intera interfaccia utente.
+// MENU STRUCTURE CONSTRUCTION
+// This function defines the entire user interface.
 // ===================================================================
 MenuItem* buildMenu() {
-    // 1. Radice del menu
-    MenuPage* root = new MenuPage("Menu Principale");
+    // 1. Root of the menu
+    MenuPage* root = new MenuPage("Main Menu");
 
-    // 2. Pagine principali
-    MenuPage* lightsPage = new MenuPage("Controllo Luci", root);
-    MenuPage* sensorsPage = new MenuPage("Stato Sensori", root);
-    
-    root->addItem(new SubMenuItem("Luci", lightsPage));
-    root->addItem(new SubMenuItem("Sensori", sensorsPage));
+    // 2. Main pages
+    MenuPage* lightsPage = new MenuPage("Light Control", root);
+    MenuPage* sensorsPage = new MenuPage("Sensor Status", root);
 
-    // --- Pagine specifiche per ogni luce ---
-    MenuPage* pageLuceRGB = new MenuPage(luceRGB.getName(), lightsPage);
-    MenuPage* pageLuceDimmer = new MenuPage(luceDimmer.getName(), lightsPage);
-    MenuPage* pageColoreRGB = new MenuPage("Selez. Colore", pageLuceRGB);
+    root->addItem(new SubMenuItem("Lights", lightsPage));
+    root->addItem(new SubMenuItem("Sensors", sensorsPage));
 
-    lightsPage->addItem(new SubMenuItem(luceRGB.getName(), pageLuceRGB));
-    lightsPage->addItem(new SubMenuItem(luceDimmer.getName(), pageLuceDimmer));
+    // --- Specific pages for each light ---
+    MenuPage* rgbLightPage = new MenuPage(rgbLight.getName(), lightsPage);
+    MenuPage* dimmerLightPage = new MenuPage(dimmerLight.getName(), lightsPage);
+    MenuPage* rgbColorPage = new MenuPage("Color Selection", rgbLightPage);
 
-    // --- Contenuto delle pagine di controllo luce ---
-    
-    // Controlli per la luce RGB
-    // NUOVO: Aggiunto LightToggleItem prima della luminosità
-    pageLuceRGB->addItem(new LightToggleItem(&luceRGB));
-    pageLuceRGB->addItem(new ValueEditorItem<RGBLight>("Luminosita", &luceRGB, pageLuceRGB));
-    pageLuceRGB->addItem(new SubMenuItem("Colore", pageColoreRGB));
-    
-    // Controlli per la luce Dimmerabile
-    // NUOVO: Aggiunto LightToggleItem prima della luminosità
-    pageLuceDimmer->addItem(new LightToggleItem(&luceDimmer));
-    pageLuceDimmer->addItem(new ValueEditorItem<DimmableLight>("Luminosita", &luceDimmer, pageLuceDimmer));
+    lightsPage->addItem(new SubMenuItem(rgbLight.getName(), rgbLightPage));
+    lightsPage->addItem(new SubMenuItem(dimmerLight.getName(), dimmerLightPage));
 
-    // Contenuto della pagina dei colori
-    pageColoreRGB->addItem(new ColorSelectItem("Bianco Caldo", &luceRGB, RGBColor::WarmWhite()));
-    pageColoreRGB->addItem(new ColorSelectItem("Oceano", &luceRGB, RGBColor::OceanBlue()));
+    // --- Content of light control pages ---
 
-    // Contenuto della pagina sensori
-    sensorsPage->addItem(new SensorDisplayItem<float, LM75Sensor>("Temp.", &sensoreTemp, "C"));
+    // Controls for RGB light
+    // NEW: Added LightToggleItem before brightness
+    rgbLightPage->addItem(new LightToggleItem(&rgbLight));
+    rgbLightPage->addItem(new ValueEditorItem<RGBLight>("Brightness", &rgbLight, rgbLightPage));
+    rgbLightPage->addItem(new SubMenuItem("Color", rgbColorPage));
+
+    // Controls for Dimmable light
+    // NEW: Added LightToggleItem before brightness
+    dimmerLightPage->addItem(new LightToggleItem(&dimmerLight));
+    dimmerLightPage->addItem(new ValueEditorItem<DimmableLight>("Brightness", &dimmerLight, dimmerLightPage));
+
+    // Content of the color page
+    rgbColorPage->addItem(new ColorSelectItem("Warm White", &rgbLight, RGBColor::WarmWhite()));
+    rgbColorPage->addItem(new ColorSelectItem("Ocean Blue", &rgbLight, RGBColor::OceanBlue()));
+
+    // Content of the sensors page
+    sensorsPage->addItem(new SensorDisplayItem<float, LM75Sensor>("Temp.", &tempSensor, "C"));
 
     return root;
 }

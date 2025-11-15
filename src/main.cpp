@@ -20,7 +20,7 @@ void setup() {
     // Inizializzazione dei dispositivi hardware
     lcd.init();
     lcd.backlight();
-    sensoreTemp.begin(); // L'oggetto è definito in HomeConfig.h
+    tempSensor.begin(); // L'oggetto è definito in HomeConfig.h
 
     // Costruisci il menu e imposta la pagina iniziale
     // La funzione buildMenu() e tutti gli oggetti (luci, etc.) provengono da HomeConfig.h
@@ -32,8 +32,8 @@ void setup() {
 void loop() {
     // --- 1. GESTISCI I CONTROLLI FISICI DIRETTI ---
     // Questi vengono eseguiti ad ogni ciclo per la massima reattività.
-    controllerRGB.update();
-    controllerDimmer.update();
+    rgbController.update();
+    dimmerController.update();
 
     // --- 2. GESTISCI L'INPUT DEL MENU DALLA SERIALE ---
     MenuInput input = NONE;
@@ -58,7 +58,7 @@ void loop() {
     static unsigned long lastSensorUpdate = 0;
     if (millis() - lastSensorUpdate > 1000) {
         lastSensorUpdate = millis();
-        if (MenuState::currentPage && MenuState::currentPage->getName() == "Stato Sensori") {
+        if (MenuState::currentPage && MenuState::currentPage->getName() == "Sensor Statusw") {
              needsRedraw = true;
         }
     }
