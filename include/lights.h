@@ -1,27 +1,29 @@
 #pragma once
+
 #include <Arduino.h>
-#include "sensors.h" // Includiamo i sensori per AutomaticLight
+#include <String.h>
 
 // --- UTILS E CLASSI DI SUPPORTO ---
-constexpr int USER_SCALE_MIN = 0;
-constexpr int USER_SCALE_MAX = 100;
-constexpr int PWM_SCALE_MIN = 0;
-constexpr int PWM_SCALE_MAX = 255;
 
+// Spazio dei nomi per le utility di conversione della luminosità.
+// Questo non è ridondante, ma un'applicazione del principio DRY (Don't Repeat Yourself)
+// per centralizzare la logica di mappatura tra la scala utente (0-100) e quella PWM (0-255).
 namespace BrightnessUtils {
     static int toPWM(int value100) {
-        return constrain(map(value100, USER_SCALE_MIN, USER_SCALE_MAX, PWM_SCALE_MIN, PWM_SCALE_MAX), PWM_SCALE_MIN, PWM_SCALE_MAX);
+        return constrain(map(value100, 0, 100, 0, 255), 0, 255);
     }
     static int toUser(int value255) {
-        return constrain(map(value255, PWM_SCALE_MIN, PWM_SCALE_MAX, USER_SCALE_MIN, USER_SCALE_MAX), USER_SCALE_MIN, USER_SCALE_MAX);
+        return constrain(map(value255, 0, 255, 0, 100), 0, 100);
     }
 }
 
+// Classe di supporto per rappresentare un colore RGB.
 class RGBColor {
 public:
     uint8_t r, g, b;
     RGBColor(uint8_t red = 0, uint8_t green = 0, uint8_t blue = 0) : r(red), g(green), b(blue) {}
     
+    // Metodi "factory" statici per colori predefiniti
     static RGBColor Off() { return RGBColor(0, 0, 0); }
     static RGBColor White() { return RGBColor(255, 255, 255); }
     static RGBColor WarmWhite() { return RGBColor(255, 204, 153); }
@@ -65,7 +67,7 @@ class DimmableLight : public Light {
 private:
     uint8_t _pin;
     int _current_pwm = 0;
-    int _last_user_percent = 100;
+    int _last_user_percent = 100; // Ricorda l'ultima luminosità per il toggle
 public:
     DimmableLight(const String& name, uint8_t pin) : Light(name), _pin(pin) {
         pinMode(_pin, OUTPUT);
@@ -92,14 +94,13 @@ public:
     }
 };
 
-// Luce RGB
+// Luce RGB (Usa la composizione, contenendo 3 canali dimmerabili)
 class RGBLight : public Light {
 private:
     DimmableLight _channel_r, _channel_g, _channel_b;
     RGBColor _current_color = RGBColor::White();
-    int _master_brightness = 100; // Master DIM (0-100)
+    int _master_brightness = 100;
 
-    // Metodo privato per applicare colore e luminosità
     void _applyColorAndBrightness() {
         if (!_status) {
             _channel_r.setBrightness(0);
@@ -107,11 +108,9 @@ private:
             _channel_b.setBrightness(0);
             return;
         }
-        // Applica il master brightness al colore corrente
         uint8_t r = (_current_color.r * _master_brightness) / 100;
         uint8_t g = (_current_color.g * _master_brightness) / 100;
         uint8_t b = (_current_color.b * _master_brightness) / 100;
-
         _channel_r.setBrightness(BrightnessUtils::toUser(r));
         _channel_g.setBrightness(BrightnessUtils::toUser(g));
         _channel_b.setBrightness(BrightnessUtils::toUser(b));
@@ -120,20 +119,16 @@ private:
 public:
     RGBLight(const String& name, uint8_t pin_r, uint8_t pin_g, uint8_t pin_b)
         : Light(name),
-          _channel_r("Red", pin_r), _channel_g("Green", pin_g), _channel_b("Blue", pin_b)
-    {}
+          _channel_r("Red", pin_r), _channel_g("Green", pin_g), _channel_b("Blue", pin_b) {}
 
-    // Imposta il colore (salva il valore "puro")
     void setColor(const RGBColor& color) {
         _current_color = color;
         _status = (color.r > 0 || color.g > 0 || color.b > 0);
         _applyColorAndBrightness();
     }
 
-    // Imposta il DIM generale
     void setBrightness(int percent) {
         _master_brightness = constrain(percent, 0, 100);
-        // Se la luce è accesa, riapplica la luminosità
         if (_status) {
             _applyColorAndBrightness();
         }
@@ -143,87 +138,6 @@ public:
     
     void setStatus(bool status) override {
         _status = status;
-        if (_status) {
-            // Se accendo, ripristino l'ultimo colore e luminosità
-            _applyColorAndBrightness();
-        } else {
-            // Se spengo, metto i canali a zero
-            _channel_r.setBrightness(0);
-            _channel_g.setBrightness(0);
-            _channel_b.setBrightness(0);
-        }
-    }
-};
-
-// Luce Automatica per Esterni
-class AutomaticLight : public Light {
-public:
-    enum Mode { MODE_OFF, MODE_ON, MODE_AUTO_LIGHT, MODE_AUTO_MOTION };
-
-private:
-    SimpleLight _light; // Usa composizione: contiene una luce fisica
-    LightSensor& _lightSensor;
-    MovementSensor& _movementSensor;
-    Mode _currentMode = MODE_AUTO_LIGHT;
-    
-    unsigned long _motion_trigger_time = 0;
-    const unsigned long MOTION_LIGHT_DURATION = 30000; // 30 secondi
-
-public:
-    // Variabili pubbliche per binding con menu
-    int light_threshold = 50; // Soglia in % (0-100) per accensione automatica
-
-    AutomaticLight(const String& name, uint8_t light_pin, LightSensor& ls, MovementSensor& ms)
-        : Light(name), 
-          _light(name, light_pin), 
-          _lightSensor(ls), 
-          _movementSensor(ms)
-    {}
-
-    void setMode(Mode mode) {
-        _currentMode = mode;
-        update(); // Applica subito la logica del nuovo modo
-    }
-    Mode getMode() const { return _currentMode; }
-
-    // Implementa setStatus per coerenza con le altre luci
-    void setStatus(bool status) override {
-        setMode(status ? MODE_ON : MODE_OFF);
-    }
-
-    // Il cuore della logica, da chiamare nel loop() principale
-    void update() {
-        switch (_currentMode) {
-            case MODE_ON:
-                _light.setStatus(true);
-                break;
-            case MODE_OFF:
-                _light.setStatus(false);
-                break;
-            case MODE_AUTO_LIGHT:
-                // Se è buio, accendi. Altrimenti, spegni.
-                _light.setStatus(_lightSensor.getValue() < light_threshold);
-                break;
-            case MODE_AUTO_MOTION:
-                // Se è buio
-                if (_lightSensor.getValue() < light_threshold) {
-                    // E se c'è movimento
-                    if (_movementSensor.getValue()) {
-                        _light.setStatus(true);
-                        _motion_trigger_time = millis(); // Resetta il timer
-                    } else {
-                        // Se non c'è movimento, controlla se è passato il tempo
-                        if (millis() - _motion_trigger_time > MOTION_LIGHT_DURATION) {
-                            _light.setStatus(false);
-                        }
-                    }
-                } else {
-                    // Se c'è luce, la luce deve essere spenta
-                    _light.setStatus(false);
-                }
-                break;
-        }
-        // Aggiorna lo stato "pubblico" della classe base
-        _status = _light.getStatus();
+        _applyColorAndBrightness();
     }
 };

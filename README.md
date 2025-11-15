@@ -36,3 +36,8 @@ The color menu has
 - CUSTOM COLOR
 
 At the end of every menu, we have the option to go back. 
+
+## Memory consumption results
+
+For now, we have used 80% of the RAM and have only 300B free after the menu creation. It will be quite hard to wire also that modulino library. 
+

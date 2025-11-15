@@ -1,117 +1,143 @@
 #include <Arduino.h>
 #include <LiquidCrystal_I2C.h>
-extern "C" {
-  #include "i2cmaster.h"
-}
-#include "MyMenu.h"
-#include "lights.h"
-#include "sensors.h"
+#include "MyMenu.h" // Assicurati di avere le tue classi del menu
+#include "lights.h" // E le tue classi delle luci
 
-// --- SETUP HARDWARE ---
+// ===================================================================
+// CONFIGURAZIONE HARDWARE
+// ===================================================================
 LiquidCrystal_I2C lcd(0x27, 20, 4);
 
-// --- STATO GLOBALE DEL MENU ---
+// Pin dei pulsanti di navigazione
+const uint8_t BUTTON_UP_PIN     = A0;
+const uint8_t BUTTON_DOWN_PIN   = A1;
+const uint8_t BUTTON_SELECT_PIN = A2;
+const uint8_t BUTTON_BACK_PIN   = A3;
+
+// Pin dei LED (che rappresentano le nostre luci)
+const uint8_t LED_PIN_1 = 4;
+const uint8_t LED_PIN_2 = 5;
+const uint8_t LED_PIN_3 = 6;
+const uint8_t LED_PIN_4 = 7;
+
+// --- OGGETTI LUCE ---
+// Creiamo oggetti reali per le luci che corrispondono ai LED
+SimpleLight luce1("Luce 1", LED_PIN_1);
+SimpleLight luce2("Luce 2", LED_PIN_2);
+SimpleLight luce3("Luce 3", LED_PIN_3);
+SimpleLight luce4("Luce 4", LED_PIN_4);
+
+// --- STATO DEL MENU ---
 MenuItem* MenuState::currentPage = nullptr;
-bool needsRedraw = true; // NUOVO: Flag per il ridisegno intelligente
+bool needsRedraw = true;
 
-// --- DISPOSITIVI REALI ---
-SimpleLight l_bagno("Bagno", 5);
-DimmableLight l_soggiorno("Soggiorno", 6);
-RGBLight l_camera("Camera", 9, 10, 11);
-LM75Sensor t_esterna("Temp Esterna");
+// ===================================================================
+// FUNZIONE PER LEGGERE L'INPUT DAI PULSANTI (con debounce)
+// ===================================================================
+MenuInput readInput() {
+    static unsigned long lastPressTime = 0;
+    const long debounceDelay = 200; // Aumentato per evitare pressioni multiple
 
-// --- FUNZIONE DI COSTRUZIONE DEL MENU (Builder) ---
+    if (millis() - lastPressTime < debounceDelay) {
+        return NONE; // Troppo presto dalla scorsa pressione, ignora
+    }
+
+    if (digitalRead(BUTTON_UP_PIN) == LOW) {
+        lastPressTime = millis();
+        return UP;
+    }
+    if (digitalRead(BUTTON_DOWN_PIN) == LOW) {
+        lastPressTime = millis();
+        return DOWN;
+    }
+    if (digitalRead(BUTTON_SELECT_PIN) == LOW) {
+        lastPressTime = millis();
+        return SELECT;
+    }
+    if (digitalRead(BUTTON_BACK_PIN) == LOW) {
+        lastPressTime = millis();
+        return BACK;
+    }
+
+    return NONE;
+}
+
+// ===================================================================
+// COSTRUZIONE DELLA STRUTTURA DEL MENU (ARCHITETTURA CORRETTA)
+// ===================================================================
 MenuItem* buildMenu() {
+    // 1. Livello radice
     MenuPage* root = new MenuPage("Menu Principale");
 
-    MenuPage* lightsPage = new MenuPage("Luci", root);
-    MenuPage* sensorsPage = new MenuPage("Sensori", root); // Corretto nome pagina
-    root->addItem(new SubMenuItem("Controllo Luci", lightsPage));
-    root->addItem(new SubMenuItem("Stato Sensori", sensorsPage));
-
-    MenuPage* bagnoPage = new MenuPage(l_bagno.getName(), lightsPage);
-    MenuPage* soggiornoPage = new MenuPage(l_soggiorno.getName(), lightsPage);
-    MenuPage* cameraPage = new MenuPage(l_camera.getName(), lightsPage);
-
-    lightsPage->addItem(new SubMenuItem(l_bagno.getName(), bagnoPage));
-    lightsPage->addItem(new SubMenuItem(l_soggiorno.getName(), soggiornoPage));
-    lightsPage->addItem(new SubMenuItem(l_camera.getName(), cameraPage));
-
-    bagnoPage->addItem(new LightToggleItem(&l_bagno));
-    soggiornoPage->addItem(new LightToggleItem(&l_soggiorno));
-    soggiornoPage->addItem(new DimmerItem("Luminosita'", &l_soggiorno));
-
-    MenuPage* coloreCameraPage = new MenuPage("Colore", cameraPage);
-    cameraPage->addItem(new LightToggleItem(&l_camera));
-    cameraPage->addItem(new RGBLightDimmerItem("Luminosita'", &l_camera));
-    cameraPage->addItem(new SubMenuItem("Imposta Colore", coloreCameraPage));
+    // 2. Pagine di secondo livello
+    MenuPage* lightsPage = new MenuPage("Controllo Luci", root);
     
-    coloreCameraPage->addItem(new ColorSelectItem("Bianco Caldo", &l_camera, RGBColor::WarmWhite()));
-    coloreCameraPage->addItem(new ColorSelectItem("Oceano", &l_camera, RGBColor::OceanBlue()));
-    coloreCameraPage->addItem(new ColorSelectItem("Rosso", &l_camera, RGBColor::Red()));
-    
-    // === NUOVO: POPOLIAMO LA PAGINA SENSORI CORRETTAMENTE ===
-    sensorsPage->addItem(new SensorDisplayItem<float, LM75Sensor>("Temp.", &t_esterna, "C"));
-    // Aggiungi qui altri sensori se ne hai
-    // E.g. sensorsPage->addItem(new SensorDisplayItem<int, LightSensor>("Luce", &mioSensoreLuce, "%"));
+    // Aggiungiamo i link dalla radice alle pagine di secondo livello
+    root->addItem(new SubMenuItem("Luci", lightsPage));
+    // Qui potresti aggiungere un SubMenuItem "Sensori" che punta a una "sensorsPage"
+
+    // 3. Pagine specifiche per ogni luce (QUESTO RISOLVE IL BLOCCO)
+    MenuPage* pageLuce1 = new MenuPage(luce1.getName(), lightsPage);
+    MenuPage* pageLuce2 = new MenuPage(luce2.getName(), lightsPage);
+    MenuPage* pageLuce3 = new MenuPage(luce3.getName(), lightsPage);
+    MenuPage* pageLuce4 = new MenuPage(luce4.getName(), lightsPage);
+
+    // Aggiungiamo i link dalla pagina "Luci" alle pagine specifiche
+    lightsPage->addItem(new SubMenuItem(luce1.getName(), pageLuce1));
+    lightsPage->addItem(new SubMenuItem(luce2.getName(), pageLuce2));
+    lightsPage->addItem(new SubMenuItem(luce3.getName(), pageLuce3));
+    lightsPage->addItem(new SubMenuItem(luce4.getName(), pageLuce4));
+
+    // 4. Aggiungiamo gli item di controllo DENTRO le pagine specifiche
+    pageLuce1->addItem(new LightToggleItem(&luce1));
+    pageLuce2->addItem(new LightToggleItem(&luce2));
+    pageLuce3->addItem(new LightToggleItem(&luce3));
+    pageLuce4->addItem(new LightToggleItem(&luce4));
+    // Se una luce fosse dimmerabile, qui aggiungeresti:
+    // pageLuceX->addItem(new DimmerItem("Luminosita", &luceDimmerabileX));
 
     return root;
 }
 
+
 void setup() {
     Serial.begin(9600);
-    i2c_init();
     
-    // --- Inizializzazione LCD più robusta ---
+    // Inizializza LCD
     lcd.init();
-    delay(100); // Pausa per stabilizzare
     lcd.backlight();
-    delay(100);
 
-    t_esterna.begin();
+    // Inizializza i pulsanti con resistenza di pull-up interna
+    pinMode(BUTTON_UP_PIN, INPUT_PULLUP);
+    pinMode(BUTTON_DOWN_PIN, INPUT_PULLUP);
+    pinMode(BUTTON_SELECT_PIN, INPUT_PULLUP);
+    pinMode(BUTTON_BACK_PIN, INPUT_PULLUP);
 
+    // I pin dei LED sono già inizializzati nel costruttore di SimpleLight
+
+    // Costruisci il menu e imposta la pagina iniziale
     MenuState::currentPage = buildMenu();
-    Serial.println("Sistema pronto.");
+    
+    Serial.println("Sistema pronto. Usa i pulsanti per navigare.");
 }
 
 void loop() {
-    // --- GESTIONE INPUT ---
-    MenuInput input = NONE;
-    if (Serial.available()) {
-        char c = Serial.read();
-        if (c == 'w') input = UP;
-        if (c == 's') input = DOWN;
-        if (c == 'a') input = LEFT;
-        if (c == 'd') input = RIGHT;
-        if (c == 'e') input = SELECT;
-        if (c == 'q') input = BACK;
-        while(Serial.available()) Serial.read();
-    }
+    // 1. Leggi l'input
+    MenuInput input = readInput();
 
-    // --- LOGICA DI AGGIORNAMENTO STATO ---
+    // 2. Aggiorna lo stato del menu in base all'input
     if (input != NONE) {
         if (MenuState::currentPage) {
             MenuState::currentPage->handleInput(input);
         }
-        needsRedraw = true; // Un input forza sempre il ridisegno
+        needsRedraw = true; // Ogni input richiede un ridisegno
     }
 
-    // --- LOGICA DI AGGIORNAMENTO DINAMICO (per sensori) ---
-    static unsigned long lastSensorUpdate = 0;
-    if (millis() - lastSensorUpdate > 1000) { // Controlla ogni secondo
-        lastSensorUpdate = millis();
-        // Se siamo nella pagina dei sensori, dobbiamo ridisegnare
-        // per mostrare i valori aggiornati.
-        if (MenuState::currentPage && MenuState::currentPage->getName() == "Sensori") {
-             needsRedraw = true;
-        }
-    }
-
-    // --- RENDERIZZAZIONE CONDIZIONALE (ANTI-FLICKERING) ---
+    // 3. Disegna l'interfaccia (solo se necessario)
     if (needsRedraw) {
         if (MenuState::currentPage) {
             MenuState::currentPage->renderPage(lcd);
         }
-        needsRedraw = false; // Resetta il flag dopo aver disegnato
+        needsRedraw = false; // Resetta il flag
     }
 }
