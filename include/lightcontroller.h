@@ -1,34 +1,25 @@
 #pragma once
 
 #include <Arduino.h>
-#include "lights.h" // Dipende dalle classi Light
-#include "sensors.h" // Dipende dalle classi Sensor
+#include "lights.h"
+#include "sensors.h"
 
-// Costante per il debounce dei pulsanti, usata da più controller
-constexpr unsigned long DEBOUNCE_DELAY = 50; // 50 millisecondi
-
-/**
- * @class LightController
- * @brief Classe base astratta per qualsiasi oggetto che controlla una luce.
- *        Definisce un'interfaccia comune per essere gestita nel loop principale.
- */
+// Classe base astratta per i controller
 class LightController {
 public:
     virtual ~LightController() {}
-    virtual void update() = 0; // Metodo che verrà chiamato ad ogni ciclo del loop
+    virtual void update() = 0;
 };
 
-/**
- * @class ButtonToggleController
- * @brief Controlla una luce tramite un pulsante. Ogni click (al rilascio) esegue il toggle.
- */
+// Controller specifico per un pulsante che fa il toggle di una luce
 class ButtonToggleController : public LightController {
 private:
-    Light* _light; // Puntatore alla luce da controllare
+    Light* _light;
     uint8_t _pin;
-    int _lastButtonState = HIGH; // Stato precedente (HIGH = non premuto con PULLUP)
+    int _lastButtonState = HIGH;
     unsigned long _lastDebounceTime = 0;
     int _buttonState;
+    const long DEBOUNCE_DELAY = 50;
 
 public:
     ButtonToggleController(Light* light, uint8_t buttonPin) 
@@ -38,20 +29,13 @@ public:
 
     void update() override {
         int reading = digitalRead(_pin);
-
-        // Se lo stato è cambiato, resetta il timer del debounce
         if (reading != _lastButtonState) {
             _lastDebounceTime = millis();
         }
-
-        // Se è passato abbastanza tempo dal cambio di stato
         if ((millis() - _lastDebounceTime) > DEBOUNCE_DELAY) {
-            // Se lo stato è cambiato, agisci
             if (reading != _buttonState) {
                 _buttonState = reading;
-                // Agiamo solo quando il pulsante viene RILASCIATO (passa da LOW a HIGH)
-                // per evitare azioni multiple se tenuto premuto.
-                if (_buttonState == HIGH) {
+                if (_buttonState == LOW) { // Agisci alla pressione
                     _light->toggle();
                 }
             }

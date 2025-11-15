@@ -71,24 +71,70 @@ public:
     void handleInput(MenuInput input) override;
 };
 
-// --- CLASSE "EDITOR DI VALORE" per DimmableLight ---
-class DimmerItem : public MenuItem {
-private:
-    DimmableLight* light;
-public:
-    DimmerItem(const String& n, DimmableLight* l) : MenuItem(n), light(l) {}
-    void draw(LiquidCrystal_I2C& lcd, int row, bool isSelected) override;
-    void handleInput(MenuInput input) override;
-};
+// In MyMenu.h, Sostituisci DimmerItem e RGBLightDimmerItem con questa:
 
-// --- CLASSE "ADATTATORE" per il Dimmer della RGBLight ---
-class RGBLightDimmerItem : public MenuItem {
+/**
+ * @class ValueEditorItem
+ * @brief Un item di menu che, una volta selezionato, diventa una "pagina" per modificare un valore.
+ *        Risolve il problema del blocco e rimuove la necessità di input LEFT/RIGHT.
+ * @tparam T La classe dell'oggetto da controllare (es. DimmableLight, RGBLight).
+ */
+template<class T>
+class ValueEditorItem : public MenuItem {
 private:
-    RGBLight* light;
+    T* _target;         // L'oggetto da controllare (es. una luce)
+    MenuItem* _parent;  // La pagina del menu da cui proveniamo
+
 public:
-    RGBLightDimmerItem(const String& n, RGBLight* l) : MenuItem(n), light(l) {}
-    void draw(LiquidCrystal_I2C& lcd, int row, bool isSelected) override;
-    void handleInput(MenuInput input) override;
+    ValueEditorItem(const String& name, T* target, MenuItem* parent) 
+        : MenuItem(name), _target(target), _parent(parent) {}
+
+    // --- Metodo #1: Come appare l'item in una lista ---
+    void draw(LiquidCrystal_I2C& lcd, int row, bool isSelected) override {
+        lcd.setCursor(isSelected ? 0 : 1, row);
+        lcd.print(isSelected ? ">" : " ");
+        lcd.print(name);
+
+        String valStr = String(_target->getBrightness());
+        while(valStr.length() < 3) valStr = " " + valStr; // Allinea a destra
+        lcd.setCursor(13, row); // Adattato per 16x2
+        lcd.print(valStr + "%");
+    }
+
+    // --- Metodo #2: Come si comporta quando riceve un input ---
+    void handleInput(MenuInput input) override {
+        // Se siamo in una lista e l'utente preme SELECT, entriamo in "modalità modifica"
+        if (input == SELECT) {
+            MenuState::currentPage = this; // Questo item diventa la pagina attiva!
+            return;
+        }
+
+        // Se siamo in modalità modifica, UP/DOWN cambiano il valore
+        if (input == UP) {
+            int brightness = _target->getBrightness();
+            _target->setBrightness(min(100, brightness + 5));
+        }
+        if (input == DOWN) {
+            int brightness = _target->getBrightness();
+            _target->setBrightness(max(0, brightness - 5));
+        }
+
+        // Se siamo in modalità modifica e l'utente preme BACK, torniamo al menu precedente
+        if (input == BACK) {
+            if (_parent) {
+                MenuState::currentPage = _parent;
+            }
+        }
+    }
+    
+    // --- Metodo #3: Come appare lo schermo quando siamo in "modalità modifica" ---
+    void renderPage(LiquidCrystal_I2C& lcd) override {
+        lcd.clear();
+        lcd.setCursor(0, 0);
+        lcd.print(name + ": " + String(_target->getBrightness()) + "%");
+        lcd.setCursor(0, 1);
+        lcd.print("UP/DOWN - BACK"); // Istruzioni per l'utente
+    }
 };
 
 // --- CLASSE "SELETTORE COLORE" ---
@@ -162,48 +208,6 @@ inline void LightToggleItem::draw(LiquidCrystal_I2C& lcd, int row, bool isSelect
 inline void LightToggleItem::handleInput(MenuInput input) {
     if (input == SELECT) {
         light->toggle();
-    }
-}
-
-// --- DimmerItem ---
-inline void DimmerItem::draw(LiquidCrystal_I2C& lcd, int row, bool isSelected) {
-    lcd.setCursor(isSelected ? 0 : 1, row);
-    lcd.print(isSelected ? ">" : " ");
-    lcd.print(name);
-    String valStr = String(light->getBrightness());
-    while(valStr.length() < 3) valStr = " " + valStr;
-    lcd.setCursor(14, row);
-    lcd.print(valStr + "%");
-}
-inline void DimmerItem::handleInput(MenuInput input) {
-    int brightness = light->getBrightness();
-    if (input == RIGHT) {
-        brightness = min(100, brightness + 5);
-        light->setBrightness(brightness);
-    } else if (input == LEFT) {
-        brightness = max(0, brightness - 5);
-        light->setBrightness(brightness);
-    }
-}
-
-// --- RGBLightDimmerItem ---
-inline void RGBLightDimmerItem::draw(LiquidCrystal_I2C& lcd, int row, bool isSelected) {
-    lcd.setCursor(isSelected ? 0 : 1, row);
-    lcd.print(isSelected ? ">" : " ");
-    lcd.print(name);
-    String valStr = String(light->getBrightness());
-    while(valStr.length() < 3) valStr = " " + valStr;
-    lcd.setCursor(14, row);
-    lcd.print(valStr + "%");
-}
-inline void RGBLightDimmerItem::handleInput(MenuInput input) {
-    int brightness = light->getBrightness();
-    if (input == RIGHT) {
-        brightness = min(100, brightness + 5);
-        light->setBrightness(brightness);
-    } else if (input == LEFT) {
-        brightness = max(0, brightness - 5);
-        light->setBrightness(brightness);
     }
 }
 
