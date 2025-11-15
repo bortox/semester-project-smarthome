@@ -8,11 +8,11 @@ extern "C" {
 template<typename T>
 class Sensor {
 protected:
-    const char* _name;
+    String _name;
 public:
-    Sensor(const char* name) : _name(name) {}
+    Sensor(const String& name) : _name(name) {}
     virtual ~Sensor() {}
-    const char* getName() const { return _name; }
+    const String& getName() const { return _name; }
     virtual T getValue() const = 0;
 };
 // ... (la classe base Sensor e le altre rimangono uguali) ...
@@ -33,7 +33,7 @@ public:
 
 class LM75Sensor : public Sensor<float> {
 public:
-    LM75Sensor(const char* name) : Sensor<float>(name) {
+    LM75Sensor(const String& name) : Sensor<float>(name) {
     }
 
     void begin() {
@@ -75,7 +75,7 @@ class LightSensor : public Sensor<int> {
 private:
     uint8_t _pin;
 public:
-    LightSensor(const char* name, uint8_t analog_pin) : Sensor<int>(name), _pin(analog_pin) {
+    LightSensor(const String& name, uint8_t analog_pin) : Sensor<int>(name), _pin(analog_pin) {
         pinMode(_pin, INPUT);
     }
     
@@ -96,7 +96,7 @@ class MovementSensor : public Sensor<bool> {
 private:
     uint8_t _pin;
 public:
-    MovementSensor(const char* name, uint8_t pin) : Sensor<bool>(name), _pin(pin) {
+    MovementSensor(const String& name, uint8_t pin) : Sensor<bool>(name), _pin(pin) {
         pinMode(_pin, INPUT);
     }
 

@@ -34,12 +34,12 @@ public:
 // Classe Base per tutte le luci
 class Light {
 protected:
-    const char* _name;
+    String _name;
     bool _status = false;
 public:
-    Light(const char* name) : _name(name) {}
+    Light(const String& name) : _name(name) {}
     virtual ~Light() {}
-    const char* getName() const { return _name; }
+    const String& getName() const { return _name; }
     bool getStatus() const { return _status; }
     virtual void setStatus(bool status) = 0;
     void toggle() { setStatus(!_status); }
@@ -50,7 +50,7 @@ class SimpleLight : public Light {
 private:
     uint8_t _pin;
 public:
-    SimpleLight(const char* name, uint8_t pin) : Light(name), _pin(pin) {
+    SimpleLight(const String& name, uint8_t pin) : Light(name), _pin(pin) {
         pinMode(_pin, OUTPUT);
         digitalWrite(_pin, LOW);
     }
@@ -67,7 +67,7 @@ private:
     int _current_pwm = 0;
     int _last_user_percent = 100;
 public:
-    DimmableLight(const char* name, uint8_t pin) : Light(name), _pin(pin) {
+    DimmableLight(const String& name, uint8_t pin) : Light(name), _pin(pin) {
         pinMode(_pin, OUTPUT);
         analogWrite(_pin, 0);
     }
@@ -118,7 +118,7 @@ private:
     }
 
 public:
-    RGBLight(const char* name, uint8_t pin_r, uint8_t pin_g, uint8_t pin_b)
+    RGBLight(const String& name, uint8_t pin_r, uint8_t pin_g, uint8_t pin_b)
         : Light(name),
           _channel_r("Red", pin_r), _channel_g("Green", pin_g), _channel_b("Blue", pin_b)
     {}
@@ -173,7 +173,7 @@ public:
     // Variabili pubbliche per binding con menu
     int light_threshold = 50; // Soglia in % (0-100) per accensione automatica
 
-    AutomaticLight(const char* name, uint8_t light_pin, LightSensor& ls, MovementSensor& ms)
+    AutomaticLight(const String& name, uint8_t light_pin, LightSensor& ls, MovementSensor& ms)
         : Light(name), 
           _light(name, light_pin), 
           _lightSensor(ls), 
