@@ -2,14 +2,13 @@
 
 #include <Arduino.h>
 #include <LiquidCrystal_I2C.h>
-#include <String.h>
 #include "lights.h"
 #include "sensors.h"
 
 // Enum per gli input
 enum MenuInput { NONE, UP, DOWN, SELECT, BACK };
 
-class MenuItem; // Forward declaration
+class MenuItem;
 
 // Stato globale del menu
 struct MenuState {
@@ -19,11 +18,11 @@ struct MenuState {
 // --- CLASSE BASE ASTRATTA ---
 class MenuItem {
 protected:
-    String name;
+    const char* name;
 public:
-    MenuItem(const String& n) : name(n) {}
+    MenuItem(const char* n) : name(n) {}
     virtual ~MenuItem() {}
-    const String& getName() const { return name; }
+    const char* getName() const { return name; }
     virtual void draw(LiquidCrystal_I2C& lcd, int row, bool isSelected) = 0;
     virtual void handleInput(MenuInput input) = 0;
     virtual void renderPage(LiquidCrystal_I2C& lcd) {}
@@ -39,16 +38,42 @@ private:
     MenuItem* parent;
 
 public:
-    MenuPage(const String& n, MenuItem* p = nullptr) : MenuItem(n), parent(p) {}
-    ~MenuPage() {
-        for (int i = 0; i < itemCount; ++i) delete items[i];
-    }
+    MenuPage(const char* n, MenuItem* p = nullptr) : MenuItem(n), parent(p) {}
+    
     void addItem(MenuItem* item) {
         if (itemCount < 10) items[itemCount++] = item;
     }
-    void draw(LiquidCrystal_I2C& lcd, int row, bool isSelected) override;
-    void handleInput(MenuInput input) override;
-    void renderPage(LiquidCrystal_I2C& lcd) override;
+    
+    void draw(LiquidCrystal_I2C& lcd, int row, bool isSelected) override {
+        lcd.setCursor(1, row);
+        lcd.print(name);
+    }
+    
+    void handleInput(MenuInput input) override {
+        if (input == UP) {
+            if (selectedIndex > 0) selectedIndex--;
+        } else if (input == DOWN) {
+            if (selectedIndex < itemCount - 1) selectedIndex++;
+        } else if (input == BACK) {
+            if (parent) MenuState::currentPage = parent;
+        } else {
+            if (itemCount > 0) {
+                items[selectedIndex]->handleInput(input);
+            }
+        }
+        if (selectedIndex < scrollOffset) scrollOffset = selectedIndex;
+        if (selectedIndex >= scrollOffset + 4) scrollOffset = selectedIndex - 3;
+    }
+    
+    void renderPage(LiquidCrystal_I2C& lcd) override {
+        lcd.clear();
+        for (int i = 0; i < 4; ++i) {
+            int idx = scrollOffset + i;
+            if (idx < itemCount) {
+                items[idx]->draw(lcd, i, (idx == selectedIndex));
+            }
+        }
+    }
 };
 
 // --- CLASSE "SUBMENU" ---
@@ -56,9 +81,21 @@ class SubMenuItem : public MenuItem {
 private:
     MenuItem* targetPage;
 public:
-    SubMenuItem(const String& n, MenuItem* target) : MenuItem(n), targetPage(target) {}
-    void draw(LiquidCrystal_I2C& lcd, int row, bool isSelected) override;
-    void handleInput(MenuInput input) override;
+    SubMenuItem(const char* n, MenuItem* target) : MenuItem(n), targetPage(target) {}
+    
+    void draw(LiquidCrystal_I2C& lcd, int row, bool isSelected) override {
+        lcd.setCursor(isSelected ? 0 : 1, row);
+        lcd.print(isSelected ? F(">") : F(" "));
+        lcd.print(name);
+        lcd.setCursor(18, row);
+        lcd.print(F(" >"));
+    }
+    
+    void handleInput(MenuInput input) override {
+        if (input == SELECT) {
+            MenuState::currentPage = targetPage;
+        }
+    }
 };
 
 // --- CLASSE "TOGGLE" per ON/OFF ---
@@ -66,50 +103,56 @@ class LightToggleItem : public MenuItem {
 private:
     Light* light;
 public:
-    LightToggleItem(Light* l) : MenuItem(String(l->getName())), light(l) {}
-    void draw(LiquidCrystal_I2C& lcd, int row, bool isSelected) override;
-    void handleInput(MenuInput input) override;
+    LightToggleItem(Light* l) : MenuItem(l->getName()), light(l) {}
+    
+    void draw(LiquidCrystal_I2C& lcd, int row, bool isSelected) override {
+        lcd.setCursor(isSelected ? 0 : 1, row);
+        lcd.print(isSelected ? F(">") : F(" "));
+        lcd.print(name);
+        
+        lcd.setCursor(14, row);
+        if (light->getStatus()) {
+            lcd.print(F("[ON] "));
+        } else {
+            lcd.print(F("[OFF]"));
+        }
+    }
+    
+    void handleInput(MenuInput input) override {
+        if (input == SELECT) {
+            light->toggle();
+        }
+    }
 };
 
-// In MyMenu.h, Sostituisci DimmerItem e RGBLightDimmerItem con questa:
-
-/**
- * @class ValueEditorItem
- * @brief Un item di menu che, una volta selezionato, diventa una "pagina" per modificare un valore.
- *        Risolve il problema del blocco e rimuove la necessità di input LEFT/RIGHT.
- * @tparam T La classe dell'oggetto da controllare (es. DimmableLight, RGBLight).
- */
+// --- EDITOR DI VALORI ---
 template<class T>
 class ValueEditorItem : public MenuItem {
 private:
-    T* _target;         // L'oggetto da controllare (es. una luce)
-    MenuItem* _parent;  // La pagina del menu da cui proveniamo
+    T* _target;
+    MenuItem* _parent;
 
 public:
-    ValueEditorItem(const String& name, T* target, MenuItem* parent) 
+    ValueEditorItem(const char* name, T* target, MenuItem* parent) 
         : MenuItem(name), _target(target), _parent(parent) {}
 
-    // --- Metodo #1: Come appare l'item in una lista ---
     void draw(LiquidCrystal_I2C& lcd, int row, bool isSelected) override {
         lcd.setCursor(isSelected ? 0 : 1, row);
-        lcd.print(isSelected ? ">" : " ");
+        lcd.print(isSelected ? F(">") : F(" "));
         lcd.print(name);
 
         String valStr = String(_target->getBrightness());
-        while(valStr.length() < 3) valStr = " " + valStr; // Allinea a destra
-        lcd.setCursor(13, row); // Adattato per 16x2
-        lcd.print(valStr + "%");
+        while(valStr.length() < 3) valStr = " " + valStr;
+        lcd.setCursor(13, row);
+        lcd.print(valStr + F("%"));
     }
 
-    // --- Metodo #2: Come si comporta quando riceve un input ---
     void handleInput(MenuInput input) override {
-        // Se siamo in una lista e l'utente preme SELECT, entriamo in "modalità modifica"
         if (input == SELECT) {
-            MenuState::currentPage = this; // Questo item diventa la pagina attiva!
+            MenuState::currentPage = this;
             return;
         }
 
-        // Se siamo in modalità modifica, UP/DOWN cambiano il valore
         if (input == UP) {
             int brightness = _target->getBrightness();
             _target->setBrightness(min(100, brightness + 5));
@@ -119,7 +162,6 @@ public:
             _target->setBrightness(max(0, brightness - 5));
         }
 
-        // Se siamo in modalità modifica e l'utente preme BACK, torniamo al menu precedente
         if (input == BACK) {
             if (_parent) {
                 MenuState::currentPage = _parent;
@@ -127,13 +169,14 @@ public:
         }
     }
     
-    // --- Metodo #3: Come appare lo schermo quando siamo in "modalità modifica" ---
     void renderPage(LiquidCrystal_I2C& lcd) override {
         lcd.clear();
         lcd.setCursor(0, 0);
-        lcd.print(name + ": " + String(_target->getBrightness()) + "%");
+        lcd.print(name);
+        lcd.print(F(": "));
+        lcd.print(String(_target->getBrightness()) + F("%"));
         lcd.setCursor(0, 1);
-        lcd.print("UP/DOWN - BACK"); // Istruzioni per l'utente
+        lcd.print(F("UP/DOWN - BACK"));
     }
 };
 
@@ -143,135 +186,66 @@ private:
     RGBLight* light;
     RGBColor color;
 public:
-    ColorSelectItem(const String& n, RGBLight* l, const RGBColor& c) : MenuItem(n), light(l), color(c) {}
-    void draw(LiquidCrystal_I2C& lcd, int row, bool isSelected) override;
-    void handleInput(MenuInput input) override;
+    ColorSelectItem(const char* n, RGBLight* l, const RGBColor& c) : MenuItem(n), light(l), color(c) {}
+    
+    void draw(LiquidCrystal_I2C& lcd, int row, bool isSelected) override {
+        lcd.setCursor(isSelected ? 0 : 1, row);
+        lcd.print(isSelected ? F(">") : F(" "));
+        lcd.print(name);
+    }
+    
+    void handleInput(MenuInput input) override {
+        if (input == SELECT) {
+            light->setColor(color);
+        }
+    }
 };
 
-
-// ========= IMPLEMENTAZIONI DEI METODI =========
-
-// --- MenuPage ---
-inline void MenuPage::draw(LiquidCrystal_I2C& lcd, int row, bool isSelected) {
-    // Questo metodo è per quando una pagina è un item in un'altra pagina (raro)
-    lcd.setCursor(1, row);
-    lcd.print(name);
-}
-inline void MenuPage::handleInput(MenuInput input) {
-    if (input == UP) {
-        if (selectedIndex > 0) selectedIndex--;
-    } else if (input == DOWN) {
-        if (selectedIndex < itemCount - 1) selectedIndex++;
-    } else if (input == BACK) {
-        if (parent) MenuState::currentPage = parent;
-    } else {
-        if (itemCount > 0) {
-            items[selectedIndex]->handleInput(input);
-        }
-    }
-    if (selectedIndex < scrollOffset) scrollOffset = selectedIndex;
-    if (selectedIndex >= scrollOffset + 4) scrollOffset = selectedIndex - 3;
-}
-inline void MenuPage::renderPage(LiquidCrystal_I2C& lcd) {
-    lcd.clear();
-    for (int i = 0; i < 4; ++i) {
-        int idx = scrollOffset + i;
-        if (idx < itemCount) {
-            items[idx]->draw(lcd, i, (idx == selectedIndex));
-        }
-    }
-}
-
-// --- SubMenuItem ---
-inline void SubMenuItem::draw(LiquidCrystal_I2C& lcd, int row, bool isSelected) {
-    lcd.setCursor(isSelected ? 0 : 1, row);
-    lcd.print(isSelected ? ">" : " ");
-    lcd.print(name);
-    lcd.setCursor(18, row);
-    lcd.print(" >");
-}
-inline void SubMenuItem::handleInput(MenuInput input) {
-    if (input == SELECT) {
-        MenuState::currentPage = targetPage;
-    }
-}
-
-// --- LightToggleItem ---
-inline void LightToggleItem::draw(LiquidCrystal_I2C& lcd, int row, bool isSelected) {
-    lcd.setCursor(isSelected ? 0 : 1, row);
-    lcd.print(isSelected ? ">" : " ");
-    lcd.print(name);
-    String status = light->getStatus() ? "[ON] " : "[OFF]";
-    lcd.setCursor(14, row);
-    lcd.print(status);
-}
-inline void LightToggleItem::handleInput(MenuInput input) {
-    if (input == SELECT) {
-        light->toggle();
-    }
-}
-
-// --- ColorSelectItem ---
-inline void ColorSelectItem::draw(LiquidCrystal_I2C& lcd, int row, bool isSelected) {
-    lcd.setCursor(isSelected ? 0 : 1, row);
-    lcd.print(isSelected ? ">" : " ");
-    lcd.print(name);
-}
-inline void ColorSelectItem::handleInput(MenuInput input) {
-    if (input == SELECT) {
-        light->setColor(color);
-    }
-}
-
-// ... (dopo la classe ColorSelectItem)
-
-// --- CLASSE PER VISUALIZZARE UN VALORE DA UN SENSORE ---
+// --- VISUALIZZATORE SENSORI ---
 template<typename T, typename U>
 class SensorDisplayItem : public MenuItem {
 private:
     Sensor<T>* sensor;
     const char* unit;
 public:
-    SensorDisplayItem(const String& n, Sensor<T>* s, const char* u = "") : MenuItem(n), sensor(s), unit(u) {}
+    SensorDisplayItem(const char* n, Sensor<T>* s, const char* u = "") : MenuItem(n), sensor(s), unit(u) {}
 
     void draw(LiquidCrystal_I2C& lcd, int row, bool isSelected) override {
         lcd.setCursor(1, row);
         lcd.print(name);
-        lcd.print(": ");
+        lcd.print(F(": "));
 
-        // Leggi il valore FRESCO del sensore ogni volta che disegni
         String valueStr = String(sensor->getValue()) + unit;
         
-        // Calcola la posizione per allineare a destra
         int pos = 20 - valueStr.length();
-        if (pos < name.length() + 3) pos = name.length() + 3; // Evita sovrascrizioni
+        if (pos < (int)strlen(name) + 3) pos = strlen(name) + 3;
         lcd.setCursor(pos, row);
         
         lcd.print(valueStr);
     }
     
-    // Selezionare un sensore non fa nulla
     void handleInput(MenuInput input) override {
         // No-op
     }
 };
 
-#include "lightcontroller.h" // Assicurati che sia incluso per OutsideController
+#include "lightcontroller.h"
 
+// --- SELEZIONE MODALITA' ---
 class ModeSelectItem : public MenuItem {
 private:
     OutsideController* _controller;
 
 public:
-    ModeSelectItem(const String& name, OutsideController* controller) 
+    ModeSelectItem(const char* name, OutsideController* controller) 
         : MenuItem(name), _controller(controller) {}
 
     void draw(LiquidCrystal_I2C& lcd, int row, bool isSelected) override {
         lcd.setCursor(isSelected ? 0 : 1, row);
-        lcd.print(isSelected ? ">" : " ");
+        lcd.print(isSelected ? F(">") : F(" "));
         lcd.print(name);
 
-        String modeStr;
+        const char* modeStr;
         switch (_controller->getMode()) {
             case OutsideController::MODE_OFF:          modeStr = "OFF"; break;
             case OutsideController::MODE_ON:           modeStr = "ON"; break;
@@ -280,15 +254,13 @@ public:
             default:                                   modeStr = "???"; break;
         }
         
-        // Allinea a destra
-        int pos = 20 - modeStr.length();
+        int pos = 20 - strlen(modeStr);
         lcd.setCursor(pos, row);
         lcd.print(modeStr);
     }
 
     void handleInput(MenuInput input) override {
         if (input == SELECT) {
-            // Cicla alla modalità successiva (ci sono 4 modalità, da 0 a 3)
             int nextMode = (_controller->getMode() + 1) % 4;
             _controller->setMode(static_cast<OutsideController::Mode>(nextMode));
         }

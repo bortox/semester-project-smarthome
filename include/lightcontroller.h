@@ -11,7 +11,7 @@ public:
     virtual void update() = 0;
 };
 
-// Controller specifico per un pulsante che fa il toggle di una luce
+// Controller per pulsante toggle
 class ButtonToggleController : public LightController {
 private:
     Light* _light;
@@ -35,7 +35,7 @@ public:
         if ((millis() - _lastDebounceTime) > DEBOUNCE_DELAY) {
             if (reading != _buttonState) {
                 _buttonState = reading;
-                if (_buttonState == LOW) { // Agisci alla pressione
+                if (_buttonState == LOW) {
                     _light->toggle();
                 }
             }
@@ -44,18 +44,14 @@ public:
     }
 };
 
-/**
- * @class PotentiometerDimmerController
- * @brief Controlla la luminosità di una luce dimmerabile tramite un potenziometro.
- *        Usa un template per essere compatibile con DimmableLight, RGBLight, etc.
- */
+// Controller potenziometro
 template<class DimmableType>
 class PotentiometerDimmerController : public LightController {
 private:
-    DimmableType* _light; // La luce dimmerabile da controllare
+    DimmableType* _light;
     uint8_t _pin;
-    int _lastMappedValue = -1; // -1 per forzare l'aggiornamento al primo ciclo
-    const int THRESHOLD = 2; // Agisce solo se il valore cambia di almeno 2 (su 100) per evitare "tremolii"
+    int _lastMappedValue = -1;
+    const int THRESHOLD = 2;
 
 public:
     PotentiometerDimmerController(DimmableType* light, uint8_t analogPin)
@@ -72,42 +68,33 @@ public:
     }
 };
 
-
-/**
- * @class OutsideController
- * @brief Gestisce la logica di una luce esterna automatica basata su luce ambientale e movimento.
- *        Questa classe sostituisce la vecchia `AutomaticLight`.
- */
+// Controller luce esterna
 class OutsideController : public LightController {
 public:
     enum Mode { MODE_OFF, MODE_ON, MODE_AUTO_LIGHT, MODE_AUTO_MOTION };
 
 private:
-    SimpleLight& _light; // La luce fisica da controllare
+    SimpleLight& _light;
     LightSensor& _lightSensor;
     MovementSensor& _movementSensor;
     Mode _currentMode = MODE_AUTO_LIGHT;
     
     unsigned long _motion_trigger_time = 0;
-    const unsigned long MOTION_LIGHT_DURATION = 30000; // 30 secondi
+    const unsigned long MOTION_LIGHT_DURATION = 30000;
 
 public:
-    int light_threshold = 50; // Soglia in % per l'accensione (pubblica per essere modificata, es. da un menu)
+    int light_threshold = 50;
 
     OutsideController(SimpleLight& light, LightSensor& ls, MovementSensor& ms)
-        : _light(light), 
-          _lightSensor(ls), 
-          _movementSensor(ms)
-    {}
+        : _light(light), _lightSensor(ls), _movementSensor(ms) {}
 
     void setMode(Mode mode) {
         _currentMode = mode;
-        update(); // Applica subito la logica del nuovo modo
+        update();
     }
 
     Mode getMode() const { return _currentMode; }
     
-    // Il cuore della logica, da chiamare nel loop() principale.
     void update() override {
         switch (_currentMode) {
             case MODE_ON:
@@ -123,12 +110,12 @@ public:
                 if (_lightSensor.getValue() < light_threshold) {
                     if (_movementSensor.getValue()) {
                         _light.setStatus(true);
-                        _motion_trigger_time = millis(); // Resetta il timer
+                        _motion_trigger_time = millis();
                     } else if (millis() - _motion_trigger_time > MOTION_LIGHT_DURATION) {
-                        _light.setStatus(false); // Spegni dopo il timeout
+                        _light.setStatus(false);
                     }
                 } else {
-                    _light.setStatus(false); // Se c'è luce, la luce deve essere spenta
+                    _light.setStatus(false);
                 }
                 break;
         }

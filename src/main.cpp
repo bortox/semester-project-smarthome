@@ -1,51 +1,70 @@
 #include <Arduino.h>
 #include <LiquidCrystal_I2C.h>
-#include "config.h"       // Unico include per tutta la configurazione!
-#include "MemoryMonitor.h"  // Includiamo il nostro nuovo monitor
+#include "config.h"
+#include "MemoryMonitor.h"
 
-// ===================================================================
-// CONFIGURAZIONE APPLICAZIONE
-// ===================================================================
-LiquidCrystal_I2C lcd(LCD_ADDRESS, LCD_COLS, LCD_ROWS); // Parametri da config.h
-
-// STATO GLOBALE DELL'APPLICAZIONE
+LiquidCrystal_I2C lcd(LCD_ADDRESS, LCD_COLS, LCD_ROWS);
 MenuItem* MenuState::currentPage = nullptr;
 bool needsRedraw = true;
 
-
 void setup() {
-    // 1. Inizializzazione delle comunicazioni
     Serial.begin(9600);
-    while(!Serial); // Attendi la connessione per vedere i messaggi di avvio
-    Serial.println(F("\n\n=== Smart Home System Initializing ==="));
-    i2c_init();
-
-    // 2. Report memoria PRIMA dell'allocazione dinamica
-    Serial.println(F("\n[Memory Check 1/3] Before menu construction:"));
+    while(!Serial);
+    
+    Serial.println(F("\n=== MEMORY OPTIMIZATION TEST ==="));
+    
+    // 1. Report memoria INIZIALE
+    Serial.println(F("\n[1] Memoria prima inizializzazione:"));
     printMemoryReport();
-
-    // 3. Inizializzazione dei dispositivi hardware
+    
+    // 2. Inizializza LCD
     lcd.init();
     lcd.backlight();
-    tempSensor.begin(); // L'oggetto è definito in config.h
-
-    // 4. Costruisci il menu (questa è l'operazione che alloca più memoria)
-    MenuState::currentPage = buildMenu();
+    lcd.setCursor(0, 0);
+    lcd.print(F("Memory Test"));
+    lcd.setCursor(0, 1);
+    lcd.print(F("Free: "));
+    lcd.print(getFreeMemory());
     
-    // 5. Report memoria DOPO l'allocazione del menu
-    Serial.println(F("\n[Memory Check 2/3] After menu construction (Heap is now set):"));
+    // 3. Inizializza sensore temperatura
+    i2c_init();
+    tempSensor.begin();
+    
+    // 4. Report memoria DOPO hardware
+    Serial.println(F("\n[2] Memoria dopo hardware init:"));
     printMemoryReport();
     
-    Serial.println(F("\nSystem Ready. Use 'w,a,s,d,e,q' for navigation."));
+    // 5. Costruisci menu STATICO
+    MenuState::currentPage = buildMenu();
+    
+    // 6. Report memoria FINALE
+    Serial.println(F("\n[3] Memoria dopo menu construction:"));
+    printMemoryReport();
+    
+    Serial.println(F("\n=== SYSTEM READY ==="));
+    Serial.println(F("Use: w=UP, s=DOWN, e=SELECT, q=BACK"));
+    
+    // Mostra memoria su LCD
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print(F("System Ready"));
+    lcd.setCursor(0, 1);
+    lcd.print(F("Mem:"));
+    lcd.print(getFreeMemory());
+    lcd.print(F(" free"));
+    
+    delay(2000);
+    needsRedraw = true;
 }
 
 void loop() {
-    // --- 1. GESTISCI I CONTROLLI FISICI DIRETTI (se presenti) ---
-    // E.g., lettura di potenziometri o interruttori che non fanno parte del menu.
-    rgbController.update();
-    outsideController.update();
-
-    // --- 2. GESTISCI L'INPUT DEL MENU CENTRALE ---
+    // Aggiorna controllers bottoni
+    btn1.update();
+    btn2.update(); 
+    btn3.update();
+    btn4.update();
+    
+    // Gestione input seriale
     MenuInput input = NONE;
     if (Serial.available()) {
         char c = Serial.read();
@@ -54,41 +73,40 @@ void loop() {
         if (c == 'e') input = SELECT;
         if (c == 'q') input = BACK;
         while(Serial.available()) Serial.read();
+        needsRedraw = true;
     }
     
-    // --- 3. AGGIORNA LO STATO DEL MENU IN BASE ALL'INPUT ---
-    if (input != NONE) {
-        if (MenuState::currentPage) {
-            MenuState::currentPage->handleInput(input);
-        }
-        needsRedraw = true; // Forza il ridisegno dopo un'azione
+    if (input != NONE && MenuState::currentPage) {
+        MenuState::currentPage->handleInput(input);
     }
-
-    // --- 4. GESTISCI AGGIORNAMENTI AUTOMATICI DEL DISPLAY (es. SENSORI) ---
+    
+    // Refresh automatico sensori ogni 2s
     static unsigned long lastSensorUpdate = 0;
-    if (millis() - lastSensorUpdate > 2000) { // Aggiorna ogni 2 secondi
+    if (millis() - lastSensorUpdate > 2000) {
         lastSensorUpdate = millis();
-        // Controlla se il nome della pagina corrente è quello dei sensori
-        if (MenuState::currentPage && MenuState::currentPage->getName() == "Sensor Status") {
-             needsRedraw = true;
+        if (MenuState::currentPage && 
+            strcmp(MenuState::currentPage->getName(), "Sensor Status") == 0) {
+            needsRedraw = true;
         }
-    }
-
-    // --- 5. RENDERIZZA IL MENU (SOLO SE NECESSARIO) ---
-    if (needsRedraw) {
-        if (MenuState::currentPage) {
-            MenuState::currentPage->renderPage(lcd);
-        }
-        needsRedraw = false; // Resetta il flag
     }
     
-    // --- 6. MONITORAGGIO PERIODICO A RUNTIME ---
+    // Render se necessario
+    if (needsRedraw && MenuState::currentPage) {
+        MenuState::currentPage->renderPage(lcd);
+        needsRedraw = false;
+    }
+    
+    // Monitor memoria ogni 15 secondi
     static unsigned long lastMemoryPrint = 0;
-    if (millis() - lastMemoryPrint > 10000) { // Stampa ogni 10 secondi
+    if (millis() - lastMemoryPrint > 15000) {
         lastMemoryPrint = millis();
-        Serial.print(F("\n[Memory Check 3/3] Runtime at T="));
-        Serial.print(millis() / 1000);
-        Serial.println(F("s:"));
-        printMemoryReport();
+        Serial.print(F("[Runtime] Free memory: "));
+        Serial.println(getFreeMemory());
+        
+        // // Mostra anche su LCD seconda riga
+        // lcd.setCursor(0, 3);
+        // lcd.print(F("Free:"));
+        // lcd.print(getFreeMemory());
+        // lcd.print(F("   "));
     }
 }

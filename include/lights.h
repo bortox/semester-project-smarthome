@@ -1,13 +1,7 @@
 #pragma once
-
 #include <Arduino.h>
-#include <String.h>
 
-// --- UTILS E CLASSI DI SUPPORTO ---
-
-// Spazio dei nomi per le utility di conversione della luminosità.
-// Questo non è ridondante, ma un'applicazione del principio DRY (Don't Repeat Yourself)
-// per centralizzare la logica di mappatura tra la scala utente (0-100) e quella PWM (0-255).
+// --- UTILS ---
 namespace BrightnessUtils {
     static int toPWM(int value100) {
         return constrain(map(value100, 0, 100, 0, 255), 0, 255);
@@ -17,13 +11,12 @@ namespace BrightnessUtils {
     }
 }
 
-// Classe di supporto per rappresentare un colore RGB.
+// --- CLASSE COLORE RGB ---
 class RGBColor {
 public:
     uint8_t r, g, b;
     RGBColor(uint8_t red = 0, uint8_t green = 0, uint8_t blue = 0) : r(red), g(green), b(blue) {}
     
-    // Metodi "factory" statici per colori predefiniti
     static RGBColor Off() { return RGBColor(0, 0, 0); }
     static RGBColor White() { return RGBColor(255, 255, 255); }
     static RGBColor WarmWhite() { return RGBColor(255, 204, 153); }
@@ -32,16 +25,14 @@ public:
 };
 
 // --- GERARCHIA CLASSI LUCI ---
-
-// Classe Base per tutte le luci
 class Light {
 protected:
-    String _name;
+    const char* _name;
     bool _status = false;
 public:
-    Light(const String& name) : _name(name) {}
+    Light(const char* name) : _name(name) {}
     virtual ~Light() {}
-    const String& getName() const { return _name; }
+    const char* getName() const { return _name; }
     bool getStatus() const { return _status; }
     virtual void setStatus(bool status) = 0;
     void toggle() { setStatus(!_status); }
@@ -52,7 +43,7 @@ class SimpleLight : public Light {
 private:
     uint8_t _pin;
 public:
-    SimpleLight(const String& name, uint8_t pin) : Light(name), _pin(pin) {
+    SimpleLight(const char* name, uint8_t pin) : Light(name), _pin(pin) {
         pinMode(_pin, OUTPUT);
         digitalWrite(_pin, LOW);
     }
@@ -67,9 +58,9 @@ class DimmableLight : public Light {
 private:
     uint8_t _pin;
     int _current_pwm = 0;
-    int _last_user_percent = 100; // Ricorda l'ultima luminosità per il toggle
+    int _last_user_percent = 100;
 public:
-    DimmableLight(const String& name, uint8_t pin) : Light(name), _pin(pin) {
+    DimmableLight(const char* name, uint8_t pin) : Light(name), _pin(pin) {
         pinMode(_pin, OUTPUT);
         analogWrite(_pin, 0);
     }
@@ -94,7 +85,7 @@ public:
     }
 };
 
-// Luce RGB (Usa la composizione, contenendo 3 canali dimmerabili)
+// Luce RGB
 class RGBLight : public Light {
 private:
     DimmableLight _channel_r, _channel_g, _channel_b;
@@ -117,7 +108,7 @@ private:
     }
 
 public:
-    RGBLight(const String& name, uint8_t pin_r, uint8_t pin_g, uint8_t pin_b)
+    RGBLight(const char* name, uint8_t pin_r, uint8_t pin_g, uint8_t pin_b)
         : Light(name),
           _channel_r("Red", pin_r), _channel_g("Green", pin_g), _channel_b("Blue", pin_b) {}
 
