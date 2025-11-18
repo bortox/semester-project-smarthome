@@ -7,7 +7,7 @@
 #include "sensors.h"
 
 // Enum per gli input
-enum MenuInput { NONE, UP, DOWN, LEFT, RIGHT, SELECT, BACK };
+enum MenuInput { NONE, UP, DOWN, SELECT, BACK };
 
 class MenuItem; // Forward declaration
 

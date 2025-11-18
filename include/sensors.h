@@ -38,7 +38,7 @@ public:
 
     void begin() {
         // La logica di init del sensore (non del bus) NON va nel costruttore
-        // altrimenti lo inizializzo prima del bus I2C diomerda
+        // altrimenti lo inizializzo prima del bus I2C
         i2c_start_wait(LM75_ADR + I2C_WRITE);
         i2c_write(0x01); // Punta al registro di configurazione
         i2c_write(0x00); // Modalità normale

@@ -17,6 +17,9 @@ const uint8_t RGB_R_PIN  = 4;
 const uint8_t RGB_G_PIN  = 5;
 const uint8_t RGB_B_PIN  = 6;
 const uint8_t DIMMER_PIN = 7;
+constexpr int LCD_COLS = 20;
+constexpr int LCD_ROWS = 4;
+constexpr int LCD_ADDRESS = 0x27;
 
 // --- LIGHT OBJECTS ---
 // Here we instantiate the objects representing the physical lights.
