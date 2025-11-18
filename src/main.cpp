@@ -43,7 +43,6 @@ void loop() {
     // --- 1. GESTISCI I CONTROLLI FISICI DIRETTI (se presenti) ---
     // E.g., lettura di potenziometri o interruttori che non fanno parte del menu.
     rgbController.update();
-    dimmerController.update();
     outsideController.update();
 
     // --- 2. GESTISCI L'INPUT DEL MENU CENTRALE ---

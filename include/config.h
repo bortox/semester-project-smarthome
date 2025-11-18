@@ -9,27 +9,36 @@
 // HARDWARE DEFINITION (PINS AND OBJECTS)
 // This is the only place where you need to define the pins.
 // ===================================================================
-// Pins for physical buttons for direct control
-const uint8_t BUTTON_RGB_PIN    = A0;
-const uint8_t BUTTON_DIMMER_PIN = A1;
 // Light pins (must be PWM pins for dimming functionality)
-const uint8_t RGB_R_PIN  = 4;
-const uint8_t RGB_G_PIN  = 5;
-const uint8_t RGB_B_PIN  = 6;
-const uint8_t DIMMER_PIN = 7;
+const uint8_t RGB_R_PIN  = 11;
+const uint8_t RGB_G_PIN  = 10;
+const uint8_t RGB_B_PIN  = 9;
+const uint8_t L_ADJ = 3;
+const uint8_t L_IN_ONOFF = 4;
+const uint8_t L_OUT_ONOFF = 2;
+// LCD Config
 constexpr int LCD_COLS = 20;
 constexpr int LCD_ROWS = 4;
 constexpr int LCD_ADDRESS = 0x27;
-const uint8_t EXT_LIGHT_PIN   = 10;  // Pin per la luce esterna (non-PWM va bene)
-const uint8_t LDR_SENSOR_PIN  = A5; // Pin per il sensore di luminosità (fotoresistore)
-const uint8_t PIR_SENSOR_PIN  = 11;  // Pin per il sensore di movimento PIR
+// Sensor config
+const uint8_t LDR_SENSOR_PIN  = A0; // Pin per il sensore di luminosità (fotoresistore)
+const uint8_t PIR_SENSOR_PIN  = 13;  // Pin per il sensore di movimento PIR
+// Button config
+const uint8_t L_ADJ_BUTTON_PIN = 5;
+const uint8_t L_IN_ONOFF_BUTTON_PIN = 6;
+const uint8_t L_OUT_ONOFF_BUTTON_PIN = 7;
+const uint8_t RGB_BUTTON_PIN = 8;
+
+const uint8_t RGB_POTENTIOMETER = A1;
+const uint8_t ADJ_POTENTIOMETER = A2;
 
 
 // --- LIGHT OBJECTS ---
 // Here we instantiate the objects representing the physical lights.
-RGBLight      rgbLight("LED Strip", RGB_R_PIN, RGB_G_PIN, RGB_B_PIN);
-DimmableLight dimmerLight("Spot Light", DIMMER_PIN);
-SimpleLight   outsideLight("External Light", EXT_LIGHT_PIN);
+RGBLight      rgbLight("RGB Light", RGB_R_PIN, RGB_G_PIN, RGB_B_PIN);
+DimmableLight dimmerLight("Spot Light", L_ADJ);
+SimpleLight   outsideLight("External Light", L_OUT_ONOFF);
+SimpleLight   insideLight("External Light", L_IN_ONOFF);
 
 // --- SENSOR OBJECTS ---
 LM75Sensor tempSensor("External Temp");
@@ -38,8 +47,7 @@ MovementSensor pirSensor("Movement", PIR_SENSOR_PIN);
 
 // --- CONTROLLERS FOR PHYSICAL BUTTONS ---
 // These objects connect physical buttons to the lights.
-ButtonToggleController rgbController(&rgbLight, BUTTON_RGB_PIN);
-ButtonToggleController dimmerController(&dimmerLight, BUTTON_DIMMER_PIN);
+ButtonToggleController rgbController(&rgbLight, RGB_BUTTON_PIN);
 OutsideController outsideController(outsideLight, lightSensor, pirSensor);
 
 // ===================================================================
@@ -61,11 +69,13 @@ MenuItem* buildMenu() {
     MenuPage* rgbLightPage = new MenuPage(rgbLight.getName(), lightsPage);
     MenuPage* dimmerLightPage = new MenuPage(dimmerLight.getName(), lightsPage);
     MenuPage* outsideLightPage = new MenuPage(outsideLight.getName(), lightsPage);
+    MenuPage* insideLightPage = new MenuPage(insideLight.getName(), lightsPage);
     MenuPage* rgbColorPage = new MenuPage("Color Selection", rgbLightPage);
 
     lightsPage->addItem(new SubMenuItem(rgbLight.getName(), rgbLightPage));
     lightsPage->addItem(new SubMenuItem(dimmerLight.getName(), dimmerLightPage));
     lightsPage->addItem(new SubMenuItem(outsideLight.getName(), outsideLightPage));
+    lightsPage->addItem(new SubMenuItem(insideLight.getName(), insideLightPage));
 
     // --- Content of light control pages ---
 
@@ -85,6 +95,8 @@ MenuItem* buildMenu() {
     // Per comodità, mostriamo anche lo stato attuale dei sensori in questa pagina
     outsideLightPage->addItem(new SensorDisplayItem<int, LightSensor>("Luminosity", &lightSensor, "%"));
     outsideLightPage->addItem(new SensorDisplayItem<bool, MovementSensor>("Movement", &pirSensor));
+
+    insideLightPage->addItem(new LightToggleItem(&insideLight));
 
 
     // Content of the color page
