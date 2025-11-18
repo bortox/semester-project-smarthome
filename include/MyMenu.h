@@ -255,3 +255,42 @@ public:
         // No-op
     }
 };
+
+#include "lightcontroller.h" // Assicurati che sia incluso per OutsideController
+
+class ModeSelectItem : public MenuItem {
+private:
+    OutsideController* _controller;
+
+public:
+    ModeSelectItem(const String& name, OutsideController* controller) 
+        : MenuItem(name), _controller(controller) {}
+
+    void draw(LiquidCrystal_I2C& lcd, int row, bool isSelected) override {
+        lcd.setCursor(isSelected ? 0 : 1, row);
+        lcd.print(isSelected ? ">" : " ");
+        lcd.print(name);
+
+        String modeStr;
+        switch (_controller->getMode()) {
+            case OutsideController::MODE_OFF:          modeStr = "OFF"; break;
+            case OutsideController::MODE_ON:           modeStr = "ON"; break;
+            case OutsideController::MODE_AUTO_LIGHT:   modeStr = "AUTO Light"; break;
+            case OutsideController::MODE_AUTO_MOTION:  modeStr = "AUTO Motion"; break;
+            default:                                   modeStr = "???"; break;
+        }
+        
+        // Allinea a destra
+        int pos = 20 - modeStr.length();
+        lcd.setCursor(pos, row);
+        lcd.print(modeStr);
+    }
+
+    void handleInput(MenuInput input) override {
+        if (input == SELECT) {
+            // Cicla alla modalità successiva (ci sono 4 modalità, da 0 a 3)
+            int nextMode = (_controller->getMode() + 1) % 4;
+            _controller->setMode(static_cast<OutsideController::Mode>(nextMode));
+        }
+    }
+};
