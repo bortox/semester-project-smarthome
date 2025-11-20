@@ -1,112 +1,127 @@
 #include <Arduino.h>
 #include <LiquidCrystal_I2C.h>
-#include "config.h"
+extern "C" {
+  #include "i2cmaster.h"
+}
+#include "FlexibleMenu.h"
 #include "MemoryMonitor.h"
+#include "PhysicalInput.h"
+#include "DebugConfig.h"
 
-LiquidCrystal_I2C lcd(LCD_ADDRESS, LCD_COLS, LCD_ROWS);
-MenuItem* MenuState::currentPage = nullptr;
-bool needsRedraw = true;
+// Configurazione LCD
+LiquidCrystal_I2C lcd(0x27, 20, 4);
 
 void setup() {
     Serial.begin(9600);
-    while(!Serial);
+    while (!Serial);
     
-    Serial.println(F("\n=== MEMORY OPTIMIZATION TEST ==="));
-    
-    // 1. Report memoria INIZIALE
-    Serial.println(F("\n[1] Memoria prima inizializzazione:"));
-    printMemoryReport();
-    
-    // 2. Inizializza LCD
+    // Inizializza LCD
     lcd.init();
     lcd.backlight();
-    lcd.setCursor(0, 0);
-    lcd.print(F("Memory Test"));
-    lcd.setCursor(0, 1);
-    lcd.print(F("Free: "));
-    lcd.print(getFreeMemory());
-    
-    // 3. Inizializza sensore temperatura
-    i2c_init();
-    tempSensor.begin();
-    
-    // 4. Report memoria DOPO hardware
-    Serial.println(F("\n[2] Memoria dopo hardware init:"));
-    printMemoryReport();
-    
-    // 5. Costruisci menu STATICO
-    MenuState::currentPage = buildMenu();
-    
-    // 6. Report memoria FINALE
-    Serial.println(F("\n[3] Memoria dopo menu construction:"));
-    printMemoryReport();
-    
-    Serial.println(F("\n=== SYSTEM READY ==="));
-    Serial.println(F("Use: w=UP, s=DOWN, e=SELECT, q=BACK"));
-    
-    // Mostra memoria su LCD
     lcd.clear();
     lcd.setCursor(0, 0);
-    lcd.print(F("System Ready"));
-    lcd.setCursor(0, 1);
-    lcd.print(F("Mem:"));
-    lcd.print(getFreeMemory());
-    lcd.print(F(" free"));
+    lcd.print(F("Booting..."));
+
+    // Inizializza I2C
+    i2c_init();
+    NavigationManager::instance().setLCD(lcd);
+
+    // OTTIMIZZAZIONE: Debug conditional
+    DEBUG_PRINTLN_F("\n=== Creating Devices ===");
+    DeviceFactory::createSimpleLight("LED 1", 4);
+    DeviceFactory::createDimmableLight("LED 2", 5);
+    DeviceFactory::createDimmableLight("LED 3", 6);
+    DeviceFactory::createSimpleLight("LED 4", 7);
+    DeviceFactory::createTemperatureSensor("Temp");
+
+    DEBUG_PRINTLN_F("\n=== Setting up Buttons ===");
+    DeviceRegistry& registry = DeviceRegistry::instance();
     
-    delay(2000);
-    needsRedraw = true;
+    ButtonInput* btn1 = new ButtonInput(A0, 1, registry.getDevices()[0], ButtonMode::ACTIVE_LOW);
+    ButtonInput* btn2 = new ButtonInput(A1, 2, registry.getDevices()[1], ButtonMode::ACTIVE_LOW);
+    ButtonInput* btn3 = new ButtonInput(A2, 3, registry.getDevices()[2], ButtonMode::ACTIVE_LOW);
+    ButtonInput* btn4 = new ButtonInput(A3, 4, registry.getDevices()[3], ButtonMode::ACTIVE_LOW);
+    
+    InputManager::instance().registerButton(btn1);
+    InputManager::instance().registerButton(btn2);
+    InputManager::instance().registerButton(btn3);
+    InputManager::instance().registerButton(btn4);
+
+    DEBUG_PRINTLN_F("\n=== Building Menu ===");
+    MenuPage* mainMenu = MenuBuilder::buildMainMenu();
+    NavigationManager::instance().initialize(mainMenu);
+
+    // Report memoria SEMPRE visibile (importante)
+    Serial.println(F("\n=== Memory Report ==="));
+    printMemoryReport();
+
+    DEBUG_PRINTLN_F("\n=== System Ready ===");
+    DEBUG_PRINTLN_F("Commands: w=UP s=DOWN e=SELECT q=BACK");
 }
 
 void loop() {
-    // Aggiorna controllers bottoni
-    btn1.update();
-    btn2.update(); 
-    btn3.update();
-    btn4.update();
+    // Aggiorna bottoni fisici
+    InputManager::instance().updateAll();
     
-    // Gestione input seriale
-    MenuInput input = NONE;
-    if (Serial.available()) {
-        char c = Serial.read();
-        if (c == 'w') input = UP;
-        if (c == 's') input = DOWN;
-        if (c == 'e') input = SELECT;
-        if (c == 'q') input = BACK;
-        while(Serial.available()) Serial.read();
-        needsRedraw = true;
-    }
-    
-    if (input != NONE && MenuState::currentPage) {
-        MenuState::currentPage->handleInput(input);
-    }
-    
-    // Refresh automatico sensori ogni 2s
+    // Aggiorna sensori ogni 2 secondi
     static unsigned long lastSensorUpdate = 0;
     if (millis() - lastSensorUpdate > 2000) {
-        lastSensorUpdate = millis();
-        if (MenuState::currentPage && 
-            strcmp(MenuState::currentPage->getName(), "Sensor Status") == 0) {
-            needsRedraw = true;
+        auto& registry = DeviceRegistry::instance();
+        for (size_t i = 0; i < registry.getDevices().size(); i++) {
+            registry.getDevices()[i]->update();
         }
+        lastSensorUpdate = millis();
     }
-    
-    // Render se necessario
-    if (needsRedraw && MenuState::currentPage) {
-        MenuState::currentPage->renderPage(lcd);
-        needsRedraw = false;
-    }
-    
-    // Monitor memoria ogni 15 secondi
-    static unsigned long lastMemoryPrint = 0;
-    if (millis() - lastMemoryPrint > 15000) {
-        lastMemoryPrint = millis();
-        Serial.print(F("[Runtime] Free memory: "));
-        Serial.println(getFreeMemory());
+
+    // Gestisci input seriale
+    if (Serial.available()) {
+        char input = Serial.read();
+        NavigationManager& nav = NavigationManager::instance();
+        MenuPage* current = nav.getCurrentPage();
         
-        // // Mostra anche su LCD seconda riga
-        // lcd.setCursor(0, 3);
-        // lcd.print(F("Free:"));
-        // lcd.print(getFreeMemory());
-        // lcd.print(F("   "));
+        char menuCommand = input;
+        if (input == 'w') menuCommand = 'U';
+        else if (input == 's') menuCommand = 'D';
+        else if (input == 'e') menuCommand = 'E';
+        else if (input == 'q') menuCommand = 'B';
+        
+        if (menuCommand == 'B') {
+            nav.navigateBack();
+        } 
+        else if (menuCommand == 'E') {
+            size_t idx = current->getSelectedIndex();
+            if (idx < current->getItemsCount()) {
+                MenuItem* item = current->getItem(idx);
+                if (item->getType() == MenuItemType::SUBMENU) {
+                    SubMenuItem* sub = static_cast<SubMenuItem*>(item);
+                    nav.navigateTo(sub->getTarget());
+                } else {
+                    item->handleInput(menuCommand);
+                }
+            }
+        }
+        else if (menuCommand == 'U' || menuCommand == 'D') {
+            size_t idx = current->getSelectedIndex();
+            if (idx < current->getItemsCount()) {
+                MenuItem* item = current->getItem(idx);
+                item->handleInput(menuCommand);
+                
+                if (!current->needsRedraw()) {
+                    current->handleInput(menuCommand);
+                }
+            } else {
+                current->handleInput(menuCommand);
+            }
+        }
+        else {
+            current->handleInput(menuCommand);
+        }
+        
+        while (Serial.available()) Serial.read();
     }
+
+    // Renderizza display
+    NavigationManager::instance().update();
+
+    delay(50);
 }
