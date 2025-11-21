@@ -1,5 +1,5 @@
 #pragma once
-#include <Arduino.h>
+#include <Arduino.h> // CHANGED: Torna ad Arduino
 extern "C" { 
     #include "i2cmaster.h"
  }

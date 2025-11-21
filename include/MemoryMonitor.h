@@ -1,5 +1,5 @@
 #pragma once
-#include <Arduino.h>
+#include <Arduino.h> // CHANGED: Torna ad Arduino
 
 extern char __heap_start;
 extern char *__brkval;
@@ -18,7 +18,7 @@ static void printMemoryReport() {
     int heap_used = heap_end - &__heap_start;
     int stack_used = RAMEND - (int)&free_mem + 1;
 
-    Serial.println(F("\n--- Memory ---"));
+    Serial.println(F("\n--- Memory ---")); // CHANGED: usa F() diretto
     Serial.print(F("Total: ")); Serial.print(RAMEND - RAMSTART + 1); Serial.println(F(" B"));
     Serial.print(F("Static: ")); Serial.print(static_data); Serial.println(F(" B"));
     Serial.print(F("Heap: ")); Serial.print(heap_used); Serial.println(F(" B"));

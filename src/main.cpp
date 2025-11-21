@@ -1,40 +1,38 @@
 #include <Arduino.h>
-#include <LiquidCrystal_I2C.h>
 extern "C" {
   #include "i2cmaster.h"
+  #include "lcd.h"
 }
 #include "FlexibleMenu.h"
 #include "MemoryMonitor.h"
 #include "PhysicalInput.h"
-#include "DebugConfig.h"
-
-// Configurazione LCD
-LiquidCrystal_I2C lcd(0x27, 20, 4);
 
 void setup() {
     Serial.begin(9600);
     while (!Serial);
     
-    // Inizializza LCD
-    lcd.init();
-    lcd.backlight();
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print(F("Booting..."));
-
     // Inizializza I2C
     i2c_init();
-    NavigationManager::instance().setLCD(lcd);
+    
+    // Inizializza LCD
+    LCD_init();
+    LCD_backlight();
+    LCD_clear();
+    LCD_set_cursor(0, 0);
+    LCD_write_str("Booting...");
 
-    // OTTIMIZZAZIONE: Debug conditional
-    DEBUG_PRINTLN_F("\n=== Creating Devices ===");
+    NavigationManager::instance().setLCD();
+
+    // Crea dispositivi
+    Serial.println(F("\n=== Creating Devices ==="));
     DeviceFactory::createSimpleLight("LED 1", 4);
     DeviceFactory::createDimmableLight("LED 2", 5);
     DeviceFactory::createDimmableLight("LED 3", 6);
     DeviceFactory::createSimpleLight("LED 4", 7);
     DeviceFactory::createTemperatureSensor("Temp");
 
-    DEBUG_PRINTLN_F("\n=== Setting up Buttons ===");
+    // Collega bottoni ai LED
+    Serial.println(F("\n=== Setting up Buttons ==="));
     DeviceRegistry& registry = DeviceRegistry::instance();
     
     ButtonInput* btn1 = new ButtonInput(A0, 1, registry.getDevices()[0], ButtonMode::ACTIVE_LOW);
@@ -47,16 +45,17 @@ void setup() {
     InputManager::instance().registerButton(btn3);
     InputManager::instance().registerButton(btn4);
 
-    DEBUG_PRINTLN_F("\n=== Building Menu ===");
+    // Costruisci menu
+    Serial.println(F("\n=== Building Menu ==="));
     MenuPage* mainMenu = MenuBuilder::buildMainMenu();
     NavigationManager::instance().initialize(mainMenu);
 
-    // Report memoria SEMPRE visibile (importante)
+    // Report memoria
     Serial.println(F("\n=== Memory Report ==="));
     printMemoryReport();
 
-    DEBUG_PRINTLN_F("\n=== System Ready ===");
-    DEBUG_PRINTLN_F("Commands: w=UP s=DOWN e=SELECT q=BACK");
+    Serial.println(F("\n=== System Ready ==="));
+    Serial.println(F("Commands: w=UP s=DOWN e=SELECT q=BACK"));
 }
 
 void loop() {

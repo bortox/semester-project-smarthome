@@ -1,7 +1,7 @@
 #ifndef CORE_SYSTEM_H
 #define CORE_SYSTEM_H
 
-#include <Arduino.h>
+#include <Arduino.h> // CHANGED: Torna ad Arduino per evitare conflitti
 
 // --- Enums ---
 enum class DeviceType : uint8_t {  // uint8_t invece di int

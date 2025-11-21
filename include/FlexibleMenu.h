@@ -1,7 +1,10 @@
 #ifndef FLEXIBLE_MENU_H
 #define FLEXIBLE_MENU_H
 
-#include <LiquidCrystal_I2C.h>
+#include <Arduino.h>
+extern "C" {
+    #include "lcd.h"
+}
 #include "Devices.h"
 
 // Forward declaration
@@ -15,12 +18,11 @@ enum class MenuItemType {
 class MenuItem {
 public:
     virtual ~MenuItem() {}
-    virtual void draw(LiquidCrystal_I2C& lcd, uint8_t row, bool selected) = 0;
+    virtual void draw(uint8_t row, bool selected) = 0;
     virtual void handleInput(char key) {}
     virtual MenuItemType getType() const { return MenuItemType::GENERIC; }
 };
 
-// Corretto: eredita da IEventListener invece di IEventHandler
 class MenuPage : public MenuItem, public IEventListener {
 private:
     const char* _title;
@@ -30,7 +32,7 @@ private:
     size_t _scroll_offset;
     bool _needs_redraw;
     
-    friend class NavigationManager; // Permette accesso a _scroll_offset
+    friend class NavigationManager;
 
 public:
     MenuPage(const char* title, MenuPage* parent = nullptr) 
@@ -54,10 +56,10 @@ public:
     MenuPage* getParent() const { return _parent; }
     size_t getSelectedIndex() const { return _selected_index; }
 
-    void draw(LiquidCrystal_I2C& lcd, uint8_t row, bool selected) override {
-        lcd.setCursor(0, row);
-        lcd.print(selected ? "> " : "  ");
-        lcd.print(_title);
+    void draw(uint8_t row, bool selected) override {
+        LCD_set_cursor(0, row);
+        LCD_write_str(selected ? "> " : "  ");
+        LCD_write_str(_title);
     }
 
     virtual void handleInput(char key) {
@@ -72,7 +74,7 @@ public:
                 _needs_redraw = true; 
             }
         } else if (key == 'D') {
-            if (_selected_index < static_cast<size_t>(_items.size() - 1)) {  // Fix warning
+            if (_selected_index < static_cast<size_t>(_items.size() - 1)) {
                 _selected_index++; 
                 
                 if (_selected_index >= _scroll_offset + 3) {
@@ -82,23 +84,13 @@ public:
                 _needs_redraw = true; 
             }
         }
-        // Rimosso else if per 'E' - viene gestito in main.cpp
     }
 
-    bool needsRedraw() const {
-        return _needs_redraw;
-    }
-
-    void clearRedraw() {
-        _needs_redraw = false;
-    }
-
+    bool needsRedraw() const { return _needs_redraw; }
+    void clearRedraw() { _needs_redraw = false; }
     void forceRedraw() { _needs_redraw = true; }
 
     void handleEvent(EventType type, IDevice* device, int value) override {
-        for (size_t i = 0; i < _items.size(); i++) {
-            // Propagate event to items if needed, or just redraw
-        }
         _needs_redraw = true;
     }
 };
@@ -106,9 +98,9 @@ public:
 class NavigationManager {
 private:
     DynamicArray<MenuPage*> _stack;
-    LiquidCrystal_I2C* _lcd;
+    bool _initialized;
 
-    NavigationManager() : _lcd(nullptr) {}
+    NavigationManager() : _initialized(false) {}
 
 public:
     static NavigationManager& instance() {
@@ -116,8 +108,9 @@ public:
         return inst;
     }
 
-    void setLCD(LiquidCrystal_I2C& lcd) {
-        _lcd = &lcd;
+    void setLCD() {
+        // LCD già inizializzato con LCD_init()
+        _initialized = true;
     }
 
     void initialize(MenuPage* root) {
@@ -149,13 +142,11 @@ public:
     void handleInput(char key) {
         MenuPage* current = getCurrentPage();
         if (current) {
-            if (key == 'B') { // Back
+            if (key == 'B') {
                 navigateBack();
             } else {
                 current->handleInput(key);
             }
-            
-            // Forza sempre il redraw dopo input
             current->forceRedraw();
         }
     }
@@ -170,31 +161,29 @@ public:
 
     void draw() {
         MenuPage* current = getCurrentPage();
-        if (!current || !_lcd) return;
+        if (!current || !_initialized) return;
 
-        _lcd->clear();
-        _lcd->setCursor(0, 0);
-        _lcd->print(current->getTitle());
+        LCD_clear();
+        LCD_set_cursor(0, 0);
+        LCD_write_str(current->getTitle());
         
-        // Draw visible items con scrolling
         size_t count = current->getItemsCount();
-        size_t max_lines = 3; // 4 lines total, 1 for title
+        size_t max_lines = 3;
         size_t scroll_offset = current->_scroll_offset;
         
         for (size_t i = 0; i < min(count - scroll_offset, max_lines); i++) {
             size_t itemIdx = i + scroll_offset;
             MenuItem* item = current->getItem(itemIdx);
-            item->draw(*_lcd, i + 1, itemIdx == current->getSelectedIndex());
+            item->draw(i + 1, itemIdx == current->getSelectedIndex());
         }
         
-        // Mostra indicatore scroll se necessario
         if (scroll_offset > 0) {
-            _lcd->setCursor(19, 1);
-            _lcd->print((char)0x5E); // Freccia su '^'
+            LCD_set_cursor(19, 1);
+            LCD_write_char('^');
         }
         if (scroll_offset + max_lines < count) {
-            _lcd->setCursor(19, 3);
-            _lcd->print((char)0x76); // Freccia giù 'v'
+            LCD_set_cursor(19, 3);
+            LCD_write_char('v');
         }
     }
 };
@@ -208,38 +197,35 @@ private:
 public:
     DeviceToggleItem(IDevice* device) : _device(device) {}
 
-    void draw(LiquidCrystal_I2C& lcd, uint8_t row, bool selected) override {
-        lcd.setCursor(0, row);
-        lcd.print(selected ? "> " : "  ");
-        lcd.print(_device->getName());
-        lcd.setCursor(15, row);
+    void draw(uint8_t row, bool selected) override {
+        LCD_set_cursor(0, row);
+        LCD_write_str(selected ? "> " : "  ");
+        LCD_write_str(_device->getName());
+        LCD_set_cursor(15, row);
         
         if (_device->getType() == DeviceType::LightSimple) {
-             bool state = static_cast<SimpleLight*>(_device)->getState();
-             lcd.print(state ? "ON " : "OFF");
+            bool state = static_cast<SimpleLight*>(_device)->getState();
+            LCD_write_str(state ? "ON " : "OFF");
         } else if (_device->getType() == DeviceType::LightDimmable) {
-             int val = static_cast<DimmableLight*>(_device)->getBrightness();
-             lcd.print(val);
-             lcd.print("%");
+            int val = static_cast<DimmableLight*>(_device)->getBrightness();
+            char buf[5];
+            itoa(val, buf, 10);
+            LCD_write_str(buf);
+            LCD_write_char('%');
         }
     }
 
     void handleInput(char key) override {
         if (key == 'E') {
             if (_device->getType() == DeviceType::LightSimple) {
-                SimpleLight* light = static_cast<SimpleLight*>(_device);
-                light->toggle();
-                // OTTIMIZZAZIONE: Debug rimosso (consuma stack)
+                static_cast<SimpleLight*>(_device)->toggle();
             } else if (_device->getType() == DeviceType::LightDimmable) {
-                DimmableLight* light = static_cast<DimmableLight*>(_device);
-                light->toggle();
-                // OTTIMIZZAZIONE: Debug rimosso
+                static_cast<DimmableLight*>(_device)->toggle();
             }
         }
     }
 };
 
-// NUOVO: Item per toggle all'interno di un sottomenu
 class ToggleActionItem : public MenuItem {
 private:
     IDevice* _device;
@@ -247,30 +233,27 @@ private:
 public:
     ToggleActionItem(IDevice* device) : _device(device) {}
     
-    void draw(LiquidCrystal_I2C& lcd, uint8_t row, bool selected) override {
-        lcd.setCursor(0, row);
-        lcd.print(selected ? "> " : "  ");
-        lcd.print(F("Toggle ON/OFF"));
-        lcd.setCursor(16, row);
+    void draw(uint8_t row, bool selected) override {
+        LCD_set_cursor(0, row);
+        LCD_write_str(selected ? "> " : "  ");
+        LCD_write_str("Toggle ON/OFF");
+        LCD_set_cursor(16, row);
         
         if (_device->getType() == DeviceType::LightDimmable) {
             DimmableLight* light = static_cast<DimmableLight*>(_device);
-            lcd.print(light->getBrightness() > 0 ? "ON " : "OFF");
+            LCD_write_str(light->getBrightness() > 0 ? "ON " : "OFF");
         }
     }
     
     void handleInput(char key) override {
         if (key == 'E') {
             if (_device->getType() == DeviceType::LightDimmable) {
-                DimmableLight* light = static_cast<DimmableLight*>(_device);
-                light->toggle();
-                // OTTIMIZZAZIONE: Debug rimosso
+                static_cast<DimmableLight*>(_device)->toggle();
             }
         }
     }
 };
 
-// NUOVO: Item per regolare brightness con UP/DOWN (ora interattivo nella sua pagina)
 class BrightnessSliderItem : public MenuItem {
 private:
     DimmableLight* _light;
@@ -278,24 +261,26 @@ private:
 public:
     BrightnessSliderItem(DimmableLight* light) : _light(light) {}
     
-    void draw(LiquidCrystal_I2C& lcd, uint8_t row, bool selected) override {
-        lcd.setCursor(0, row);
-        lcd.print(F("Value: "));
+    void draw(uint8_t row, bool selected) override {
+        LCD_set_cursor(0, row);
+        LCD_write_str("Value: ");
         
         int brightness = _light->getBrightness();
-        if (brightness < 10) lcd.print(" ");
-        if (brightness < 100) lcd.print(" ");
-        lcd.print(brightness);
-        lcd.print(F("%"));
+        char buf[5];
+        if (brightness < 10) LCD_write_char(' ');
+        if (brightness < 100) LCD_write_char(' ');
+        itoa(brightness, buf, 10);
+        LCD_write_str(buf);
+        LCD_write_char('%');
         
         // Barra grafica
-        lcd.setCursor(0, row + 1);
-        lcd.print(F("["));
+        LCD_set_cursor(0, row + 1);
+        LCD_write_char('[');
         int bars = map(brightness, 0, 100, 0, 18);
         for (int i = 0; i < 18; i++) {
-            lcd.print(i < bars ? (char)0xFF : ' ');
+            LCD_write_char(i < bars ? (char)0xFF : ' ');
         }
-        lcd.print(F("]"));
+        LCD_write_char(']');
     }
     
     void handleInput(char key) override {
@@ -304,19 +289,16 @@ public:
         if (key == 'U') {
             int newVal = min(100, current + 10);
             _light->setBrightness(newVal);
-            // OTTIMIZZAZIONE: Debug rimosso
             EventSystem::instance().emit(EventType::DeviceValueChanged, _light, newVal);
         } 
         else if (key == 'D') {
             int newVal = max(0, current - 10);
             _light->setBrightness(newVal);
-            // OTTIMIZZAZIONE: Debug rimosso
             EventSystem::instance().emit(EventType::DeviceValueChanged, _light, newVal);
         }
     }
 };
 
-// NUOVO: Item per mostrare statistiche sensore
 class SensorStatsItem : public MenuItem {
 private:
     TemperatureSensor* _sensor;
@@ -326,32 +308,35 @@ public:
     SensorStatsItem(TemperatureSensor* sensor, uint8_t lineOffset) 
         : _sensor(sensor), _lineOffset(lineOffset) {}
     
-    void draw(LiquidCrystal_I2C& lcd, uint8_t row, bool selected) override {
+    void draw(uint8_t row, bool selected) override {
         SensorStats& stats = _sensor->getStats();
+        LCD_set_cursor(0, row);
         
-        // Non mostrare cursore per statistiche
-        lcd.setCursor(0, row);
-        
+        char buf[10];
         switch(_lineOffset) {
             case 0:
-                lcd.print(F("Cur: "));
-                lcd.print(_sensor->getTemperature(), 1);
-                lcd.print(F("C"));
+                LCD_write_str("Cur: ");
+                dtostrf(_sensor->getTemperature(), 0, 1, buf);
+                LCD_write_str(buf);
+                LCD_write_char('C');
                 break;
             case 1:
-                lcd.print(F("Min: "));
-                lcd.print(stats.getMin(), 1);
-                lcd.print(F("C"));
+                LCD_write_str("Min: ");
+                dtostrf(stats.getMin(), 0, 1, buf);
+                LCD_write_str(buf);
+                LCD_write_char('C');
                 break;
             case 2:
-                lcd.print(F("Max: "));
-                lcd.print(stats.getMax(), 1);
-                lcd.print(F("C"));
+                LCD_write_str("Max: ");
+                dtostrf(stats.getMax(), 0, 1, buf);
+                LCD_write_str(buf);
+                LCD_write_char('C');
                 break;
             case 3:
-                lcd.print(F("Avg: "));
-                lcd.print(stats.getAverage(), 1);
-                lcd.print(F("C"));
+                LCD_write_str("Avg: ");
+                dtostrf(stats.getAverage(), 0, 1, buf);
+                LCD_write_str(buf);
+                LCD_write_char('C');
                 break;
         }
     }
@@ -364,16 +349,18 @@ private:
 public:
     SensorDisplayItem(IDevice* sensor) : _sensor(sensor) {}
 
-    void draw(LiquidCrystal_I2C& lcd, uint8_t row, bool selected) override {
-        lcd.setCursor(0, row);
-        lcd.print(selected ? "> " : "  ");
-        lcd.print(_sensor->getName());
-        lcd.setCursor(14, row);
+    void draw(uint8_t row, bool selected) override {
+        LCD_set_cursor(0, row);
+        LCD_write_str(selected ? "> " : "  ");
+        LCD_write_str(_sensor->getName());
+        LCD_set_cursor(14, row);
         
         if (_sensor->getType() == DeviceType::SensorTemperature) {
             float t = static_cast<TemperatureSensor*>(_sensor)->getTemperature();
-            lcd.print(t, 1);
-            lcd.print("C");
+            char buf[10];
+            dtostrf(t, 0, 1, buf);
+            LCD_write_str(buf);
+            LCD_write_char('C');
         }
     }
 };
@@ -391,11 +378,11 @@ public:
     MenuItemType getType() const override { return MenuItemType::SUBMENU; }
     MenuPage* getTarget() const { return _target; }
 
-    void draw(LiquidCrystal_I2C& lcd, uint8_t row, bool selected) override {
-        lcd.setCursor(0, row);
-        lcd.print(selected ? "> " : "  ");
-        lcd.print(_label);
-        lcd.print(" >");
+    void draw(uint8_t row, bool selected) override {
+        LCD_set_cursor(0, row);
+        LCD_write_str(selected ? "> " : "  ");
+        LCD_write_str(_label);
+        LCD_write_str(" >");
     }
 
     void handleInput(char key) override {
@@ -405,7 +392,6 @@ public:
     }
 };
 
-// NUOVO: Item per tornare indietro (alternativa a pressione fisica)
 class BackMenuItem : public MenuItem {
 private:
     NavigationManager& _nav;
@@ -413,10 +399,10 @@ private:
 public:
     BackMenuItem(NavigationManager& nav) : _nav(nav) {}
     
-    void draw(LiquidCrystal_I2C& lcd, uint8_t row, bool selected) override {
-        lcd.setCursor(0, row);
-        lcd.print(selected ? "> " : "  ");
-        lcd.print(F("<< Back"));
+    void draw(uint8_t row, bool selected) override {
+        LCD_set_cursor(0, row);
+        LCD_write_str(selected ? "> " : "  ");
+        LCD_write_str("<< Back");
     }
     
     void handleInput(char key) override {
@@ -429,34 +415,30 @@ public:
 // --- Menu Builder Helper ---
 class MenuBuilder {
 public:
-    // NUOVO: Costruisce pagina slider brightness
     static MenuPage* buildBrightnessPage(DimmableLight* light, MenuPage* parent) {
         MenuPage* page = new MenuPage("Set Brightness", parent);
         page->addItem(new BrightnessSliderItem(light));
-        page->addItem(new BackMenuItem(NavigationManager::instance()));  // NUOVO
         return page;
     }
 
-    // MODIFICATO: Sottomenu luce dimmabile ora ha "Set Brightness" come sottomenu
     static MenuPage* buildDimmableLightPage(DimmableLight* light, MenuPage* parent) {
         MenuPage* page = new MenuPage(light->getName(), parent);
         page->addItem(new ToggleActionItem(light));
         
         MenuPage* brightnessPage = buildBrightnessPage(light, page);
         page->addItem(new SubMenuItem("Set Brightness", brightnessPage, NavigationManager::instance()));
-        page->addItem(new BackMenuItem(NavigationManager::instance()));  // NUOVO
+        page->addItem(new BackMenuItem(NavigationManager::instance()));
         
         return page;
     }
 
-    // NUOVO: Costruisce pagina dettaglio sensore con statistiche
     static MenuPage* buildSensorDetailPage(TemperatureSensor* sensor, MenuPage* parent) {
         MenuPage* page = new MenuPage(sensor->getName(), parent);
         page->addItem(new SensorStatsItem(sensor, 0));
         page->addItem(new SensorStatsItem(sensor, 1));
         page->addItem(new SensorStatsItem(sensor, 2));
         page->addItem(new SensorStatsItem(sensor, 3));
-        page->addItem(new BackMenuItem(NavigationManager::instance()));  // NUOVO
+        page->addItem(new BackMenuItem(NavigationManager::instance()));
         return page;
     }
 
@@ -469,17 +451,15 @@ public:
             IDevice* current_device = devices[i];
             
             if (current_device->getType() == DeviceType::LightSimple) {
-                // Luce semplice: toggle diretto
                 page->addItem(new DeviceToggleItem(current_device));
             }
             else if (current_device->getType() == DeviceType::LightDimmable) {
-                // Luce dimmabile: crea sottomenu
                 DimmableLight* dimmable = static_cast<DimmableLight*>(current_device);
                 MenuPage* lightSubMenu = buildDimmableLightPage(dimmable, page);
                 page->addItem(new SubMenuItem(current_device->getName(), lightSubMenu, NavigationManager::instance()));
             }
         }
-        page->addItem(new BackMenuItem(NavigationManager::instance()));  // NUOVO
+        page->addItem(new BackMenuItem(NavigationManager::instance()));
         return page;
     }
 
@@ -492,13 +472,11 @@ public:
             IDevice* current_device = devices[i];
             if (current_device->isSensor() && current_device->getType() == DeviceType::SensorTemperature) {
                 TemperatureSensor* sensor = static_cast<TemperatureSensor*>(current_device);
-                
-                // Crea sottomenu per ogni sensore
                 MenuPage* detailPage = buildSensorDetailPage(sensor, page);
                 page->addItem(new SubMenuItem(sensor->getName(), detailPage, NavigationManager::instance()));
             }
         }
-        page->addItem(new BackMenuItem(NavigationManager::instance()));  // NUOVO
+        page->addItem(new BackMenuItem(NavigationManager::instance()));
         return page;
     }
 
