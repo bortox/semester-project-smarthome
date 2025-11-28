@@ -1,5 +1,7 @@
 # ModulinoKnob Library
 
+IMPORTANTE: QUESTA LIBRERIA VERRA' PORTATA IN C PURO SENZA USARE WIRE.H
+
 Libreria semplificata per Arduino Modulino Knob (rotary encoder con pulsante).
 
 ## Features

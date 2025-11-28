@@ -71,7 +71,7 @@
                │
 ┌──────────────▼──────────────────────────┐
 │  INPUT LAYER (PhysicalInput.h)         │
-│  - ButtonInput (debouncing + linking)  │
+│  - ButtonInput (debouncing + events)   │  ← FIX: Emette evento invece di chiamata diretta
 │  - ButtonMode (ACTIVE_LOW/HIGH)        │
 │  - InputManager (poll tutti bottoni)   │
 └──────────────┬──────────────────────────┘
@@ -79,7 +79,7 @@
 ┌──────────────▼──────────────────────────┐
 │  CORE SYSTEM (CoreSystem.h)            │
 │  - IDevice / IEventListener (interface)│
-│  - EventSystem (observer pattern)      │
+│  - EventSystem (observer pattern)      │  ← FIX: Filtra eventi per tipo
 │  - DeviceRegistry (singleton)          │
 │  - DynamicArray<T> (ottimizzato RAM)   │
 └─────────────────────────────────────────┘
@@ -91,11 +91,12 @@
 ```
 1. ButtonInput::update() → rileva LOW (debounced)
 2. ButtonInput::onButtonPressed()
-3. → SimpleLight::toggle()
-4. → EventSystem::emit(DeviceStateChanged)
-5. → MenuPage::handleEvent() → forceRedraw()
-6. → NavigationManager::update() → draw()
-7. → LCD mostra nuovo stato
+3. → EventSystem::emit(ButtonPressed, device, buttonId)
+4. → SimpleLight::handleEvent() → toggle()
+5. → EventSystem::emit(DeviceStateChanged, device, state)
+6. → MenuPage::handleEvent() → forceRedraw()
+7. → NavigationManager::update() → draw()
+8. → LCD mostra nuovo stato
 ```
 
 **Esempio: Cambio brightness da menu**

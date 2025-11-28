@@ -32,14 +32,32 @@ public:
     IDevice* getLinkedDevice() const { return _linkedDevice; }
 };
 
+class PotentiometerInput {
+private:
+    uint8_t _pin;
+    DimmableLight* _linkedLight;
+    int _lastValue;
+    static const uint8_t THRESHOLD = 2;
+
+public:
+    PotentiometerInput(uint8_t pin, DimmableLight* linkedLight = nullptr);
+    
+    void update();  // FIX: Solo dichiarazione, implementazione in .cpp
+    
+    void setLinkedLight(DimmableLight* light) { _linkedLight = light; }
+    DimmableLight* getLinkedLight() const { return _linkedLight; }
+};
+
 class InputManager {
 private:
     DynamicArray<ButtonInput*> _buttons;
+    DynamicArray<PotentiometerInput*> _potentiometers; // Nuovo array
     InputManager() {}
 
 public:
     static InputManager& instance();
     void registerButton(ButtonInput* button);
+    void registerPotentiometer(PotentiometerInput* pot); // Nuovo metodo
     void updateAll();
 };
 

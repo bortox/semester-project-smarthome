@@ -11,15 +11,12 @@ void setup() {
     Serial.begin(9600);
     while (!Serial);
     
-    // Inizializza I2C
     i2c_init();
-    
-    // Inizializza LCD
     LCD_init();
     LCD_backlight();
     LCD_clear();
     LCD_set_cursor(0, 0);
-    LCD_write_str("Booting...");
+    LCD_write_str("Booting..."); // Stringa RAM temporanea, OK
 
     NavigationManager::instance().setLCD();
 
@@ -27,9 +24,20 @@ void setup() {
     Serial.println(F("\n=== Creating Devices ==="));
     DeviceFactory::createSimpleLight("LED 1", 4);
     DeviceFactory::createDimmableLight("LED 2", 5);
-    DeviceFactory::createDimmableLight("LED 3", 6);
-    DeviceFactory::createSimpleLight("LED 4", 7);
-    DeviceFactory::createTemperatureSensor("Temp");
+    
+    // Nuovi dispositivi
+    DeviceFactory::createRGBLight("RGB Strip", 9, 10, 11);
+    
+    // Sensori per luce esterna
+    static LightSensor photo("Photo", A6); // Static per evitare distruzione
+    static MovementSensor pir("PIR", 8);
+    DeviceFactory::createOutsideLight("Garden", 7, &photo, &pir);
+
+    // FIX: Aggiungi sensore di temperatura
+    DeviceFactory::createTemperatureSensor("Temp Sala");
+    
+    // FIX: Aggiungi sensore di luce fotoresistore
+    DeviceFactory::createPhotoresistorSensor("Luce Stanza", A7);
 
     // Collega bottoni ai LED
     Serial.println(F("\n=== Setting up Buttons ==="));
@@ -62,64 +70,32 @@ void loop() {
     // Aggiorna bottoni fisici
     InputManager::instance().updateAll();
     
-    // Aggiorna sensori ogni 2 secondi
-    static unsigned long lastSensorUpdate = 0;
-    if (millis() - lastSensorUpdate > 2000) {
+    // FIX: Devices si aggiornano autonomamente
+    static unsigned long lastDeviceUpdate = 0;
+    if (millis() - lastDeviceUpdate > 100) {
         auto& registry = DeviceRegistry::instance();
         for (size_t i = 0; i < registry.getDevices().size(); i++) {
             registry.getDevices()[i]->update();
         }
-        lastSensorUpdate = millis();
+        lastDeviceUpdate = millis();
     }
 
-    // Gestisci input seriale
+    // Gestione input seriale
     if (Serial.available()) {
         char input = Serial.read();
-        NavigationManager& nav = NavigationManager::instance();
-        MenuPage* current = nav.getCurrentPage();
-        
-        char menuCommand = input;
-        if (input == 'w') menuCommand = 'U';
-        else if (input == 's') menuCommand = 'D';
-        else if (input == 'e') menuCommand = 'E';
-        else if (input == 'q') menuCommand = 'B';
-        
-        if (menuCommand == 'B') {
-            nav.navigateBack();
-        } 
-        else if (menuCommand == 'E') {
-            size_t idx = current->getSelectedIndex();
-            if (idx < current->getItemsCount()) {
-                MenuItem* item = current->getItem(idx);
-                if (item->getType() == MenuItemType::SUBMENU) {
-                    SubMenuItem* sub = static_cast<SubMenuItem*>(item);
-                    nav.navigateTo(sub->getTarget());
-                } else {
-                    item->handleInput(menuCommand);
-                }
-            }
-        }
-        else if (menuCommand == 'U' || menuCommand == 'D') {
-            size_t idx = current->getSelectedIndex();
-            if (idx < current->getItemsCount()) {
-                MenuItem* item = current->getItem(idx);
-                item->handleInput(menuCommand);
-                
-                if (!current->needsRedraw()) {
-                    current->handleInput(menuCommand);
-                }
-            } else {
-                current->handleInput(menuCommand);
-            }
-        }
-        else {
-            current->handleInput(menuCommand);
-        }
-        
         while (Serial.available()) Serial.read();
+        
+        // Traduzione comandi
+        if (input == 'w') input = 'U';
+        else if (input == 's') input = 'D';
+        else if (input == 'e') input = 'E';
+        else if (input == 'q') input = 'B';
+        
+        // FIX: NavigationManager gestisce tutto e forza ridisegno
+        NavigationManager::instance().handleInput(input);
     }
 
-    // Renderizza display
+    // Ridisegna SOLO se necessario
     NavigationManager::instance().update();
 
     delay(50);

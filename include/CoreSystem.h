@@ -1,13 +1,16 @@
 #ifndef CORE_SYSTEM_H
 #define CORE_SYSTEM_H
 
-#include <Arduino.h> // CHANGED: Torna ad Arduino per evitare conflitti
+#include <Arduino.h>
 
 // --- Enums ---
-enum class DeviceType : uint8_t {  // uint8_t invece di int
+enum class DeviceType : uint8_t {
     LightSimple,
     LightDimmable,
+    LightRGB,        // FIX: Aggiunto nuovo tipo
+    LightOutside,    // FIX: Aggiunto nuovo tipo
     SensorTemperature,
+    SensorLight,    // FIX: Nuovo tipo
     Unknown
 };
 
@@ -81,6 +84,14 @@ public:
     virtual bool isSensor() const { return false; }
 };
 
+// Forward declaration
+class MenuPage;
+
+// Tipi per JIT Menu e Slider
+typedef MenuPage* (*PageBuilder)(void* context);
+typedef int (*ValueGetter)(IDevice*);
+typedef void (*ValueSetter)(IDevice*, int);
+
 class IEventListener {
 public:
     virtual ~IEventListener() {}
@@ -90,7 +101,12 @@ public:
 // --- Event System ---
 class EventSystem {
 private:
-    DynamicArray<IEventListener*> _listeners;
+    struct ListenerEntry {
+        IEventListener* listener;
+        uint8_t eventMask;  // Bitmask per eventi (max 8 tipi)
+    };
+    
+    DynamicArray<ListenerEntry> _listeners;
     EventSystem() {}
 
 public:
@@ -100,16 +116,29 @@ public:
     }
 
     void addListener(IEventListener* listener) {
-        _listeners.add(listener);
+        // Ascolta tutti gli eventi (mask = 0xFF)
+        ListenerEntry entry = {listener, 0xFF};
+        _listeners.add(entry);
     }
 
     void addListener(IEventListener* listener, EventType type) {
-        _listeners.add(listener);
+        // FIX: Cerca se listener già registrato, altrimenti crea nuovo
+        for (uint8_t i = 0; i < _listeners.size(); i++) {
+            if (_listeners[i].listener == listener) {
+                // Aggiungi tipo alla mask esistente
+                _listeners[i].eventMask |= (1 << type);
+                return;
+            }
+        }
+        
+        // Nuovo listener, crea entry con solo questo tipo
+        ListenerEntry entry = {listener, (uint8_t)(1 << type)};
+        _listeners.add(entry);
     }
 
     void removeListener(IEventListener* listener) {
         for (uint8_t i = 0; i < _listeners.size(); i++) {
-            if (_listeners[i] == listener) {
+            if (_listeners[i].listener == listener) {
                 _listeners.remove(i);
                 return;
             }
@@ -117,8 +146,11 @@ public:
     }
 
     void emit(EventType type, IDevice* source, int value) {
+        // FIX: Filtra listener per tipo evento
         for (uint8_t i = 0; i < _listeners.size(); i++) {
-            _listeners[i]->handleEvent(type, source, value);
+            if (_listeners[i].eventMask & (1 << type)) {
+                _listeners[i].listener->handleEvent(type, source, value);
+            }
         }
     }
 };

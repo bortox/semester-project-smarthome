@@ -11,6 +11,7 @@ ButtonInput::ButtonInput(uint8_t pin, uint8_t buttonId, IDevice* linkedDevice, B
         pinMode(_pin, INPUT);
     }
     
+    // FIX: Registra per eventi del device linkato (per aggiornare stato locale)
     EventSystem::instance().addListener(this, EventType::DeviceStateChanged);
 }
 
@@ -32,20 +33,19 @@ void ButtonInput::update() {
 }
 
 void ButtonInput::onButtonPressed() {
-    // OTTIMIZZAZIONE: Rimozione emit non necessario (già gestito da toggle)
-    // EventSystem::instance().emit(EventType::ButtonPressed, nullptr, _buttonId);
-    
+    // FIX: Emetti evento invece di chiamare direttamente toggle()
+    // Questo ripristina l'Observer Pattern e mantiene il disaccoppiamento
     if (_linkedDevice) {
-        if (_linkedDevice->getType() == DeviceType::LightSimple) {
-            static_cast<SimpleLight*>(_linkedDevice)->toggle();
-        } 
-        else if (_linkedDevice->getType() == DeviceType::LightDimmable) {
-            static_cast<DimmableLight*>(_linkedDevice)->toggle();
-        }
+        EventSystem::instance().emit(EventType::ButtonPressed, _linkedDevice, _buttonId);
     }
 }
 
-void ButtonInput::handleEvent(EventType type, IDevice* device, int value) {}
+void ButtonInput::handleEvent(EventType type, IDevice* device, int value) {
+    // FIX: Reagisci agli eventi del device linkato per aggiornare UI se necessario
+    if (type == EventType::DeviceStateChanged && device == _linkedDevice) {
+        // Opzionale: feedback LED bottone, log, etc.
+    }
+}
 
 InputManager& InputManager::instance() {
     static InputManager inst;
