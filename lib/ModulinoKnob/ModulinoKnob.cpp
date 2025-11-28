@@ -1,166 +1,136 @@
 #include "ModulinoKnob.h"
 
-ModulinoKnob::ModulinoKnob(uint8_t address, TwoWire* wire)
-    : _wire(wire), _address(address), _lastPosition(0), _lastDebounceTime(0),
-      _currentPressed(false), _lastPressed(false), _pressStartTime(0), _lastReleaseTime(0),
-      _clickDetected(false), _doubleClickDetected(false), 
-      _longPressDetected(false), _longPressHandled(false) {}
+ModulinoKnob::ModulinoKnob(uint8_t address)
+    : _address(address), _lastPosition(0), _lastButtonState(false), _lastReadTime(0) {
+}
 
 bool ModulinoKnob::begin() {
-    _wire->begin();
-    _wire->setClock(100000);
+    // i2c_init() dovrebbe essere già chiamato nel main (una sola volta)
+    // Verifica la presenza del dispositivo
+    uint8_t i2cAddr = (_address << 1); // Indirizzo I2C con bit R/W
     
-    if (!scan()) {
-        return false;
+    if (i2c_start(i2cAddr + I2C_WRITE) != 0) {
+        i2c_stop();
+        return false; // Dispositivo non risponde
     }
-    
-    // Leggi posizione iniziale
-    _lastPosition = getPosition();
-    _lastDebounceTime = millis();
+    i2c_stop();
     
     return true;
 }
 
-int16_t ModulinoKnob::getPosition() {
-    uint8_t buf[3];
-    if (!read(buf, 3)) {
-        return 0;
+bool ModulinoKnob::update() {
+    uint32_t now = millis();
+    if (now - _lastReadTime < READ_INTERVAL) {
+        return true; // Troppo presto per leggere
     }
-    
-    _currentPressed = (buf[2] != 0);
-    int16_t position = buf[0] | (buf[1] << 8);
-    return position;
+    _lastReadTime = now;
+
+    // Leggi posizione encoder (16-bit signed)
+    int16_t position;
+    if (!i2cReadReg16(REG_POSITION, &position)) {
+        return false;
+    }
+    _lastPosition = position;
+
+    // Leggi stato pulsante
+    uint8_t buttonState;
+    if (!i2cReadReg(REG_BUTTON, &buttonState)) {
+        return false;
+    }
+    _lastButtonState = (buttonState != 0);
+
+    return true;
 }
 
-void ModulinoKnob::setPosition(int16_t value) {
-    uint8_t buf[4];
-    memcpy(buf, &value, 2);
-    buf[2] = 0;  // Padding
-    buf[3] = 0;
-    write(buf, 4);
+bool ModulinoKnob::setLED(uint8_t r, uint8_t g, uint8_t b) {
+    if (!i2cWriteReg(REG_LED_R, r)) return false;
+    if (!i2cWriteReg(REG_LED_G, g)) return false;
+    if (!i2cWriteReg(REG_LED_B, b)) return false;
+    return true;
 }
 
-int8_t ModulinoKnob::getDirection() {
-    unsigned long now = millis();
-    if (now - _lastDebounceTime < DEBOUNCE_DELAY) {
-        return 0;
-    }
-    
-    int16_t current = getPosition();
-    int8_t direction = 0;
-    
-    if (current > _lastPosition) {
-        direction = 1;   // Clockwise
-    } else if (current < _lastPosition) {
-        direction = -1;  // Counter-clockwise
-    }
-    
-    if (direction != 0) {
-        _lastDebounceTime = now;
-        _lastPosition = current;
-    }
-    
-    return direction;
+bool ModulinoKnob::reset() {
+    // Implementa reset se supportato dal dispositivo
+    // Per ora ritorna true
+    return true;
 }
 
-bool ModulinoKnob::isPressed() {
-    getPosition();  // Aggiorna _currentPressed
-    return _currentPressed;
-}
+// ==================== Metodi privati I2C ====================
 
-void ModulinoKnob::update() {
-    unsigned long now = millis();
-    bool pressed = isPressed();
+bool ModulinoKnob::i2cWriteReg(uint8_t reg, uint8_t value) {
+    uint8_t i2cAddr = (_address << 1);
     
-    // Reset flags consumabili
-    _clickDetected = false;
-    _doubleClickDetected = false;
-    
-    // Rileva RISING EDGE (press)
-    if (pressed && !_lastPressed) {
-        _pressStartTime = now;
-        _longPressHandled = false;
-    }
-    
-    // Rileva FALLING EDGE (release)
-    if (!pressed && _lastPressed) {
-        unsigned long pressDuration = now - _pressStartTime;
-        
-        // Se era long press, ignora click
-        if (pressDuration >= LONG_PRESS_DURATION) {
-            _longPressDetected = false;  // Reset dopo rilascio
-        } 
-        // Altrimenti è un click
-        else if (pressDuration > 50) {  // Debounce minimo
-            // Controlla double click
-            if (now - _lastReleaseTime < DOUBLE_CLICK_WINDOW) {
-                _doubleClickDetected = true;
-            } else {
-                _clickDetected = true;
-            }
-            _lastReleaseTime = now;
-        }
-    }
-    
-    // Rileva long press (durante pressione)
-    if (pressed && !_longPressHandled) {
-        if (now - _pressStartTime >= LONG_PRESS_DURATION) {
-            _longPressDetected = true;
-            _longPressHandled = true;  // Triggera solo una volta
-        }
-    }
-    
-    _lastPressed = pressed;
-}
-
-bool ModulinoKnob::wasClicked() {
-    return _clickDetected;
-}
-
-bool ModulinoKnob::wasDoubleClicked() {
-    return _doubleClickDetected;
-}
-
-bool ModulinoKnob::isLongPress() {
-    return _longPressDetected;
-}
-
-// --- I2C Private Methods ---
-
-bool ModulinoKnob::read(uint8_t* buf, int howmany) {
-    _wire->requestFrom(_address, (uint8_t)(howmany + 1));
-    
-    unsigned long start = millis();
-    while (_wire->available() == 0 && (millis() - start < 100)) {
-        delay(1);
-    }
-    
-    if (_wire->available() < howmany) {
+    if (i2c_start(i2cAddr + I2C_WRITE) != 0) {
+        i2c_stop();
         return false;
     }
     
-    uint8_t pinstrap = _wire->read();  // Primo byte (indirizzo pinstrap)
-    for (int i = 0; i < howmany; i++) {
-        buf[i] = _wire->read();
+    if (i2c_write(reg) != 0) {
+        i2c_stop();
+        return false;
     }
     
-    // Flush buffer
-    while (_wire->available()) {
-        _wire->read();
+    if (i2c_write(value) != 0) {
+        i2c_stop();
+        return false;
     }
+    
+    i2c_stop();
+    return true;
+}
+
+bool ModulinoKnob::i2cReadReg(uint8_t reg, uint8_t* value) {
+    uint8_t i2cAddr = (_address << 1);
+    
+    // Write register address
+    if (i2c_start(i2cAddr + I2C_WRITE) != 0) {
+        i2c_stop();
+        return false;
+    }
+    
+    if (i2c_write(reg) != 0) {
+        i2c_stop();
+        return false;
+    }
+    
+    // Repeated start per lettura
+    if (i2c_rep_start(i2cAddr + I2C_READ) != 0) {
+        i2c_stop();
+        return false;
+    }
+    
+    *value = i2c_readNak(); // Leggi byte con NACK (ultimo byte)
+    i2c_stop();
     
     return true;
 }
 
-bool ModulinoKnob::write(uint8_t* buf, int howmany) {
-    _wire->beginTransmission(_address);
-    for (int i = 0; i < howmany; i++) {
-        _wire->write(buf[i]);
+bool ModulinoKnob::i2cReadReg16(uint8_t reg, int16_t* value) {
+    uint8_t i2cAddr = (_address << 1);
+    
+    // Write register address
+    if (i2c_start(i2cAddr + I2C_WRITE) != 0) {
+        i2c_stop();
+        return false;
     }
-    return (_wire->endTransmission() == 0);
-}
-
-bool ModulinoKnob::scan() {
-    _wire->beginTransmission(_address);
-    return (_wire->endTransmission() == 0);
+    
+    if (i2c_write(reg) != 0) {
+        i2c_stop();
+        return false;
+    }
+    
+    // Repeated start per lettura
+    if (i2c_rep_start(i2cAddr + I2C_READ) != 0) {
+        i2c_stop();
+        return false;
+    }
+    
+    // Leggi 2 bytes (little-endian: LSB first)
+    uint8_t lowByte = i2c_readAck();
+    uint8_t highByte = i2c_readNak();
+    i2c_stop();
+    
+    *value = (int16_t)((highByte << 8) | lowByte);
+    
+    return true;
 }

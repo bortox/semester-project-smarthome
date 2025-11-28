@@ -12,21 +12,35 @@ private:
     int16_t _max;
     int32_t _sum;
     uint16_t _count;
-    
+    static constexpr uint16_t MAX_SAMPLES = 1000;
+
 public:
     SensorStats() : _min(32767), _max(-32768), _sum(0), _count(0) {}
     
-    void addValue(float value) {
-        int16_t val10 = (int16_t)(value * 10);
-        if (val10 < _min) _min = val10;
-        if (val10 > _max) _max = val10;
-        _sum += val10;
+    void addSample(int16_t value) {
+        if (value < _min) _min = value;
+        if (value > _max) _max = value;
+        
+        _sum += value;
         _count++;
+
+        if (_count >= MAX_SAMPLES) {
+            int16_t avg = getAverage();
+            _sum = avg;
+            _count = 1;
+        }
     }
     
-    float getMin() const { return _count > 0 ? _min / 10.0f : 0; }
-    float getMax() const { return _count > 0 ? _max / 10.0f : 0; }
-    float getAverage() const { return _count > 0 ? (_sum / _count) / 10.0f : 0; }
+    int16_t getMin() const { return _count > 0 ? _min : 0; }
+    int16_t getMax() const { return _count > 0 ? _max : 0; }
+    int16_t getAverage() const { return _count > 0 ? (int16_t)(_sum / _count) : 0; }
+    
+    void reset() {
+        _min = 32767;
+        _max = -32768;
+        _sum = 0;
+        _count = 0;
+    }
 };
 
 class SimpleLight : public IDevice, public IEventListener {
@@ -92,7 +106,7 @@ public:
             _lastBrightness = _brightness;
         }
         
-        _state = (_brightness > 0);
+        _state = (_brightness > 0);  // ✅ Già imposta _state = true quando brightness > 0
         analogWrite(_pin, map(_brightness, 0, 100, 0, 255));
         EventSystem::instance().emit(EventType::DeviceValueChanged, this, _brightness);
     }
@@ -247,18 +261,29 @@ public:
             EventSystem::instance().emit(EventType::DeviceStateChanged, this, _state);
         }
     }
+
+    void toggle() override {
+        // If ON, switch OFF, if OFF, switch ON
+        if (_state) {
+            _mode = OutsideMode::OFF;
+        } else {
+            _mode = OutsideMode::ON;
+        }
+    }
 };
 
-class TemperatureSensor : public IDevice {
+class TemperatureSensor : public IDevice {  // FIX: era "public Sensor"
 private:
     const char* _name;
     float _temperature;
     unsigned long _lastRead;
+    bool _isReady;  // FIX: Aggiungi variabile mancante
     SensorStats _stats;
     LM75Sensor _lm75;
 
 public:
-    TemperatureSensor(const char* name) : _name(name), _temperature(0), _lastRead(0), _lm75(name) {
+    TemperatureSensor(const char* name) 
+        : _name(name), _temperature(0), _lastRead(0), _isReady(false), _lm75(name) {
         _lm75.begin();
         DeviceRegistry::instance().registerDevice(this);
     }
@@ -271,8 +296,12 @@ public:
         if (millis() - _lastRead > 2000) {
             _lastRead = millis();
             _temperature = _lm75.getValue();
-            _stats.addValue(_temperature);
-            EventSystem::instance().emit(EventType::SensorUpdated, this, (int)(_temperature * 10));
+            _isReady = true;
+            
+            if (_isReady) {
+                _stats.addSample((int16_t)(_temperature * 10));  // FIX: Converti a int16_t
+                EventSystem::instance().emit(EventType::SensorUpdated, this, (int)(_temperature * 10));
+            }
         }
     }
 
@@ -287,6 +316,7 @@ private:
     int _lightLevel;
     unsigned long _lastRead;
     LightSensor _photoSensor;
+    SensorStats _stats;  // FIX: Aggiungi statistiche
 
 public:
     PhotoresistorSensor(const char* name, uint8_t pin) 
@@ -299,19 +329,68 @@ public:
     bool isSensor() const override { return true; }
 
     void update() override {
-        if (millis() - _lastRead > 1000) {  // Aggiorna ogni secondo
+        if (millis() - _lastRead > 1000) {
             _lastRead = millis();
             int newValue = _photoSensor.getValue();
             
-            // Emetti evento solo se cambiamento significativo (>5%)
-            if (abs(newValue - _lightLevel) > 5) {
+            if (abs(newValue - _lightLevel) > 2) {
                 _lightLevel = newValue;
+                _stats.addSample((int16_t)_lightLevel);  // FIX: Traccia statistiche
                 EventSystem::instance().emit(EventType::SensorUpdated, this, _lightLevel);
             }
         }
     }
 
     int getValue() const { return _lightLevel; }
+    SensorStats& getStats() { return _stats; }
+    
+    // Calibrazione
+    void calibrateCurrentAsMin() {
+        int raw = _photoSensor.getRaw();
+        _photoSensor.setRawMin(raw);
+    }
+    
+    void calibrateCurrentAsMax() {
+        int raw = _photoSensor.getRaw();
+        _photoSensor.setRawMax(raw);
+    }
+    
+    int getRawMin() const { return _photoSensor.getRawMin(); }
+    int getRawMax() const { return _photoSensor.getRawMax(); }
+};
+
+// NUOVO: Sensore di movimento PIR
+class PIRSensorDevice : public IDevice {
+private:
+    const char* _name;
+    bool _motionDetected;
+    unsigned long _lastRead;
+    MovementSensor _pirSensor;
+
+public:
+    PIRSensorDevice(const char* name, uint8_t pin) 
+        : _name(name), _motionDetected(false), _lastRead(0), _pirSensor(name, pin) {
+        DeviceRegistry::instance().registerDevice(this);
+    }
+
+    const char* getName() const override { return _name; }
+    DeviceType getType() const override { return DeviceType::SensorPIR; }
+    bool isSensor() const override { return true; }
+
+    void update() override {
+        if (millis() - _lastRead > 500) {  // Aggiorna ogni 500ms
+            _lastRead = millis();
+            bool newValue = _pirSensor.getValue();
+            
+            // Emetti evento solo se lo stato cambia
+            if (newValue != _motionDetected) {
+                _motionDetected = newValue;
+                EventSystem::instance().emit(EventType::SensorUpdated, this, _motionDetected ? 1 : 0);
+            }
+        }
+    }
+
+    bool isMotionDetected() const { return _motionDetected; }
 };
 
 // Factory normale (allocazione dinamica controllata)
@@ -336,6 +415,9 @@ public:
     }
     static void createPhotoresistorSensor(const char* name, uint8_t pin) {
         new PhotoresistorSensor(name, pin);
+    }
+    static void createPIRSensor(const char* name, uint8_t pin) {
+        new PIRSensorDevice(name, pin);
     }
 };
 

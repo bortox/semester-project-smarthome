@@ -11,6 +11,7 @@ enum class DeviceType : uint8_t {
     LightOutside,    // FIX: Aggiunto nuovo tipo
     SensorTemperature,
     SensorLight,    // FIX: Nuovo tipo
+    SensorPIR,      // NEW: PIR motion sensor type
     Unknown
 };
 
@@ -28,8 +29,9 @@ template <typename T>
 class DynamicArray {
 private:
     T* _data;
-    uint8_t _size;      // uint8_t invece di size_t (max 255 items)
+    uint8_t _size;
     uint8_t _capacity;
+    static constexpr uint8_t MAX_CAPACITY = 64; // Aumentato da 16 a 64
 
 public:
     DynamicArray() : _data(nullptr), _size(0), _capacity(0) {}
@@ -38,22 +40,30 @@ public:
         delete[] _data;
     }
 
-    bool add(T item) {
-        if (_size == _capacity) {
-            // OTTIMIZZAZIONE: Crescita lineare +2 invece di esponenziale ×2
-            uint8_t newCapacity = (_capacity == 0) ? 2 : _capacity + 2;
-            if (newCapacity > 16) return false; // Limite max 16 items
-            
+    bool add(const T& item) {
+        if (_size >= _capacity) {
+            uint8_t newCapacity = _capacity == 0 ? 4 : _capacity * 2;
+            if (newCapacity > MAX_CAPACITY) {
+                newCapacity = MAX_CAPACITY;
+            }
+            if (_size >= MAX_CAPACITY) {
+                return false; // Capacità massima raggiunta
+            }
+
             T* newData = new T[newCapacity];
-            if (!newData) return false;
-            
+            if (!newData) {
+                return false; // Allocazione fallita
+            }
+
             for (uint8_t i = 0; i < _size; i++) {
                 newData[i] = _data[i];
             }
+
             delete[] _data;
             _data = newData;
             _capacity = newCapacity;
         }
+
         _data[_size++] = item;
         return true;
     }

@@ -2,57 +2,41 @@
 #define MODULINO_KNOB_H
 
 #include <Arduino.h>
-#include <Wire.h>
+extern "C" {
+    #include "i2cmaster.h"  // Sostituisce Wire.h
+}
 
 class ModulinoKnob {
+private:
+    uint8_t _address;
+    int16_t _lastPosition;
+    bool _lastButtonState;
+    uint32_t _lastReadTime;
+    static constexpr uint32_t READ_INTERVAL = 10; // ms
+
+    // Registri I2C del dispositivo
+    static constexpr uint8_t REG_POSITION = 0x00;
+    static constexpr uint8_t REG_BUTTON = 0x01;
+    static constexpr uint8_t REG_LED_R = 0x10;
+    static constexpr uint8_t REG_LED_G = 0x11;
+    static constexpr uint8_t REG_LED_B = 0x12;
+
+    // Metodi privati per comunicazione I2C a basso livello
+    bool i2cWriteReg(uint8_t reg, uint8_t value);
+    bool i2cReadReg(uint8_t reg, uint8_t* value);
+    bool i2cReadReg16(uint8_t reg, int16_t* value);
+
 public:
-    ModulinoKnob(uint8_t address = 0x3A, TwoWire* wire = &Wire);
+    ModulinoKnob(uint8_t address = 0x30);
     
     bool begin();
+    bool update();
     
-    // Lettura posizione encoder
-    int16_t getPosition();
-    void setPosition(int16_t value);
+    int16_t getPosition() const { return _lastPosition; }
+    bool isButtonPressed() const { return _lastButtonState; }
     
-    // Direzione rotazione (-1 = CCW, 0 = no change, +1 = CW)
-    int8_t getDirection();
-    
-    // Stato pulsante
-    bool isPressed();
-    bool wasClicked();          // Single click rilevato
-    bool wasDoubleClicked();    // Double click rilevato
-    bool isLongPress();         // Pressione lunga (>800ms)
-    
-    // Update da chiamare in loop()
-    void update();
-
-private:
-    TwoWire* _wire;
-    uint8_t _address;
-    
-    // Stato encoder
-    int16_t _lastPosition;
-    unsigned long _lastDebounceTime;
-    static constexpr unsigned long DEBOUNCE_DELAY = 30;
-    
-    // Stato pulsante
-    bool _currentPressed;
-    bool _lastPressed;
-    unsigned long _pressStartTime;
-    unsigned long _lastReleaseTime;
-    
-    bool _clickDetected;
-    bool _doubleClickDetected;
-    bool _longPressDetected;
-    bool _longPressHandled;
-    
-    static constexpr unsigned long DOUBLE_CLICK_WINDOW = 300;  // ms
-    static constexpr unsigned long LONG_PRESS_DURATION = 800;   // ms
-    
-    // I2C communication
-    bool read(uint8_t* buf, int howmany);
-    bool write(uint8_t* buf, int howmany);
-    bool scan();
+    bool setLED(uint8_t r, uint8_t g, uint8_t b);
+    bool reset();
 };
 
-#endif
+#endif // MODULINO_KNOB_H

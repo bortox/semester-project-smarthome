@@ -16,35 +16,38 @@ void setup() {
     LCD_backlight();
     LCD_clear();
     LCD_set_cursor(0, 0);
-    LCD_write_str("Booting..."); // Stringa RAM temporanea, OK
+    LCD_write_str("Booting...");
 
     NavigationManager::instance().setLCD();
 
     // Crea dispositivi
     Serial.println(F("\n=== Creating Devices ==="));
-    DeviceFactory::createSimpleLight("LED 1", 4);
+    DeviceFactory::createSimpleLight("LED 1", 3);
     DeviceFactory::createDimmableLight("LED 2", 5);
     
     // Nuovi dispositivi
     DeviceFactory::createRGBLight("RGB Strip", 9, 10, 11);
     
     // Sensori per luce esterna
-    static LightSensor photo("Photo", A6); // Static per evitare distruzione
-    static MovementSensor pir("PIR", 8);
-    DeviceFactory::createOutsideLight("Garden", 7, &photo, &pir);
+    static LightSensor photo("Photo", A0);
+    static MovementSensor pir("PIR", 2);
+    DeviceFactory::createOutsideLight("Garden", 6, &photo, &pir);
 
-    // FIX: Aggiungi sensore di temperatura
+    // Aggiungi sensore di temperatura
     DeviceFactory::createTemperatureSensor("Temp Sala");
     
-    // FIX: Aggiungi sensore di luce fotoresistore
-    DeviceFactory::createPhotoresistorSensor("Luce Stanza", A7);
+    // Aggiungi sensore di luce fotoresistore
+    DeviceFactory::createPhotoresistorSensor("Outside Light", A0);
+    
+    // NUOVO: Aggiungi sensore di movimento PIR
+    DeviceFactory::createPIRSensor("Motion PIR", 2);
 
     // Collega bottoni ai LED
     Serial.println(F("\n=== Setting up Buttons ==="));
     DeviceRegistry& registry = DeviceRegistry::instance();
     
-    ButtonInput* btn1 = new ButtonInput(A0, 1, registry.getDevices()[0], ButtonMode::ACTIVE_LOW);
-    ButtonInput* btn2 = new ButtonInput(A1, 2, registry.getDevices()[1], ButtonMode::ACTIVE_LOW);
+    ButtonInput* btn1 = new ButtonInput(8, 1, registry.getDevices()[0], ButtonMode::ACTIVE_LOW);
+    ButtonInput* btn2 = new ButtonInput(7, 2, registry.getDevices()[1], ButtonMode::ACTIVE_LOW);
     ButtonInput* btn3 = new ButtonInput(A2, 3, registry.getDevices()[2], ButtonMode::ACTIVE_LOW);
     ButtonInput* btn4 = new ButtonInput(A3, 4, registry.getDevices()[3], ButtonMode::ACTIVE_LOW);
     
@@ -52,6 +55,19 @@ void setup() {
     InputManager::instance().registerButton(btn2);
     InputManager::instance().registerButton(btn3);
     InputManager::instance().registerButton(btn4);
+
+    // Configura potenziometri per controllo luminosità
+    Serial.println(F("\n=== Setting up Potentiometers ==="));
+    
+    // Potenziometro 1: Controlla LED 2 (Dimmable) su pin A6
+    DimmableLight* led2 = static_cast<DimmableLight*>(registry.getDevices()[1]);
+    PotentiometerInput* pot1 = new PotentiometerInput(A6, led2);
+    InputManager::instance().registerPotentiometer(pot1);
+    
+    // Potenziometro 2: Controlla RGB Strip brightness su pin A7
+    DimmableLight* rgbLight = static_cast<DimmableLight*>(registry.getDevices()[2]);
+    PotentiometerInput* pot2 = new PotentiometerInput(A1, rgbLight);
+    InputManager::instance().registerPotentiometer(pot2);
 
     // Costruisci menu
     Serial.println(F("\n=== Building Menu ==="));
@@ -70,7 +86,7 @@ void loop() {
     // Aggiorna bottoni fisici
     InputManager::instance().updateAll();
     
-    // FIX: Devices si aggiornano autonomamente
+    // Devices si aggiornano autonomamente
     static unsigned long lastDeviceUpdate = 0;
     if (millis() - lastDeviceUpdate > 100) {
         auto& registry = DeviceRegistry::instance();
@@ -91,7 +107,6 @@ void loop() {
         else if (input == 'e') input = 'E';
         else if (input == 'q') input = 'B';
         
-        // FIX: NavigationManager gestisce tutto e forza ridisegno
         NavigationManager::instance().handleInput(input);
     }
 

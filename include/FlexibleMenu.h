@@ -346,7 +346,7 @@ public:
     }
 };
 
-// NUOVO: Item per visualizzare sensori
+// NUOVO: Item per visualizzare sensori (ora interattivo)
 class SensorDisplayItem : public MenuItem {
 private:
     IDevice* _device;
@@ -364,25 +364,151 @@ public:
         LCD_write_str(_device->getName());
         LCD_write_str(": ");
         
-        // Ottieni valore in base al tipo
         if (_device->getType() == DeviceType::SensorTemperature) {
             TemperatureSensor* temp = static_cast<TemperatureSensor*>(_device);
             char buf[8];
             dtostrf(temp->getTemperature(), 4, 1, buf);
             LCD_write_str(buf);
+            LCD_write_char(' ');
+            printLabel(_unit);
         } else if (_device->getType() == DeviceType::SensorLight) {
             PhotoresistorSensor* light = static_cast<PhotoresistorSensor*>(_device);
             char buf[5];
             itoa(light->getValue(), buf, 10);
             LCD_write_str(buf);
+            LCD_write_char(' ');
+            printLabel(_unit);
+        } else if (_device->getType() == DeviceType::SensorPIR) {
+            PIRSensorDevice* pir = static_cast<PIRSensorDevice*>(_device);
+            LCD_write_str(pir->isMotionDetected() ? "Yes" : "No");
         }
-        
-        LCD_write_char(' ');
-        printLabel(_unit);
     }
 
     bool handleInput(char key) override {
-        return false; // Non consuma input, permette navigazione
+        // FIX: Permetti apertura sottomenu per sensori numerici
+        if (key == 'E') {
+            DeviceType type = _device->getType();
+            if (type == DeviceType::SensorTemperature || type == DeviceType::SensorLight) {
+                return false; // Lascia che NavigationManager gestisca come SubMenuItem
+            }
+        }
+        return false;
+    }
+    
+    IDevice* getDevice() const { return _device; }
+};
+
+// NUOVO: Item per visualizzare una statistica (Min/Max/Avg)
+class StatDisplayItem : public MenuItem {
+private:
+    const __FlashStringHelper* _label;
+    int16_t _value;
+    const __FlashStringHelper* _unit;
+    bool _isTemperature;
+
+public:
+    StatDisplayItem(const __FlashStringHelper* label, int16_t value, const __FlashStringHelper* unit, bool isTemp = false)
+        : _label(label), _value(value), _unit(unit), _isTemperature(isTemp) {}
+
+    void draw(uint8_t row, bool selected) override {
+        LCD_set_cursor(0, row);
+        LCD_write_str("  ");
+        printLabel(_label);
+        LCD_write_str(": ");
+        
+        char buf[8];
+        if (_isTemperature) {
+            // Per temperatura, dividi per 10 e mostra con 1 decimale
+            float val = _value / 10.0f;
+            dtostrf(val, 4, 1, buf);
+        } else {
+            itoa(_value, buf, 10);
+        }
+        LCD_write_str(buf);
+        
+        // Aggiungi simbolo ° per temperatura
+        if (_isTemperature) {
+            LCD_write_char(0xDF);  // Simbolo °
+        } else {
+            LCD_write_char(' ');
+        }
+        printLabel(_unit);
+    }
+
+    bool handleInput(char key) override { return false; }
+};
+
+// NUOVO: Item per mostrare valore corrente sensore (dinamico)
+class CurrentValueItem : public MenuItem {
+private:
+    IDevice* _device;
+    const __FlashStringHelper* _unit;
+    bool _isTemperature;
+
+public:
+    CurrentValueItem(IDevice* device, const __FlashStringHelper* unit, bool isTemp = false)
+        : _device(device), _unit(unit), _isTemperature(isTemp) {}
+
+    bool relatesTo(IDevice* dev) override { return _device == dev; }
+
+    void draw(uint8_t row, bool selected) override {
+        LCD_set_cursor(0, row);
+        LCD_write_str("  Now: ");
+        
+        char buf[8];
+        if (_device->getType() == DeviceType::SensorTemperature) {
+            TemperatureSensor* temp = static_cast<TemperatureSensor*>(_device);
+            float val = temp->getTemperature();
+            dtostrf(val, 4, 1, buf);
+        } else if (_device->getType() == DeviceType::SensorLight) {
+            PhotoresistorSensor* light = static_cast<PhotoresistorSensor*>(_device);
+            int val = light->getValue();
+            itoa(val, buf, 10);
+        }
+        
+        LCD_write_str(buf);
+        
+        // Aggiungi simbolo ° per temperatura
+        if (_isTemperature) {
+            LCD_write_char(0xDF);  // Simbolo °
+        } else {
+            LCD_write_char(' ');
+        }
+        printLabel(_unit);
+    }
+
+    bool handleInput(char key) override { return false; }
+};
+
+// NUOVO: Item per calibrazione luce
+class LightCalibrationItem : public MenuItem {
+private:
+    const __FlashStringHelper* _label;
+    PhotoresistorSensor* _sensor;
+    bool _isDark;  // true = calibra buio, false = calibra luce
+
+public:
+    LightCalibrationItem(const __FlashStringHelper* label, PhotoresistorSensor* sensor, bool isDark)
+        : _label(label), _sensor(sensor), _isDark(isDark) {}
+
+    void draw(uint8_t row, bool selected) override {
+        LCD_set_cursor(0, row);
+        LCD_write_str(selected ? "> " : "  ");
+        printLabel(_label);
+    }
+
+    bool handleInput(char key) override {
+        if (key == 'E') {
+            if (_isDark) {
+                _sensor->calibrateCurrentAsMin();
+            } else {
+                _sensor->calibrateCurrentAsMax();
+            }
+            // Forza aggiornamento immediato
+            EventSystem::instance().emit(EventType::SensorUpdated, _sensor, _sensor->getValue());
+            return true;
+        }
+        return false;
     }
 };
 
@@ -477,17 +603,17 @@ public:
     static void setBrightness(IDevice* d, int v) { static_cast<DimmableLight*>(d)->setBrightness(v); }
     
     static int getRed(IDevice* d) { return static_cast<RGBLight*>(d)->getColor().r; }
-    static void setRed(IDevice* d, int v) { 
+    static void setRedValue(IDevice* d, int v) {  // FIX: Rinominato per evitare confusione
         RGBLight* l = static_cast<RGBLight*>(d); 
         RGBColor c = l->getColor(); c.r = v; l->setColor(c); 
     }
     static int getGreen(IDevice* d) { return static_cast<RGBLight*>(d)->getColor().g; }
-    static void setGreen(IDevice* d, int v) { 
+    static void setGreenValue(IDevice* d, int v) {
         RGBLight* l = static_cast<RGBLight*>(d); 
         RGBColor c = l->getColor(); c.g = v; l->setColor(c); 
     }
     static int getBlue(IDevice* d) { return static_cast<RGBLight*>(d)->getColor().b; }
-    static void setBlue(IDevice* d, int v) { 
+    static void setBlueValue(IDevice* d, int v) {
         RGBLight* l = static_cast<RGBLight*>(d); 
         RGBColor c = l->getColor(); c.b = v; l->setColor(c); 
     }
@@ -506,42 +632,46 @@ public:
         return page;
     }
 
-    static MenuPage* buildRGBChannelPage(void* context) {
-        // Context è una struct o array? Semplifichiamo: context è RGBLight, ma quale canale?
-        // Per semplicità, creiamo 3 builder separati o usiamo una struct context.
-        // Qui uso builder separati per R, G, B per evitare allocazioni extra di context struct.
-        return nullptr; // Placeholder
-    }
-    
     static MenuPage* buildRedPage(void* context) {
-        RGBLight* light = (RGBLight*)context;
-        MenuPage* page = new MenuPage(F("Red Channel"), NavigationManager::instance().getCurrentPage());
-        page->addItem(new ValueSliderItem(light, F("Red"), getRed, setRed, 0, 255, 10));
+        RGBLight* light = static_cast<RGBLight*>(context);
+        MenuPage* page = new MenuPage(F("Red Channel"), nullptr);
+        if (!page) return nullptr;
+
+        page->addItem(new ValueSliderItem(light, F("Red"), getRed, setRedValue, 0, 255, 10));
         page->addItem(new BackMenuItem(NavigationManager::instance()));
         return page;
     }
+
     static MenuPage* buildGreenPage(void* context) {
-        RGBLight* light = (RGBLight*)context;
-        MenuPage* page = new MenuPage(F("Green Channel"), NavigationManager::instance().getCurrentPage());
-        page->addItem(new ValueSliderItem(light, F("Green"), getGreen, setGreen, 0, 255, 10));
+        RGBLight* light = static_cast<RGBLight*>(context);
+        MenuPage* page = new MenuPage(F("Green Channel"), nullptr);
+        if (!page) return nullptr;
+
+        page->addItem(new ValueSliderItem(light, F("Green"), getGreen, setGreenValue, 0, 255, 10));
         page->addItem(new BackMenuItem(NavigationManager::instance()));
         return page;
     }
+
     static MenuPage* buildBluePage(void* context) {
-        RGBLight* light = (RGBLight*)context;
-        MenuPage* page = new MenuPage(F("Blue Channel"), NavigationManager::instance().getCurrentPage());
-        page->addItem(new ValueSliderItem(light, F("Blue"), getBlue, setBlue, 0, 255, 10));
+        RGBLight* light = static_cast<RGBLight*>(context);
+        MenuPage* page = new MenuPage(F("Blue Channel"), nullptr);
+        if (!page) return nullptr;
+
+        page->addItem(new ValueSliderItem(light, F("Blue"), getBlue, setBlueValue, 0, 255, 10));
         page->addItem(new BackMenuItem(NavigationManager::instance()));
         return page;
     }
 
     static MenuPage* buildCustomColorPage(void* context) {
-        RGBLight* light = (RGBLight*)context;
-        MenuPage* page = new MenuPage(F("Custom Color"), NavigationManager::instance().getCurrentPage());
+        RGBLight* light = static_cast<RGBLight*>(context);
+        MenuPage* page = new MenuPage(F("Custom Color"), nullptr);
+        if (!page) return nullptr;
+
         page->addItem(new SubMenuItem(F("Set Red"), buildRedPage, light, NavigationManager::instance()));
         page->addItem(new SubMenuItem(F("Set Green"), buildGreenPage, light, NavigationManager::instance()));
         page->addItem(new SubMenuItem(F("Set Blue"), buildBluePage, light, NavigationManager::instance()));
         page->addItem(new BackMenuItem(NavigationManager::instance()));
+
         return page;
     }
 
@@ -619,19 +749,76 @@ public:
         return page;
     }
 
+    // NUOVO: Builder per pagina statistiche generica (Temperatura e Luce)
+    static MenuPage* buildSensorStatsPage(void* context) {
+        IDevice* device = static_cast<IDevice*>(context);
+        MenuPage* page = new MenuPage(F("Statistics"), NavigationManager::instance().getCurrentPage());
+        
+        if (device->getType() == DeviceType::SensorTemperature) {
+            TemperatureSensor* temp = static_cast<TemperatureSensor*>(device);
+            SensorStats& stats = temp->getStats();
+            
+            // Valore corrente (si aggiorna dinamicamente)
+            page->addItem(new CurrentValueItem(device, F("C"), true));
+            
+            // Statistiche (valori stored * 10, quindi isTemp = true per dividere)
+            page->addItem(new StatDisplayItem(F("Min"), stats.getMin(), F("C"), true));
+            page->addItem(new StatDisplayItem(F("Max"), stats.getMax(), F("C"), true));
+            page->addItem(new StatDisplayItem(F("Avg"), stats.getAverage(), F("C"), true));
+            
+        } else if (device->getType() == DeviceType::SensorLight) {
+            PhotoresistorSensor* light = static_cast<PhotoresistorSensor*>(device);
+            SensorStats& stats = light->getStats();
+            
+            // Valore corrente (si aggiorna dinamicamente)
+            page->addItem(new CurrentValueItem(device, F("%"), false));
+            
+            // Statistiche
+            page->addItem(new StatDisplayItem(F("Min"), stats.getMin(), F("%"), false));
+            page->addItem(new StatDisplayItem(F("Max"), stats.getMax(), F("%"), false));
+            page->addItem(new StatDisplayItem(F("Avg"), stats.getAverage(), F("%"), false));
+        }
+        
+        page->addItem(new BackMenuItem(NavigationManager::instance()));
+        return page;
+    }
+
+    // NUOVO: Builder per pagina impostazioni luce (Stats + Calibrazione)
+    static MenuPage* buildLightSettingsPage(void* context) {
+        PhotoresistorSensor* light = static_cast<PhotoresistorSensor*>(context);
+        MenuPage* page = new MenuPage(F("Light Settings"), NavigationManager::instance().getCurrentPage());
+        
+        // Sottomenu statistiche
+        page->addItem(new SubMenuItem(F("View Stats"), buildSensorStatsPage, light, NavigationManager::instance()));
+        
+        // Calibrazione
+        page->addItem(new LightCalibrationItem(F("Set Dark Limit"), light, true));
+        page->addItem(new LightCalibrationItem(F("Set Bright Limit"), light, false));
+        
+        page->addItem(new BackMenuItem(NavigationManager::instance()));
+        return page;
+    }
+
+    // FIX: Aggiungi buildSensorsPage mancante
     static MenuPage* buildSensorsPage(void* context) {
         MenuPage* page = new MenuPage(F("Sensors"), NavigationManager::instance().getCurrentPage());
         DeviceRegistry& registry = DeviceRegistry::instance();
         DynamicArray<IDevice*>& devices = registry.getDevices();
         
-        // FIX: Scansiona tutti i device e aggiungi i sensori
         for (size_t i = 0; i < devices.size(); i++) {
             IDevice* d = devices[i];
             if (d->isSensor()) {
                 if (d->getType() == DeviceType::SensorTemperature) {
-                    page->addItem(new SensorDisplayItem(d, F("C")));
+                    // Temperatura ha sottomenu per stats
+                    page->addItem(new SubMenuItem(F("Temperature"), buildSensorStatsPage, d, NavigationManager::instance()));
+                    
                 } else if (d->getType() == DeviceType::SensorLight) {
-                    page->addItem(new SensorDisplayItem(d, F("%")));
+                    // Luce ha pagina avanzata con calibrazione
+                    page->addItem(new SubMenuItem(F("Light Sensor"), buildLightSettingsPage, d, NavigationManager::instance()));
+                    
+                } else if (d->getType() == DeviceType::SensorPIR) {
+                    // PIR rimane read-only
+                    page->addItem(new SensorDisplayItem(d, F("")));
                 }
             }
         }

@@ -30,11 +30,14 @@
 2. **Controllo luci**
    - **Semplici:** Toggle diretto da lista o bottone fisico
    - **Dimmabili:** Sottomenu con Toggle + Slider brightness (±10%)
+   - **RGB:** Sottomenu con preset colori e controllo canali RGB individuali
    - **Automazione (futuro):** Modalità Manual/Auto Light/Auto Light+Motion
 
 3. **Monitoraggio sensori**
    - Display valore corrente in lista
-   - Dettaglio con statistiche: Current/Min/Max/Average
+   - **Temperatura:** Sottomenu con Min/Max/Avg statistiche
+   - **Luce:** Sottomenu con statistiche + calibrazione limiti (Dark/Bright)
+   - **PIR:** Solo lettura (Yes/No movimento)
 
 4. **Event-driven architecture**
    - Bottone fisico → Device → EventSystem → Menu (aggiornamento automatico)

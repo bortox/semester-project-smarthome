@@ -35,29 +35,31 @@ public:
 class PotentiometerInput {
 private:
     uint8_t _pin;
-    DimmableLight* _linkedLight;
-    int _lastValue;
-    static const uint8_t THRESHOLD = 2;
+    DimmableLight* _light;
+    uint8_t _lastMappedValue;
+    static constexpr uint8_t SAMPLE_COUNT = 8;
+    uint16_t _samples[SAMPLE_COUNT];
+    uint8_t _sampleIndex;
 
 public:
     PotentiometerInput(uint8_t pin, DimmableLight* linkedLight = nullptr);
-    
-    void update();  // FIX: Solo dichiarazione, implementazione in .cpp
-    
-    void setLinkedLight(DimmableLight* light) { _linkedLight = light; }
-    DimmableLight* getLinkedLight() const { return _linkedLight; }
+    void update();
+    void setLinkedLight(DimmableLight* light) { _light = light; }
+    DimmableLight* getLinkedLight() const { return _light; }
 };
 
 class InputManager {
 private:
     DynamicArray<ButtonInput*> _buttons;
-    DynamicArray<PotentiometerInput*> _potentiometers; // Nuovo array
+    DynamicArray<PotentiometerInput*> _potentiometers;
+    // Rimuovi _encoders e _knobs se non esistono nel progetto
+
     InputManager() {}
 
 public:
     static InputManager& instance();
     void registerButton(ButtonInput* button);
-    void registerPotentiometer(PotentiometerInput* pot); // Nuovo metodo
+    void registerPotentiometer(PotentiometerInput* pot);
     void updateAll();
 };
 

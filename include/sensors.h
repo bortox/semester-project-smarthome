@@ -53,11 +53,28 @@ public:
 class LightSensor : public Sensor<int> {
 private:
     uint8_t _pin;
+    int _rawMin;  // Calibrated dark value
+    int _rawMax;  // Calibrated bright value
+
 public:
-    LightSensor(const char* name, uint8_t pin) : Sensor<int>(name), _pin(pin) {
-        pinMode(_pin, INPUT);
+    LightSensor(const char* name, uint8_t pin) 
+        : Sensor<int>(name), _pin(pin), _rawMin(1023), _rawMax(0) {
+        pinMode(_pin, INPUT_PULLUP);
     }
-    int getValue() const override { return map(analogRead(_pin), 0, 1023, 0, 100); }
+    
+    int getValue() const override { 
+        int raw = getRaw();
+        // Handle inverted range (PULLUP: dark=1023, bright=0)
+        return map(raw, _rawMin, _rawMax, 0, 100); 
+    }
+    
+    int getRaw() const { return analogRead(_pin); }
+    
+    void setRawMin(int val) { _rawMin = constrain(val, 0, 1023); }
+    void setRawMax(int val) { _rawMax = constrain(val, 0, 1023); }
+    
+    int getRawMin() const { return _rawMin; }
+    int getRawMax() const { return _rawMax; }
 };
 
 // MOTION SENSOR
