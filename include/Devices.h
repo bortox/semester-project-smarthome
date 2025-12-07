@@ -9,6 +9,31 @@
 #define PWM_MAX 255
 
 /**
+ * @brief Gamma correction lookup table (256 entries)
+ * 
+ * Safe low-end curve: input 1 maps to output 1 (not 0) to avoid black crush.
+ * Generated using gamma = 2.2
+ */
+const uint8_t GAMMA_LUT[256] PROGMEM = {
+    0,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,
+    2,   2,   2,   2,   2,   2,   2,   2,   3,   3,   3,   3,   3,   3,   4,   4,
+    4,   4,   4,   5,   5,   5,   5,   6,   6,   6,   6,   7,   7,   7,   8,   8,
+    8,   9,   9,   9,   10,  10,  11,  11,  11,  12,  12,  13,  13,  14,  14,  15,
+    15,  16,  16,  17,  17,  18,  18,  19,  19,  20,  20,  21,  22,  22,  23,  23,
+    24,  25,  25,  26,  26,  27,  28,  28,  29,  30,  30,  31,  32,  33,  33,  34,
+    35,  35,  36,  37,  38,  39,  39,  40,  41,  42,  43,  43,  44,  45,  46,  47,
+    48,  49,  49,  50,  51,  52,  53,  54,  55,  56,  57,  58,  59,  60,  61,  62,
+    63,  64,  65,  66,  67,  68,  69,  70,  71,  73,  74,  75,  76,  77,  78,  79,
+    81,  82,  83,  84,  85,  87,  88,  89,  90,  91,  93,  94,  95,  97,  98,  99,
+    100, 102, 103, 105, 106, 107, 109, 110, 111, 113, 114, 116, 117, 119, 120, 121,
+    123, 124, 126, 127, 129, 130, 132, 133, 135, 137, 138, 140, 141, 143, 145, 146,
+    148, 149, 151, 153, 154, 156, 158, 159, 161, 163, 165, 166, 168, 170, 172, 173,
+    175, 177, 179, 181, 182, 184, 186, 188, 190, 192, 194, 196, 197, 199, 201, 203,
+    205, 207, 209, 211, 213, 215, 217, 219, 221, 223, 225, 227, 229, 231, 234, 236,
+    238, 240, 242, 244, 246, 248, 251, 253, 255, 255, 255, 255, 255, 255, 255, 255
+};
+
+/**
  * @class SensorStats
  * @brief Optimized sensor statistics tracker
  * 
@@ -86,9 +111,9 @@ class SimpleLight : public IDevice, public IEventListener {
 protected:
     uint8_t _pin;
     bool _state;
-    // FIX: C++11 compatible static initialization (avoids inline variable warning)
-    static float& brightness_multiplier() {
-        static float multiplier = 1.0f;
+    // Integer-based brightness multiplier (0-100)
+    static uint8_t& brightness_multiplier() {
+        static uint8_t multiplier = 100;
         return multiplier;
     }
 
@@ -159,12 +184,12 @@ public:
     
     /**
      * @brief Sets the global brightness multiplier
-     * @param multiplier Value between 0.0 and 1.0
+     * @param multiplier Value between 0 and 100
      * 
-     * Useful for implementing night mode (e.g., 0.2 for 20%)
+     * Useful for implementing night mode (e.g., 20 for 20%)
      */
-    static void setBrightnessMultiplier(float multiplier) {
-        brightness_multiplier() = constrain(multiplier, 0.0f, 1.0f);
+    static void setBrightnessMultiplier(uint8_t multiplier) {
+        brightness_multiplier() = constrain(multiplier, 0, 100);
     }
 };
 
@@ -173,12 +198,15 @@ public:
  * @brief Light with brightness control (dimmer)
  * 
  * Extends SimpleLight adding the ability to adjust
- * brightness via PWM
+ * brightness via PWM with smooth, non-blocking fading
  */
 class DimmableLight : public SimpleLight {
-private:
-    uint8_t _brightness;
+protected:
+    uint8_t _targetBrightness;
+    uint8_t _currentBrightness;
     uint8_t _lastBrightness;
+    unsigned long _lastUpdate;
+    static constexpr uint8_t MS_PER_STEP = 2;
 
 public:
     /**
@@ -186,7 +214,9 @@ public:
      * @param name Device identifier name
      * @param pin Arduino PWM pin to which the light is connected
      */
-    DimmableLight(const char* name, uint8_t pin) : SimpleLight(name, pin), _brightness(100), _lastBrightness(100) {
+    DimmableLight(const char* name, uint8_t pin) 
+        : SimpleLight(name, pin), _targetBrightness(100), _currentBrightness(0), 
+          _lastBrightness(100), _lastUpdate(0) {
         const_cast<DeviceType&>(type) = DeviceType::LightDimmable;
     }
 
@@ -198,23 +228,46 @@ public:
      * and converted to PWM. Emits a DeviceValueChanged event
      */
     virtual void setBrightness(uint8_t level) {
-        _brightness = constrain(level, 0, 100);
+        _targetBrightness = constrain(level, 0, 100);
         
-        if (_brightness > 0) {
-            _lastBrightness = _brightness;
+        if (_targetBrightness > 0) {
+            _lastBrightness = _targetBrightness;
         }
         
-        _state = (_brightness > 0);
-        uint8_t pwm_value = map(_brightness * brightness_multiplier(), 0, 100, PWM_MIN, PWM_MAX);
-        analogWrite(_pin, pwm_value);
-        EventSystem::instance().emit(EventType::DeviceValueChanged, this, _brightness);
+        _state = (_targetBrightness > 0);
+        EventSystem::instance().emit(EventType::DeviceValueChanged, this, _targetBrightness);
     }
 
     /**
      * @brief Gets the current brightness level
      * @return Brightness level (0-100)
      */
-    uint8_t getBrightness() const { return _brightness; }
+    uint8_t getBrightness() const { return _targetBrightness; }
+    
+    /**
+     * @brief Periodic update for smooth fading
+     * 
+     * Implements time-based fading with frame-skip support
+     */
+    void update() override {
+        unsigned long now = millis();
+        unsigned long diffTime = now - _lastUpdate;
+        
+        if (diffTime >= MS_PER_STEP && _currentBrightness != _targetBrightness) {
+            uint8_t stepsToTake = diffTime / MS_PER_STEP;
+            
+            if (_currentBrightness < _targetBrightness) {
+                uint8_t diff = _targetBrightness - _currentBrightness;
+                _currentBrightness += min(stepsToTake, diff);
+            } else {
+                uint8_t diff = _currentBrightness - _targetBrightness;
+                _currentBrightness -= min(stepsToTake, diff);
+            }
+            
+            applyHardware();
+            _lastUpdate = now - (diffTime % MS_PER_STEP);
+        }
+    }
     
     /**
      * @brief Toggles the light state while preserving brightness
@@ -224,31 +277,43 @@ public:
      */
     void toggle() override {
         if (_state) {
-            _lastBrightness = _brightness;
+            _lastBrightness = _targetBrightness;
             setBrightness(0);
         } else {
             setBrightness(_lastBrightness > 0 ? _lastBrightness : 100);
         }
     }
     
-    /**
-     * @brief Handles received events
-     * @param type Event type
-     * @param source Event source device
-     * @param value Value associated with the event
-     */
-    void handleEvent(EventType type, IDevice* source, int value) override {
-        if (type == EventType::ButtonPressed && source == this) {
-            toggle();
-        }
-    }
-
 protected:
     /**
-     * @brief Protected access to current brightness
-     * @return Reference to brightness value
+     * @brief Applies current brightness to hardware with gamma correction
      */
-    uint8_t& brightness() { return _brightness; }
+    void applyHardware() {
+        if (_currentBrightness == 0) {
+            analogWrite(_pin, PWM_MIN);
+            return;
+        }
+        
+        // Apply brightness multiplier: (value * multiplier) / 100
+        uint16_t scaled = ((uint16_t)_currentBrightness * brightness_multiplier()) / 100;
+        uint8_t linear = map(scaled, 0, 100, PWM_MIN, PWM_MAX);
+        
+        // Apply gamma correction
+        uint8_t gamma_corrected = pgm_read_byte(&GAMMA_LUT[linear]);
+        analogWrite(_pin, gamma_corrected);
+    }
+    
+    /**
+     * @brief Protected access to target brightness
+     * @return Reference to target brightness value
+     */
+    uint8_t& targetBrightness() { return _targetBrightness; }
+    
+    /**
+     * @brief Protected access to current brightness
+     * @return Reference to current brightness value
+     */
+    uint8_t& currentBrightness() { return _currentBrightness; }
     
     /**
      * @brief Protected access to last saved brightness
@@ -285,12 +350,15 @@ const RGBColor PRESET_COLORS[] PROGMEM = {
  * @brief RGB light with color and brightness control
  * 
  * Manages an RGB light with three separate PWM pins
- * and support for color presets
+ * and support for color presets with smooth fading
  */
 class RGBLight : public DimmableLight {
 private:
     uint8_t _pin_g, _pin_b;
-    RGBColor _color;
+    RGBColor _targetColor;
+    RGBColor _currentColor;
+    unsigned long _lastColorUpdate;
+    static constexpr uint8_t MS_PER_STEP = 2;
 
 public:
     /**
@@ -301,7 +369,9 @@ public:
      * @param pin_b PWM pin for blue
      */
     RGBLight(const char* name, uint8_t pin_r, uint8_t pin_g, uint8_t pin_b) 
-        : DimmableLight(name, pin_r), _pin_g(pin_g), _pin_b(pin_b), _color({PWM_MAX, PWM_MAX, PWM_MAX}) {
+        : DimmableLight(name, pin_r), _pin_g(pin_g), _pin_b(pin_b), 
+          _targetColor({PWM_MAX, PWM_MAX, PWM_MAX}), _currentColor({0, 0, 0}), 
+          _lastColorUpdate(0) {
         const_cast<DeviceType&>(type) = DeviceType::LightRGB;
         pinMode(_pin_g, OUTPUT);
         pinMode(_pin_b, OUTPUT);
@@ -314,16 +384,39 @@ public:
      * Emits a DeviceValueChanged event
      */
     void setColor(RGBColor c) {
-        _color = c;
-        applyColor();
+        _targetColor = c;
         EventSystem::instance().emit(EventType::DeviceValueChanged, this, 0);
     }
 
     /**
-     * @brief Gets the current color
+     * @brief Gets the current target color
      * @return RGBColor structure with current values
      */
-    RGBColor getColor() const { return _color; }
+    RGBColor getColor() const { return _targetColor; }
+
+    /**
+     * @brief Channel-specific setters/getters for template compatibility
+     */
+    inline void setRed(uint8_t value) {
+        _targetColor.r = value;
+        EventSystem::instance().emit(EventType::DeviceValueChanged, this, 0);
+    }
+    
+    inline uint8_t getRed() const { return _targetColor.r; }
+    
+    inline void setGreen(uint8_t value) {
+        _targetColor.g = value;
+        EventSystem::instance().emit(EventType::DeviceValueChanged, this, 0);
+    }
+    
+    inline uint8_t getGreen() const { return _targetColor.g; }
+    
+    inline void setBlue(uint8_t value) {
+        _targetColor.b = value;
+        EventSystem::instance().emit(EventType::DeviceValueChanged, this, 0);
+    }
+    
+    inline uint8_t getBlue() const { return _targetColor.b; }
 
     /**
      * @brief Sets a color from a predefined preset
@@ -342,15 +435,91 @@ public:
      * Applies the brightness_multiplier and updates all three channels
      */
     void setBrightness(uint8_t level) override {
-        brightness() = constrain(level, 0, 100);
+        targetBrightness() = constrain(level, 0, 100);
         
-        if (brightness() > 0) {
-            lastBrightness() = brightness();
+        if (targetBrightness() > 0) {
+            lastBrightness() = targetBrightness();
         }
         
-        _state = (brightness() > 0);
-        applyColor();
-        EventSystem::instance().emit(EventType::DeviceValueChanged, this, brightness());
+        _state = (targetBrightness() > 0);
+        EventSystem::instance().emit(EventType::DeviceValueChanged, this, targetBrightness());
+    }
+
+    /**
+     * @brief Periodic update for smooth color and brightness fading
+     * 
+     * Implements time-based fading with frame-skip support for all channels
+     */
+    void update() override {
+        unsigned long now = millis();
+        
+        // Update brightness
+        unsigned long diffTime = now - _lastUpdate;
+        if (diffTime >= MS_PER_STEP && currentBrightness() != targetBrightness()) {
+            uint8_t stepsToTake = diffTime / MS_PER_STEP;
+            
+            if (currentBrightness() < targetBrightness()) {
+                uint8_t diff = targetBrightness() - currentBrightness();
+                currentBrightness() += min(stepsToTake, diff);
+            } else {
+                uint8_t diff = currentBrightness() - targetBrightness();
+                currentBrightness() -= min(stepsToTake, diff);
+            }
+            
+            _lastUpdate = now - (diffTime % MS_PER_STEP);
+        }
+        
+        // Update colors
+        unsigned long colorDiffTime = now - _lastColorUpdate;
+        if (colorDiffTime >= MS_PER_STEP) {
+            uint8_t stepsToTake = colorDiffTime / MS_PER_STEP;
+            bool colorChanged = false;
+            
+            // Fade red channel
+            if (_currentColor.r != _targetColor.r) {
+                if (_currentColor.r < _targetColor.r) {
+                    uint8_t diff = _targetColor.r - _currentColor.r;
+                    _currentColor.r += min(stepsToTake, diff);
+                } else {
+                    uint8_t diff = _currentColor.r - _targetColor.r;
+                    _currentColor.r -= min(stepsToTake, diff);
+                }
+                colorChanged = true;
+            }
+            
+            // Fade green channel
+            if (_currentColor.g != _targetColor.g) {
+                if (_currentColor.g < _targetColor.g) {
+                    uint8_t diff = _targetColor.g - _currentColor.g;
+                    _currentColor.g += min(stepsToTake, diff);
+                } else {
+                    uint8_t diff = _currentColor.g - _targetColor.g;
+                    _currentColor.g -= min(stepsToTake, diff);
+                }
+                colorChanged = true;
+            }
+            
+            // Fade blue channel
+            if (_currentColor.b != _targetColor.b) {
+                if (_currentColor.b < _targetColor.b) {
+                    uint8_t diff = _targetColor.b - _currentColor.b;
+                    _currentColor.b += min(stepsToTake, diff);
+                } else {
+                    uint8_t diff = _currentColor.b - _targetColor.b;
+                    _currentColor.b -= min(stepsToTake, diff);
+                }
+                colorChanged = true;
+            }
+            
+            if (colorChanged) {
+                _lastColorUpdate = now - (colorDiffTime % MS_PER_STEP);
+            }
+        }
+        
+        // Apply to hardware if anything changed
+        if (diffTime >= MS_PER_STEP || colorDiffTime >= MS_PER_STEP) {
+            applyColor();
+        }
     }
 
     /**
@@ -360,34 +529,42 @@ public:
      */
     void toggle() override {
         if (_state) {
-            lastBrightness() = brightness();
-            brightness() = 0;
+            lastBrightness() = targetBrightness();
+            targetBrightness() = 0;
             _state = false;
         } else {
-            brightness() = lastBrightness() > 0 ? lastBrightness() : 100;
+            targetBrightness() = lastBrightness() > 0 ? lastBrightness() : 100;
             _state = true;
         }
-        applyColor();
         EventSystem::instance().emit(EventType::DeviceStateChanged, this, _state);
     }
 
 private:
     /**
-     * @brief Applies the current color to PWM pins
+     * @brief Applies the current color to PWM pins with gamma correction
      * 
      * Takes into account brightness and brightness_multiplier
      */
     void applyColor() {
-        if (!_state || brightness() == 0) {
+        if (!_state || currentBrightness() == 0) {
             analogWrite(_pin, PWM_MIN);
             analogWrite(_pin_g, PWM_MIN);
             analogWrite(_pin_b, PWM_MIN);
             return;
         }
-        float factor = (brightness() * brightness_multiplier()) / 100.0f;
-        analogWrite(_pin, _color.r * factor);
-        analogWrite(_pin_g, _color.g * factor);
-        analogWrite(_pin_b, _color.b * factor);
+        
+        // Apply brightness multiplier: (brightness * multiplier) / 100
+        uint16_t factor = ((uint16_t)currentBrightness() * brightness_multiplier()) / 100;
+        
+        // Scale each channel by brightness factor
+        uint8_t r_scaled = ((uint16_t)_currentColor.r * factor) / 100;
+        uint8_t g_scaled = ((uint16_t)_currentColor.g * factor) / 100;
+        uint8_t b_scaled = ((uint16_t)_currentColor.b * factor) / 100;
+        
+        // Apply gamma correction
+        analogWrite(_pin, pgm_read_byte(&GAMMA_LUT[r_scaled]));
+        analogWrite(_pin_g, pgm_read_byte(&GAMMA_LUT[g_scaled]));
+        analogWrite(_pin_b, pgm_read_byte(&GAMMA_LUT[b_scaled]));
     }
 };
 

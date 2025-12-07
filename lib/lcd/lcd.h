@@ -28,7 +28,7 @@ extern "C" {
 	void LCD_backlight(void);
 	void LCD_autoscroll(void);
 	void LCD_no_autoscroll(void);
-	void LCD_create_char(unsigned char location, unsigned char charmap[]);
+	void LCDcreateChar(unsigned char location, unsigned char charmap[]);
 	void LCD_set_cursor(unsigned char col, unsigned char row);
 
     extern void LCD_command_write(unsigned char value);
