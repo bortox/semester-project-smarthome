@@ -6,10 +6,17 @@ extern "C" {
 #include "FlexibleMenu.h"
 #include "MemoryMonitor.h"
 #include "PhysicalInput.h"
+#include "DebugConfig.h"
 
 void setup() {
     Serial.begin(9600);
     while (!Serial);
+    
+#if DEBUG_I2C
+    // Inizializza LED integrato per debug I2C
+    pinMode(LED_BUILTIN, OUTPUT);
+    digitalWrite(LED_BUILTIN, LOW);
+#endif
     
     i2c_init();
     LCD_init();

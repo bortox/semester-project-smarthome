@@ -31,7 +31,10 @@ private:
     T* _data;
     uint8_t _size;
     uint8_t _capacity;
-    static constexpr uint8_t MAX_CAPACITY = 64; // Aumentato da 16 a 64
+    
+    static constexpr uint8_t GROW_STEP = 4; 
+    static constexpr uint8_t MAX_CAPACITY = 64;
+    static constexpr uint8_t SHRINK_THRESHOLD = 8; // Shrink when unused space > 8
 
 public:
     DynamicArray() : _data(nullptr), _size(0), _capacity(0) {}
@@ -40,20 +43,21 @@ public:
         delete[] _data;
     }
 
+    // Memory Safety: Prevent accidental copies (saves RAM, prevents double-free)
+    DynamicArray(const DynamicArray&) = delete;
+    DynamicArray& operator=(const DynamicArray&) = delete;
+
     bool add(const T& item) {
         if (_size >= _capacity) {
-            uint8_t newCapacity = _capacity == 0 ? 4 : _capacity * 2;
+            uint8_t newCapacity = _capacity + GROW_STEP;
+            
             if (newCapacity > MAX_CAPACITY) {
-                newCapacity = MAX_CAPACITY;
-            }
-            if (_size >= MAX_CAPACITY) {
-                return false; // Capacità massima raggiunta
+                if (_capacity < MAX_CAPACITY) newCapacity = MAX_CAPACITY;
+                else return false; 
             }
 
             T* newData = new T[newCapacity];
-            if (!newData) {
-                return false; // Allocazione fallita
-            }
+            if (!newData) return false; 
 
             for (uint8_t i = 0; i < _size; i++) {
                 newData[i] = _data[i];
@@ -74,22 +78,53 @@ public:
                 _data[i] = _data[i + 1];
             }
             _size--;
+            
+            // NEW: Auto-shrink to save RAM when waste is significant
+            if (_capacity > SHRINK_THRESHOLD && (_capacity - _size) >= SHRINK_THRESHOLD) {
+                shrink();
+            }
         }
+    }
+
+    // NEW: Manual memory reclamation
+    void shrink() {
+        if (_size == 0) {
+            delete[] _data;
+            _data = nullptr;
+            _capacity = 0;
+            return;
+        }
+        
+        uint8_t newCapacity = ((_size / GROW_STEP) + 1) * GROW_STEP;
+        if (newCapacity >= _capacity) return;
+        
+        T* newData = new T[newCapacity];
+        if (!newData) return;
+        
+        for (uint8_t i = 0; i < _size; i++) {
+            newData[i] = _data[i];
+        }
+        
+        delete[] _data;
+        _data = newData;
+        _capacity = newCapacity;
     }
 
     T& operator[](uint8_t index) { return _data[index]; }
     const T& operator[](uint8_t index) const { return _data[index]; }
     uint8_t size() const { return _size; }
-    void clear() { _size = 0; }
+    void clear() { _size = 0; } // Nota: non libera memoria, resetta solo counter
 };
 
 // --- Interfaces ---
 class IDevice {
 public:
+    const char* const name;
+    const DeviceType type;
+    
+    IDevice(const char* n, DeviceType t) : name(n), type(t) {}
     virtual ~IDevice() {}
-    virtual const char* getName() const = 0;
     virtual void update() = 0;
-    virtual DeviceType getType() const = 0;
     virtual bool isLight() const { return false; }
     virtual bool isSensor() const { return false; }
 };
@@ -192,10 +227,6 @@ public:
 
     DynamicArray<IDevice*>& getDevices() {
         return _devices;
-    }
-    
-    uint8_t getDeviceCount() const {
-        return _devices.size();
     }
 };
 

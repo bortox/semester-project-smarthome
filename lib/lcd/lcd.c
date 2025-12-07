@@ -23,10 +23,16 @@
 #define F_CPU 16E6 // CPU clock 16 MHz
 #endif
 
+#include <Arduino.h>  // Per digitalWrite in debug I2C
 #include "i2cmaster.h"
 #include "lcd.h"
 #include "util/delay.h"
 #include <stdio.h>
+
+// Include DebugConfig per flag DEBUG_I2C
+#ifndef DEBUG_I2C
+#define DEBUG_I2C 0  // Default OFF se non definito altrove
+#endif
 
 
 
@@ -493,19 +499,31 @@ static void LCD_pulse_enable_pos(unsigned char _data){
 
 
 static void LCD_write_PCF8574(unsigned char value) {
-	//I2C_Write_Byte_Single_Reg(LCD_PCF8574_ADDR, value | _backlightval);
-	i2c_start_wait(LCD_PCF8574_ADDR + I2C_WRITE);
-	i2c_write(value | _backlightval);
-	i2c_stop();
+#if DEBUG_I2C
+    digitalWrite(LED_BUILTIN, HIGH);
+#endif
+    //I2C_Write_Byte_Single_Reg(LCD_PCF8574_ADDR, value | _backlightval);
+    i2c_start_wait(LCD_PCF8574_ADDR + I2C_WRITE);
+    i2c_write(value | _backlightval);
+    i2c_stop();
+#if DEBUG_I2C
+    digitalWrite(LED_BUILTIN, LOW);
+#endif
 }
 
 
 static unsigned char LCD_read_PCF8574(void) {
-	//return I2C_Read_Byte_Single_Reg(LCD_PCF8574_ADDR);
-	i2c_start_wait(LCD_PCF8574_ADDR + I2C_READ);
-	unsigned char result = i2c_readNak();
-	i2c_stop();
-	return result;
+#if DEBUG_I2C
+    digitalWrite(LED_BUILTIN, HIGH);
+#endif
+    //return I2C_Read_Byte_Single_Reg(LCD_PCF8574_ADDR);
+    i2c_start_wait(LCD_PCF8574_ADDR + I2C_READ);
+    unsigned char result = i2c_readNak();
+    i2c_stop();
+#if DEBUG_I2C
+    digitalWrite(LED_BUILTIN, LOW);
+#endif
+    return result;
 }
 
 /* putchr provides an interface to avr gcc stdio stdout to be used

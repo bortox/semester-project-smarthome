@@ -185,28 +185,22 @@ class ButtonInput { void handleButton(); };
 - Logica comune in classi base/template
 - `DynamicArray<T>` usato ovunque serve crescita dinamica
 - `MenuBuilder` factory methods evitano duplicazione
+- **Template ValueSliderItem** elimina static helper functions
 
 **Esempio:**
 ```cpp
-// ❌ BAD: Codice duplicato per ogni lista
-void buildLightsMenu() {
-    for (auto device : devices) {
-        if (device->isLight()) { ... }
-    }
-}
-void buildSensorsMenu() {
-    for (auto device : devices) {
-        if (device->isSensor()) { ... }
-    }
-}
+// ❌ BAD: Static helpers per ogni device/valore
+static int getBrightness(IDevice* d) { ... }
+static void setBrightness(IDevice* d, int v) { ... }
+ValueSliderItem(device, "Level", getBrightness, setBrightness, ...);
 
-// ✅ GOOD: Template method
-template<typename Predicate>
-MenuPage* buildFilteredMenu(Predicate pred) {
-    for (auto device : devices) {
-        if (pred(device)) { ... }
-    }
-}
+// ✅ GOOD: Template con member pointers
+ValueSliderItem<DimmableLight>(
+    light, F("Level"),
+    &DimmableLight::getBrightness,
+    &DimmableLight::setBrightness,
+    0, 100, 10
+);
 ```
 
 #### 3. **Decoupling (Low Coupling, High Cohesion)**

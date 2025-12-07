@@ -78,7 +78,6 @@ void InputManager::updateAll() {
 
 PotentiometerInput::PotentiometerInput(uint8_t pin, DimmableLight* light)
     : _pin(pin), _light(light), _lastMappedValue(0), _sampleIndex(0) {
-    // Inizializza l'array di campioni per la media mobile
     for (uint8_t i = 0; i < SAMPLE_COUNT; i++) {
         _samples[i] = 0;
     }
@@ -100,15 +99,10 @@ void PotentiometerInput::update() {
 
     uint8_t mappedValue = map(avgValue, 0, 1023, 0, 100);
 
-    // FIX: Applica isteresi e accendi automaticamente la luce
-    if (abs((int16_t)mappedValue - (int16_t)_lastMappedValue) >= 5) {
-        // Se il valore > 0, accendi la luce automaticamente alla luminosità desiderata
-        // Se il valore = 0, spegni la luce
-        if (mappedValue > 4) {
-            // Accendi e imposta brightness (setBrightness gestisce già _state = true)
+    if (abs((int16_t)mappedValue - (int16_t)_lastMappedValue) >= POT_CHANGE_THRESHOLD) {
+        if (mappedValue > POT_OFF_THRESHOLD) {
             _light->setBrightness(mappedValue);
         } else {
-            // Spegni completamente
             _light->setBrightness(0);
         }
         

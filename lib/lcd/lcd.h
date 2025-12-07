@@ -5,7 +5,7 @@
 
 #ifdef	__cplusplus
 extern "C" {
-	#endif
+#endif
 
 	void LCD_init(void);
 	void LCD_write_char(char message);
@@ -39,7 +39,8 @@ extern "C" {
 	unsigned char LCD_address_counter(void);
 	unsigned char LCD_read_DDRam(unsigned char address);
 	unsigned char LCD_read_CGRam(unsigned char address);
-	#ifdef	__cplusplus
+	
+#ifdef	__cplusplus
 }
 #endif
 

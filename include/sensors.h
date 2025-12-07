@@ -1,5 +1,6 @@
 #pragma once
-#include <Arduino.h> // CHANGED: Torna ad Arduino
+#include <Arduino.h>
+#include "DebugConfig.h"
 extern "C" { 
     #include "i2cmaster.h"
  }
@@ -24,13 +25,22 @@ public:
     LM75Sensor(const char* name) : Sensor<float>(name) {}
     
     void begin() {
+#if DEBUG_I2C
+        digitalWrite(LED_BUILTIN, HIGH);
+#endif
         i2c_start_wait(LM75_ADR + I2C_WRITE);
         i2c_write(0x01);
         i2c_write(0x00);
         i2c_stop();
+#if DEBUG_I2C
+        digitalWrite(LED_BUILTIN, LOW);
+#endif
     }
     
     float getValue() const override {
+#if DEBUG_I2C
+        digitalWrite(LED_BUILTIN, HIGH);
+#endif
         unsigned int temp_data;
         i2c_start_wait(LM75_ADR + I2C_WRITE);
         i2c_write(0x00);
@@ -38,6 +48,9 @@ public:
         uint8_t high_byte = i2c_readAck();
         uint8_t low_byte = i2c_readNak();
         i2c_stop();
+#if DEBUG_I2C
+        digitalWrite(LED_BUILTIN, LOW);
+#endif
         
         temp_data = (high_byte << 8) | low_byte;
         temp_data = temp_data >> 5;

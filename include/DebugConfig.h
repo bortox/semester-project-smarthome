@@ -9,6 +9,13 @@
   #define DEBUG_SERIAL 1
 #endif
 
+// Abilita/disabilita debug I2C con LED integrato
+// LED acceso = comunicazione I2C in corso
+// LED fisso = blocco I2C (identifica punto di hang)
+#ifndef DEBUG_I2C
+  #define DEBUG_I2C 1
+#endif
+
 #if DEBUG_SERIAL
   #define DEBUG_PRINT(x) Serial.print(x)
   #define DEBUG_PRINTLN(x) Serial.println(x)

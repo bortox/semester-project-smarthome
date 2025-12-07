@@ -267,14 +267,13 @@ public:
     void draw(uint8_t row, bool selected) override {
         LCD_set_cursor(0, row);
         LCD_write_str(selected ? "> " : "  ");
-        LCD_write_str(_device->getName());
+        LCD_write_str(_device->name);
         LCD_set_cursor(15, row);
         
-        if (_device->getType() == DeviceType::LightSimple || _device->getType() == DeviceType::LightOutside) {
+        if (_device->type == DeviceType::LightSimple || _device->type == DeviceType::LightOutside) {
             bool state = static_cast<SimpleLight*>(_device)->getState();
             LCD_write_str(state ? "ON " : "OFF");
-        } else if (_device->getType() == DeviceType::LightDimmable || _device->getType() == DeviceType::LightRGB) {
-            // Per luci complesse mostra stato base
+        } else if (_device->type == DeviceType::LightDimmable || _device->type == DeviceType::LightRGB) {
             bool state = static_cast<SimpleLight*>(_device)->getState();
             LCD_write_str(state ? "ON " : "OFF");
         }
@@ -288,8 +287,67 @@ public:
     }
 };
 
-// NUOVO: Slider Generico per Luminosità e Colori
+// DRY: Template-based Value Slider
+template<typename DeviceType>
 class ValueSliderItem : public MenuItem {
+private:
+    DeviceType* _device;
+    const __FlashStringHelper* _label;
+    uint8_t (DeviceType::*_getter)() const;
+    void (DeviceType::*_setter)(uint8_t);
+    uint8_t _min, _max, _step;
+
+public:
+    ValueSliderItem(DeviceType* device, 
+                   const __FlashStringHelper* label,
+                   uint8_t (DeviceType::*getter)() const,
+                   void (DeviceType::*setter)(uint8_t),
+                   uint8_t minVal, uint8_t maxVal, uint8_t step)
+        : _device(device), _label(label), _getter(getter), _setter(setter),
+          _min(minVal), _max(maxVal), _step(step) {}
+
+    bool relatesTo(IDevice* dev) override { return _device == dev; }
+
+    void draw(uint8_t row, bool selected) override {
+        LCD_set_cursor(0, row);
+        LCD_write_str(selected ? "< " : "  ");
+        
+        printLabel(_label);
+        LCD_write_str(": ");
+        
+        uint8_t val = (_device->*_getter)();
+        char buf[5];
+        itoa(val, buf, 10);
+        LCD_write_str(buf);
+        
+        if (selected) LCD_write_str(" >");
+
+        LCD_set_cursor(0, row + 1);
+        LCD_write_char('[');
+        int bars = map(val, _min, _max, 0, 18);
+        for (int i = 0; i < 18; i++) {
+            LCD_write_char(i < bars ? (char)0xFF : ' ');
+        }
+        LCD_write_char(']');
+    }
+
+    bool handleInput(char key) override {
+        uint8_t current = (_device->*_getter)();
+        if (key == 'U') {
+            uint8_t newVal = min(_max, (uint8_t)(current + _step));
+            (_device->*_setter)(newVal);
+            return true;
+        } else if (key == 'D') {
+            uint8_t newVal = max(_min, (uint8_t)(current - _step));
+            (_device->*_setter)(newVal);
+            return true;
+        }
+        return false;
+    }
+};
+
+// FIX: Non-template wrapper for function pointer compatibility
+class GenericSliderItem : public MenuItem {
 private:
     IDevice* _device;
     const __FlashStringHelper* _label;
@@ -298,9 +356,10 @@ private:
     int _min, _max, _step;
 
 public:
-    ValueSliderItem(IDevice* device, const __FlashStringHelper* label, 
-                   ValueGetter getter, ValueSetter setter, 
-                   int minVal, int maxVal, int step)
+    GenericSliderItem(IDevice* device, 
+                     const __FlashStringHelper* label,
+                     ValueGetter getter, ValueSetter setter,
+                     int minVal, int maxVal, int step)
         : _device(device), _label(label), _getter(getter), _setter(setter),
           _min(minVal), _max(maxVal), _step(step) {}
 
@@ -308,8 +367,7 @@ public:
 
     void draw(uint8_t row, bool selected) override {
         LCD_set_cursor(0, row);
-        if (selected) LCD_write_str("< ");
-        else LCD_write_str("  ");
+        LCD_write_str(selected ? "< " : "  ");
         
         printLabel(_label);
         LCD_write_str(": ");
@@ -321,7 +379,6 @@ public:
         
         if (selected) LCD_write_str(" >");
 
-        // Barra progresso
         LCD_set_cursor(0, row + 1);
         LCD_write_char('[');
         int bars = map(val, _min, _max, 0, 18);
@@ -336,145 +393,91 @@ public:
         if (key == 'U') {
             int newVal = min(_max, current + _step);
             _setter(_device, newVal);
-            return true; // FIX: Consuma l'input
+            return true;
         } else if (key == 'D') {
             int newVal = max(_min, current - _step);
             _setter(_device, newVal);
-            return true; // FIX: Consuma l'input
+            return true;
         }
         return false;
     }
 };
 
-// NUOVO: Item per visualizzare sensori (ora interattivo)
-class SensorDisplayItem : public MenuItem {
+// KISS: Merged InfoItem
+class InfoItem : public MenuItem {
+public:
+    enum class Mode : uint8_t { STATIC, LIVE_TEMP, LIVE_LIGHT, LIVE_PIR };
+    
 private:
+    const __FlashStringHelper* _label;
+    Mode _mode;
     IDevice* _device;
+    int16_t _staticValue;
     const __FlashStringHelper* _unit;
+    bool _isTemperature;
+
+    void printValue(int16_t value) {
+        char buf[8];
+        if (_isTemperature) {
+            float val = value / 10.0f;
+            dtostrf(val, 4, 1, buf);
+            LCD_write_str(buf);
+            LCD_write_char(0xDF);
+        } else {
+            itoa(value, buf, 10);
+            LCD_write_str(buf);
+            LCD_write_char(' ');
+        }
+        printLabel(_unit);
+    }
 
 public:
-    SensorDisplayItem(IDevice* device, const __FlashStringHelper* unit) 
-        : _device(device), _unit(unit) {}
+    InfoItem(const __FlashStringHelper* label, int16_t value, 
+             const __FlashStringHelper* unit, bool isTemp = false)
+        : _label(label), _mode(Mode::STATIC), _device(nullptr), 
+          _staticValue(value), _unit(unit), _isTemperature(isTemp) {}
+
+    InfoItem(IDevice* device, const __FlashStringHelper* unit, Mode mode)
+        : _label(nullptr), _mode(mode), _device(device), _staticValue(0), 
+          _unit(unit), _isTemperature(mode == Mode::LIVE_TEMP) {}
 
     bool relatesTo(IDevice* dev) override { return _device == dev; }
 
     void draw(uint8_t row, bool selected) override {
         LCD_set_cursor(0, row);
         LCD_write_str(selected ? "> " : "  ");
-        LCD_write_str(_device->getName());
-        LCD_write_str(": ");
         
-        if (_device->getType() == DeviceType::SensorTemperature) {
-            TemperatureSensor* temp = static_cast<TemperatureSensor*>(_device);
-            char buf[8];
-            dtostrf(temp->getTemperature(), 4, 1, buf);
-            LCD_write_str(buf);
-            LCD_write_char(' ');
-            printLabel(_unit);
-        } else if (_device->getType() == DeviceType::SensorLight) {
-            PhotoresistorSensor* light = static_cast<PhotoresistorSensor*>(_device);
-            char buf[5];
-            itoa(light->getValue(), buf, 10);
-            LCD_write_str(buf);
-            LCD_write_char(' ');
-            printLabel(_unit);
-        } else if (_device->getType() == DeviceType::SensorPIR) {
-            PIRSensorDevice* pir = static_cast<PIRSensorDevice*>(_device);
-            LCD_write_str(pir->isMotionDetected() ? "Yes" : "No");
-        }
-    }
-
-    bool handleInput(char key) override {
-        // FIX: Permetti apertura sottomenu per sensori numerici
-        if (key == 'E') {
-            DeviceType type = _device->getType();
-            if (type == DeviceType::SensorTemperature || type == DeviceType::SensorLight) {
-                return false; // Lascia che NavigationManager gestisca come SubMenuItem
+        if (_mode == Mode::STATIC) {
+            printLabel(_label);
+            LCD_write_str(": ");
+            printValue(_staticValue);
+        } else {
+            if (_label) {
+                printLabel(_label);
+            } else {
+                LCD_write_str(_device->name);
+            }
+            LCD_write_str(": ");
+            
+            switch (_mode) {
+                case Mode::LIVE_TEMP: {
+                    int16_t value = (int16_t)(static_cast<TemperatureSensor*>(_device)->getTemperature() * 10);
+                    printValue(value);
+                    break;
+                }
+                case Mode::LIVE_LIGHT: {
+                    int16_t value = static_cast<PhotoresistorSensor*>(_device)->getValue();
+                    printValue(value);
+                    break;
+                }
+                case Mode::LIVE_PIR:
+                    LCD_write_str(static_cast<PIRSensorDevice*>(_device)->isMotionDetected() ? "Yes" : "No");
+                    break;
+                case Mode::STATIC:
+                    // Already handled above
+                    break;
             }
         }
-        return false;
-    }
-    
-    IDevice* getDevice() const { return _device; }
-};
-
-// NUOVO: Item per visualizzare una statistica (Min/Max/Avg)
-class StatDisplayItem : public MenuItem {
-private:
-    const __FlashStringHelper* _label;
-    int16_t _value;
-    const __FlashStringHelper* _unit;
-    bool _isTemperature;
-
-public:
-    StatDisplayItem(const __FlashStringHelper* label, int16_t value, const __FlashStringHelper* unit, bool isTemp = false)
-        : _label(label), _value(value), _unit(unit), _isTemperature(isTemp) {}
-
-    void draw(uint8_t row, bool selected) override {
-        LCD_set_cursor(0, row);
-        LCD_write_str("  ");
-        printLabel(_label);
-        LCD_write_str(": ");
-        
-        char buf[8];
-        if (_isTemperature) {
-            // Per temperatura, dividi per 10 e mostra con 1 decimale
-            float val = _value / 10.0f;
-            dtostrf(val, 4, 1, buf);
-        } else {
-            itoa(_value, buf, 10);
-        }
-        LCD_write_str(buf);
-        
-        // Aggiungi simbolo ° per temperatura
-        if (_isTemperature) {
-            LCD_write_char(0xDF);  // Simbolo °
-        } else {
-            LCD_write_char(' ');
-        }
-        printLabel(_unit);
-    }
-
-    bool handleInput(char key) override { return false; }
-};
-
-// NUOVO: Item per mostrare valore corrente sensore (dinamico)
-class CurrentValueItem : public MenuItem {
-private:
-    IDevice* _device;
-    const __FlashStringHelper* _unit;
-    bool _isTemperature;
-
-public:
-    CurrentValueItem(IDevice* device, const __FlashStringHelper* unit, bool isTemp = false)
-        : _device(device), _unit(unit), _isTemperature(isTemp) {}
-
-    bool relatesTo(IDevice* dev) override { return _device == dev; }
-
-    void draw(uint8_t row, bool selected) override {
-        LCD_set_cursor(0, row);
-        LCD_write_str("  Now: ");
-        
-        char buf[8];
-        if (_device->getType() == DeviceType::SensorTemperature) {
-            TemperatureSensor* temp = static_cast<TemperatureSensor*>(_device);
-            float val = temp->getTemperature();
-            dtostrf(val, 4, 1, buf);
-        } else if (_device->getType() == DeviceType::SensorLight) {
-            PhotoresistorSensor* light = static_cast<PhotoresistorSensor*>(_device);
-            int val = light->getValue();
-            itoa(val, buf, 10);
-        }
-        
-        LCD_write_str(buf);
-        
-        // Aggiungi simbolo ° per temperatura
-        if (_isTemperature) {
-            LCD_write_char(0xDF);  // Simbolo °
-        } else {
-            LCD_write_char(' ');
-        }
-        printLabel(_unit);
     }
 
     bool handleInput(char key) override { return false; }
@@ -594,72 +597,71 @@ public:
     }
 };
 
-// --- BUILDERS ---
+// --- BUILDERS (DRY Refactored) ---
 
 class MenuBuilder {
 public:
-    // Helper Getters/Setters per ValueSliderItem
-    static int getBrightness(IDevice* d) { return static_cast<DimmableLight*>(d)->getBrightness(); }
-    static void setBrightness(IDevice* d, int v) { static_cast<DimmableLight*>(d)->setBrightness(v); }
-    
+    // DRY: RGB Helper functions (since we can't modify Devices.h)
     static int getRed(IDevice* d) { return static_cast<RGBLight*>(d)->getColor().r; }
-    static void setRedValue(IDevice* d, int v) {  // FIX: Rinominato per evitare confusione
+    static void setRedValue(IDevice* d, int v) {
         RGBLight* l = static_cast<RGBLight*>(d); 
-        RGBColor c = l->getColor(); c.r = v; l->setColor(c); 
+        RGBColor c = l->getColor(); 
+        c.r = v; 
+        l->setColor(c); 
     }
+    
     static int getGreen(IDevice* d) { return static_cast<RGBLight*>(d)->getColor().g; }
     static void setGreenValue(IDevice* d, int v) {
         RGBLight* l = static_cast<RGBLight*>(d); 
-        RGBColor c = l->getColor(); c.g = v; l->setColor(c); 
+        RGBColor c = l->getColor(); 
+        c.g = v; 
+        l->setColor(c); 
     }
+    
     static int getBlue(IDevice* d) { return static_cast<RGBLight*>(d)->getColor().b; }
     static void setBlueValue(IDevice* d, int v) {
         RGBLight* l = static_cast<RGBLight*>(d); 
-        RGBColor c = l->getColor(); c.b = v; l->setColor(c); 
+        RGBColor c = l->getColor(); 
+        c.b = v; 
+        l->setColor(c); 
     }
-
-    // Helper Setters per ActionItem
+    
+    static int getBrightness(IDevice* d) { return static_cast<DimmableLight*>(d)->getBrightness(); }
+    static void setBrightness(IDevice* d, int v) { static_cast<DimmableLight*>(d)->setBrightness(v); }
+    
+    // Helper Setters for ActionItem
     static void setOutsideMode(IDevice* d, int v) { static_cast<OutsideLight*>(d)->setMode((OutsideMode)v); }
     static void setRGBPreset(IDevice* d, int v) { static_cast<RGBLight*>(d)->setPreset((RGBPreset)v); }
 
-    // --- PAGE BUILDERS (JIT) ---
+    // DRY: Generic slider page (works with function pointers)
+    static MenuPage* buildSliderPage(void* context, const __FlashStringHelper* title,
+                                     const __FlashStringHelper* label,
+                                     ValueGetter getter, ValueSetter setter,
+                                     int minVal, int maxVal, int step) {
+        IDevice* device = static_cast<IDevice*>(context);
+        MenuPage* page = new MenuPage(title, nullptr);
+        if (!page) return nullptr;
 
-    static MenuPage* buildBrightnessPage(void* context) {
-        DimmableLight* light = (DimmableLight*)context;
-        MenuPage* page = new MenuPage(F("Brightness"), NavigationManager::instance().getCurrentPage());
-        page->addItem(new ValueSliderItem(light, F("Level"), getBrightness, setBrightness, 0, 100, 10));
+        // FIX: Use GenericSliderItem instead of template version
+        page->addItem(new GenericSliderItem(device, label, getter, setter, minVal, maxVal, step));
         page->addItem(new BackMenuItem(NavigationManager::instance()));
         return page;
     }
 
     static MenuPage* buildRedPage(void* context) {
-        RGBLight* light = static_cast<RGBLight*>(context);
-        MenuPage* page = new MenuPage(F("Red Channel"), nullptr);
-        if (!page) return nullptr;
-
-        page->addItem(new ValueSliderItem(light, F("Red"), getRed, setRedValue, 0, 255, 10));
-        page->addItem(new BackMenuItem(NavigationManager::instance()));
-        return page;
+        return buildSliderPage(context, F("Red Channel"), F("Red"), getRed, setRedValue, 0, 255, 10);
     }
 
     static MenuPage* buildGreenPage(void* context) {
-        RGBLight* light = static_cast<RGBLight*>(context);
-        MenuPage* page = new MenuPage(F("Green Channel"), nullptr);
-        if (!page) return nullptr;
-
-        page->addItem(new ValueSliderItem(light, F("Green"), getGreen, setGreenValue, 0, 255, 10));
-        page->addItem(new BackMenuItem(NavigationManager::instance()));
-        return page;
+        return buildSliderPage(context, F("Green Channel"), F("Green"), getGreen, setGreenValue, 0, 255, 10);
     }
 
     static MenuPage* buildBluePage(void* context) {
-        RGBLight* light = static_cast<RGBLight*>(context);
-        MenuPage* page = new MenuPage(F("Blue Channel"), nullptr);
-        if (!page) return nullptr;
+        return buildSliderPage(context, F("Blue Channel"), F("Blue"), getBlue, setBlueValue, 0, 255, 10);
+    }
 
-        page->addItem(new ValueSliderItem(light, F("Blue"), getBlue, setBlueValue, 0, 255, 10));
-        page->addItem(new BackMenuItem(NavigationManager::instance()));
-        return page;
+    static MenuPage* buildBrightnessPage(void* context) {
+        return buildSliderPage(context, F("Brightness"), F("Level"), getBrightness, setBrightness, 0, 100, 10);
     }
 
     static MenuPage* buildCustomColorPage(void* context) {
@@ -678,7 +680,6 @@ public:
     static MenuPage* buildRGBPresetsPage(void* context) {
         RGBLight* light = (RGBLight*)context;
         MenuPage* page = new MenuPage(F("Select Preset"), NavigationManager::instance().getCurrentPage());
-        // Lista scrollabile di preset
         page->addItem(new ActionItem("Warm White", light, setRGBPreset, (int)RGBPreset::WARM_WHITE, NavigationManager::instance()));
         page->addItem(new ActionItem("Cool White", light, setRGBPreset, (int)RGBPreset::COOL_WHITE, NavigationManager::instance()));
         page->addItem(new ActionItem("Red", light, setRGBPreset, (int)RGBPreset::RED, NavigationManager::instance()));
@@ -735,13 +736,13 @@ public:
         
         for (size_t i = 0; i < devices.size(); i++) {
             IDevice* d = devices[i];
-            if (d->getType() == DeviceType::LightSimple) {
+            if (d->type == DeviceType::LightSimple) {
                 page->addItem(new DeviceToggleItem(d));
-            } else if (d->getType() == DeviceType::LightDimmable) {
+            } else if (d->type == DeviceType::LightDimmable) {
                 page->addItem(new SubMenuItem(F("Dimmable"), buildDimmableLightPage, d, NavigationManager::instance()));
-            } else if (d->getType() == DeviceType::LightRGB) {
+            } else if (d->type == DeviceType::LightRGB) {
                 page->addItem(new SubMenuItem(F("RGB Light"), buildRGBLightPage, d, NavigationManager::instance()));
-            } else if (d->getType() == DeviceType::LightOutside) {
+            } else if (d->type == DeviceType::LightOutside) {
                 page->addItem(new SubMenuItem(F("Outside Light"), buildOutsideLightPage, d, NavigationManager::instance()));
             }
         }
@@ -749,34 +750,28 @@ public:
         return page;
     }
 
-    // NUOVO: Builder per pagina statistiche generica (Temperatura e Luce)
+    // KISS: Refactored using InfoItem
     static MenuPage* buildSensorStatsPage(void* context) {
         IDevice* device = static_cast<IDevice*>(context);
         MenuPage* page = new MenuPage(F("Statistics"), NavigationManager::instance().getCurrentPage());
         
-        if (device->getType() == DeviceType::SensorTemperature) {
+        if (device->type == DeviceType::SensorTemperature) {
             TemperatureSensor* temp = static_cast<TemperatureSensor*>(device);
             SensorStats& stats = temp->getStats();
             
-            // Valore corrente (si aggiorna dinamicamente)
-            page->addItem(new CurrentValueItem(device, F("C"), true));
+            page->addItem(new InfoItem(device, F("C"), InfoItem::Mode::LIVE_TEMP));
+            page->addItem(new InfoItem(F("Min"), stats.getMin(), F("C"), true));
+            page->addItem(new InfoItem(F("Max"), stats.getMax(), F("C"), true));
+            page->addItem(new InfoItem(F("Avg"), stats.getAverage(), F("C"), true));
             
-            // Statistiche (valori stored * 10, quindi isTemp = true per dividere)
-            page->addItem(new StatDisplayItem(F("Min"), stats.getMin(), F("C"), true));
-            page->addItem(new StatDisplayItem(F("Max"), stats.getMax(), F("C"), true));
-            page->addItem(new StatDisplayItem(F("Avg"), stats.getAverage(), F("C"), true));
-            
-        } else if (device->getType() == DeviceType::SensorLight) {
+        } else if (device->type == DeviceType::SensorLight) {
             PhotoresistorSensor* light = static_cast<PhotoresistorSensor*>(device);
             SensorStats& stats = light->getStats();
             
-            // Valore corrente (si aggiorna dinamicamente)
-            page->addItem(new CurrentValueItem(device, F("%"), false));
-            
-            // Statistiche
-            page->addItem(new StatDisplayItem(F("Min"), stats.getMin(), F("%"), false));
-            page->addItem(new StatDisplayItem(F("Max"), stats.getMax(), F("%"), false));
-            page->addItem(new StatDisplayItem(F("Avg"), stats.getAverage(), F("%"), false));
+            page->addItem(new InfoItem(device, F("%"), InfoItem::Mode::LIVE_LIGHT));
+            page->addItem(new InfoItem(F("Min"), stats.getMin(), F("%"), false));
+            page->addItem(new InfoItem(F("Max"), stats.getMax(), F("%"), false));
+            page->addItem(new InfoItem(F("Avg"), stats.getAverage(), F("%"), false));
         }
         
         page->addItem(new BackMenuItem(NavigationManager::instance()));
@@ -799,7 +794,6 @@ public:
         return page;
     }
 
-    // FIX: Aggiungi buildSensorsPage mancante
     static MenuPage* buildSensorsPage(void* context) {
         MenuPage* page = new MenuPage(F("Sensors"), NavigationManager::instance().getCurrentPage());
         DeviceRegistry& registry = DeviceRegistry::instance();
@@ -808,17 +802,15 @@ public:
         for (size_t i = 0; i < devices.size(); i++) {
             IDevice* d = devices[i];
             if (d->isSensor()) {
-                if (d->getType() == DeviceType::SensorTemperature) {
-                    // Temperatura ha sottomenu per stats
+                if (d->type == DeviceType::SensorTemperature) {
                     page->addItem(new SubMenuItem(F("Temperature"), buildSensorStatsPage, d, NavigationManager::instance()));
                     
-                } else if (d->getType() == DeviceType::SensorLight) {
-                    // Luce ha pagina avanzata con calibrazione
+                } else if (d->type == DeviceType::SensorLight) {
                     page->addItem(new SubMenuItem(F("Light Sensor"), buildLightSettingsPage, d, NavigationManager::instance()));
                     
-                } else if (d->getType() == DeviceType::SensorPIR) {
-                    // PIR rimane read-only
-                    page->addItem(new SensorDisplayItem(d, F("")));
+                } else if (d->type == DeviceType::SensorPIR) {
+                    // KISS: Reuse InfoItem for PIR display
+                    page->addItem(new InfoItem(d, F(""), InfoItem::Mode::LIVE_PIR));
                 }
             }
         }
@@ -836,7 +828,7 @@ public:
     }
 };
 
-// Definizione di NavigationManager::handleInput DOPO SubMenuItem
+// Definizione di NavigationManager::handleInput
 inline void NavigationManager::handleInput(char key) {
     MenuPage* current = getCurrentPage();
     if (!current) return;

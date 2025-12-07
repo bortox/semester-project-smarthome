@@ -38,6 +38,8 @@ private:
     DimmableLight* _light;
     uint8_t _lastMappedValue;
     static constexpr uint8_t SAMPLE_COUNT = 8;
+    static constexpr uint8_t POT_OFF_THRESHOLD = 5;
+    static constexpr uint8_t POT_CHANGE_THRESHOLD = 3;
     uint16_t _samples[SAMPLE_COUNT];
     uint8_t _sampleIndex;
 
