@@ -270,24 +270,21 @@ public:
         LCD_write_str(_device->name);
         LCD_set_cursor(15, row);
         
-        if (_device->type == DeviceType::LightSimple || _device->type == DeviceType::LightOutside) {
-            bool state = static_cast<SimpleLight*>(_device)->getState();
-            LCD_write_str(state ? "ON " : "OFF");
-        } else if (_device->type == DeviceType::LightDimmable || _device->type == DeviceType::LightRGB) {
-            bool state = static_cast<SimpleLight*>(_device)->getState();
-            LCD_write_str(state ? "ON " : "OFF");
+        if (_device->isLight()) {
+            SimpleLight* light = static_cast<SimpleLight*>(_device);
+            LCD_write_str(light->getState() ? "ON " : "OFF");
         }
     }
     bool handleInput(char key) override {
-        if (key == 'E') {
-            if (_device->isLight()) static_cast<SimpleLight*>(_device)->toggle();
+        if (key == 'E' && _device->isLight()) {
+            static_cast<SimpleLight*>(_device)->toggle();
             return true;
         }
         return false;
     }
 };
 
-// DRY: Template-based Value Slider
+// Template-based Value Slider with Pixel-Perfect UI
 template<typename DeviceType>
 class ValueSliderItem : public MenuItem {
 private:
@@ -296,6 +293,26 @@ private:
     uint8_t (DeviceType::*_getter)() const;
     void (DeviceType::*_setter)(uint8_t);
     uint8_t _min, _max, _step;
+    
+    static bool _customCharsLoaded;
+    
+    void loadCustomChars() {
+        if (!_customCharsLoaded) {
+            // FIX: Dati locali invece di static membri PROGMEM
+            const uint8_t customChars[5][8] = {
+                {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, // Empty
+                {0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10}, // 1 pixel
+                {0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18}, // 2 pixels
+                {0x1C, 0x1C, 0x1C, 0x1C, 0x1C, 0x1C, 0x1C, 0x1C}, // 3 pixels
+                {0x1E, 0x1E, 0x1E, 0x1E, 0x1E, 0x1E, 0x1E, 0x1E}  // 4 pixels
+            };
+            
+            for (uint8_t i = 0; i < 5; i++) {
+                LCDcreateChar(i, const_cast<uint8_t*>(customChars[i]));
+            }
+            _customCharsLoaded = true;
+        }
+    }
 
 public:
     ValueSliderItem(DeviceType* device, 
@@ -304,7 +321,9 @@ public:
                    void (DeviceType::*setter)(uint8_t),
                    uint8_t minVal, uint8_t maxVal, uint8_t step)
         : _device(device), _label(label), _getter(getter), _setter(setter),
-          _min(minVal), _max(maxVal), _step(step) {}
+          _min(minVal), _max(maxVal), _step(step) {
+        loadCustomChars();
+    }
 
     bool relatesTo(IDevice* dev) override { return _device == dev; }
 
@@ -322,12 +341,31 @@ public:
         
         if (selected) LCD_write_str(" >");
 
+        // Pixel-perfect progress bar (18 chars = 90 pixels)
         LCD_set_cursor(0, row + 1);
         LCD_write_char('[');
-        int bars = map(val, _min, _max, 0, 18);
-        for (int i = 0; i < 18; i++) {
-            LCD_write_char(i < bars ? (char)0xFF : ' ');
+        
+        // Map value to pixels (0-90)
+        uint16_t totalPixels = map(val, _min, _max, 0, 90);
+        uint8_t fullBlocks = totalPixels / 5;
+        uint8_t partialPixels = totalPixels % 5;
+        
+        // Draw full blocks (0xFF = all 5 pixels filled)
+        for (uint8_t i = 0; i < fullBlocks && i < 18; i++) {
+            LCD_write_char(0xFF);
         }
+        
+        // Draw partial block
+        if (fullBlocks < 18 && partialPixels > 0) {
+            LCD_write_char(partialPixels - 1); // Custom char 0-4
+            fullBlocks++;
+        }
+        
+        // Fill remaining with empty spaces
+        for (uint8_t i = fullBlocks; i < 18; i++) {
+            LCD_write_char(' ');
+        }
+        
         LCD_write_char(']');
     }
 
@@ -346,62 +384,23 @@ public:
     }
 };
 
-// FIX: Non-template wrapper for function pointer compatibility
-class GenericSliderItem : public MenuItem {
-private:
-    IDevice* _device;
-    const __FlashStringHelper* _label;
-    ValueGetter _getter;
-    ValueSetter _setter;
-    int _min, _max, _step;
+// Static member initialization
+template<typename DeviceType>
+bool ValueSliderItem<DeviceType>::_customCharsLoaded = false;
 
-public:
-    GenericSliderItem(IDevice* device, 
-                     const __FlashStringHelper* label,
-                     ValueGetter getter, ValueSetter setter,
-                     int minVal, int maxVal, int step)
-        : _device(device), _label(label), _getter(getter), _setter(setter),
-          _min(minVal), _max(maxVal), _step(step) {}
-
-    bool relatesTo(IDevice* dev) override { return _device == dev; }
-
-    void draw(uint8_t row, bool selected) override {
-        LCD_set_cursor(0, row);
-        LCD_write_str(selected ? "< " : "  ");
-        
-        printLabel(_label);
-        LCD_write_str(": ");
-        
-        int val = _getter(_device);
-        char buf[5];
-        itoa(val, buf, 10);
-        LCD_write_str(buf);
-        
-        if (selected) LCD_write_str(" >");
-
-        LCD_set_cursor(0, row + 1);
-        LCD_write_char('[');
-        int bars = map(val, _min, _max, 0, 18);
-        for (int i = 0; i < 18; i++) {
-            LCD_write_char(i < bars ? (char)0xFF : ' ');
-        }
-        LCD_write_char(']');
-    }
-
-    bool handleInput(char key) override {
-        int current = _getter(_device);
-        if (key == 'U') {
-            int newVal = min(_max, current + _step);
-            _setter(_device, newVal);
-            return true;
-        } else if (key == 'D') {
-            int newVal = max(_min, current - _step);
-            _setter(_device, newVal);
-            return true;
-        }
-        return false;
-    }
-};
+// Template helper function for automatic type deduction
+template<typename DeviceType>
+ValueSliderItem<DeviceType>* makeSlider(
+    DeviceType* device,
+    const __FlashStringHelper* label,
+    uint8_t (DeviceType::*getter)() const,
+    void (DeviceType::*setter)(uint8_t),
+    uint8_t minVal = 0,
+    uint8_t maxVal = 100,
+    uint8_t step = 10
+) {
+    return new ValueSliderItem<DeviceType>(device, label, getter, setter, minVal, maxVal, step);
+}
 
 // KISS: Merged InfoItem
 class InfoItem : public MenuItem {
@@ -520,12 +519,12 @@ class ActionItem : public MenuItem {
 private:
     IDevice* _device;
     const char* _label;
-    ValueSetter _action;
+    void (*_action)(IDevice*, int);
     int _param;
     NavigationManager& _nav;
 
 public:
-    ActionItem(const char* label, IDevice* device, ValueSetter action, int param, NavigationManager& nav)
+    ActionItem(const char* label, IDevice* device, void (*action)(IDevice*, int), int param, NavigationManager& nav)
         : _device(device), _label(label), _action(action), _param(param), _nav(nav) {}
 
     void draw(uint8_t row, bool selected) override {
@@ -597,71 +596,59 @@ public:
     }
 };
 
-// --- BUILDERS (DRY Refactored) ---
+// --- BUILDERS (Refactored without static wrappers) ---
 
 class MenuBuilder {
+private:
+    // Helper action functions for ActionItem (minimal wrappers)
+    static void setOutsideModeAction(IDevice* d, int v) {
+        static_cast<OutsideLight*>(d)->setMode((OutsideMode)v);
+    }
+    
+    static void setRGBPresetAction(IDevice* d, int v) {
+        static_cast<RGBLight*>(d)->setPreset((RGBPreset)v);
+    }
+
 public:
-    // DRY: RGB Helper functions (since we can't modify Devices.h)
-    static int getRed(IDevice* d) { return static_cast<RGBLight*>(d)->getColor().r; }
-    static void setRedValue(IDevice* d, int v) {
-        RGBLight* l = static_cast<RGBLight*>(d); 
-        RGBColor c = l->getColor(); 
-        c.r = v; 
-        l->setColor(c); 
-    }
-    
-    static int getGreen(IDevice* d) { return static_cast<RGBLight*>(d)->getColor().g; }
-    static void setGreenValue(IDevice* d, int v) {
-        RGBLight* l = static_cast<RGBLight*>(d); 
-        RGBColor c = l->getColor(); 
-        c.g = v; 
-        l->setColor(c); 
-    }
-    
-    static int getBlue(IDevice* d) { return static_cast<RGBLight*>(d)->getColor().b; }
-    static void setBlueValue(IDevice* d, int v) {
-        RGBLight* l = static_cast<RGBLight*>(d); 
-        RGBColor c = l->getColor(); 
-        c.b = v; 
-        l->setColor(c); 
-    }
-    
-    static int getBrightness(IDevice* d) { return static_cast<DimmableLight*>(d)->getBrightness(); }
-    static void setBrightness(IDevice* d, int v) { static_cast<DimmableLight*>(d)->setBrightness(v); }
-    
-    // Helper Setters for ActionItem
-    static void setOutsideMode(IDevice* d, int v) { static_cast<OutsideLight*>(d)->setMode((OutsideMode)v); }
-    static void setRGBPreset(IDevice* d, int v) { static_cast<RGBLight*>(d)->setPreset((RGBPreset)v); }
-
-    // DRY: Generic slider page (works with function pointers)
-    static MenuPage* buildSliderPage(void* context, const __FlashStringHelper* title,
-                                     const __FlashStringHelper* label,
-                                     ValueGetter getter, ValueSetter setter,
-                                     int minVal, int maxVal, int step) {
-        IDevice* device = static_cast<IDevice*>(context);
-        MenuPage* page = new MenuPage(title, nullptr);
+    // Simplified slider page builders using makeSlider
+    static MenuPage* buildRedPage(void* context) {
+        RGBLight* light = static_cast<RGBLight*>(context);
+        MenuPage* page = new MenuPage(F("Red Channel"), nullptr);
         if (!page) return nullptr;
-
-        // FIX: Use GenericSliderItem instead of template version
-        page->addItem(new GenericSliderItem(device, label, getter, setter, minVal, maxVal, step));
+        
+        page->addItem(makeSlider(light, F("Red"), &RGBLight::getRed, &RGBLight::setRed, 0, 255, 10));
         page->addItem(new BackMenuItem(NavigationManager::instance()));
         return page;
     }
 
-    static MenuPage* buildRedPage(void* context) {
-        return buildSliderPage(context, F("Red Channel"), F("Red"), getRed, setRedValue, 0, 255, 10);
-    }
-
     static MenuPage* buildGreenPage(void* context) {
-        return buildSliderPage(context, F("Green Channel"), F("Green"), getGreen, setGreenValue, 0, 255, 10);
+        RGBLight* light = static_cast<RGBLight*>(context);
+        MenuPage* page = new MenuPage(F("Green Channel"), nullptr);
+        if (!page) return nullptr;
+        
+        page->addItem(makeSlider(light, F("Green"), &RGBLight::getGreen, &RGBLight::setGreen, 0, 255, 10));
+        page->addItem(new BackMenuItem(NavigationManager::instance()));
+        return page;
     }
 
     static MenuPage* buildBluePage(void* context) {
-        return buildSliderPage(context, F("Blue Channel"), F("Blue"), getBlue, setBlueValue, 0, 255, 10);
+        RGBLight* light = static_cast<RGBLight*>(context);
+        MenuPage* page = new MenuPage(F("Blue Channel"), nullptr);
+        if (!page) return nullptr;
+        
+        page->addItem(makeSlider(light, F("Blue"), &RGBLight::getBlue, &RGBLight::setBlue, 0, 255, 10));
+        page->addItem(new BackMenuItem(NavigationManager::instance()));
+        return page;
     }
 
     static MenuPage* buildBrightnessPage(void* context) {
-        return buildSliderPage(context, F("Brightness"), F("Level"), getBrightness, setBrightness, 0, 100, 10);
+        DimmableLight* light = static_cast<DimmableLight*>(context);
+        MenuPage* page = new MenuPage(F("Brightness"), nullptr);
+        if (!page) return nullptr;
+        
+        page->addItem(makeSlider(light, F("Level"), &DimmableLight::getBrightness, &DimmableLight::setBrightness, 0, 100, 10));
+        page->addItem(new BackMenuItem(NavigationManager::instance()));
+        return page;
     }
 
     static MenuPage* buildCustomColorPage(void* context) {
@@ -678,20 +665,20 @@ public:
     }
 
     static MenuPage* buildRGBPresetsPage(void* context) {
-        RGBLight* light = (RGBLight*)context;
+        RGBLight* light = static_cast<RGBLight*>(context);
         MenuPage* page = new MenuPage(F("Select Preset"), NavigationManager::instance().getCurrentPage());
-        page->addItem(new ActionItem("Warm White", light, setRGBPreset, (int)RGBPreset::WARM_WHITE, NavigationManager::instance()));
-        page->addItem(new ActionItem("Cool White", light, setRGBPreset, (int)RGBPreset::COOL_WHITE, NavigationManager::instance()));
-        page->addItem(new ActionItem("Red", light, setRGBPreset, (int)RGBPreset::RED, NavigationManager::instance()));
-        page->addItem(new ActionItem("Green", light, setRGBPreset, (int)RGBPreset::GREEN, NavigationManager::instance()));
-        page->addItem(new ActionItem("Blue", light, setRGBPreset, (int)RGBPreset::BLUE, NavigationManager::instance()));
-        page->addItem(new ActionItem("Ocean", light, setRGBPreset, (int)RGBPreset::OCEAN, NavigationManager::instance()));
+        page->addItem(new ActionItem("Warm White", light, setRGBPresetAction, (int)RGBPreset::WARM_WHITE, NavigationManager::instance()));
+        page->addItem(new ActionItem("Cool White", light, setRGBPresetAction, (int)RGBPreset::COOL_WHITE, NavigationManager::instance()));
+        page->addItem(new ActionItem("Red", light, setRGBPresetAction, (int)RGBPreset::RED, NavigationManager::instance()));
+        page->addItem(new ActionItem("Green", light, setRGBPresetAction, (int)RGBPreset::GREEN, NavigationManager::instance()));
+        page->addItem(new ActionItem("Blue", light, setRGBPresetAction, (int)RGBPreset::BLUE, NavigationManager::instance()));
+        page->addItem(new ActionItem("Ocean", light, setRGBPresetAction, (int)RGBPreset::OCEAN, NavigationManager::instance()));
         page->addItem(new BackMenuItem(NavigationManager::instance()));
         return page;
     }
 
     static MenuPage* buildRGBLightPage(void* context) {
-        RGBLight* light = (RGBLight*)context;
+        RGBLight* light = static_cast<RGBLight*>(context);
         MenuPage* page = new MenuPage(F("RGB Light"), NavigationManager::instance().getCurrentPage());
         page->addItem(new DeviceToggleItem(light));
         page->addItem(new SubMenuItem(F("Set Brightness"), buildBrightnessPage, light, NavigationManager::instance()));
@@ -702,7 +689,7 @@ public:
     }
 
     static MenuPage* buildDimmableLightPage(void* context) {
-        DimmableLight* light = (DimmableLight*)context;
+        DimmableLight* light = static_cast<DimmableLight*>(context);
         MenuPage* page = new MenuPage(F("Dimmable Light"), NavigationManager::instance().getCurrentPage());
         page->addItem(new DeviceToggleItem(light));
         page->addItem(new SubMenuItem(F("Set Brightness"), buildBrightnessPage, light, NavigationManager::instance()));
@@ -711,12 +698,12 @@ public:
     }
 
     static MenuPage* buildOutsideModesPage(void* context) {
-        OutsideLight* light = (OutsideLight*)context;
+        OutsideLight* light = static_cast<OutsideLight*>(context);
         MenuPage* page = new MenuPage(F("Select Mode"), NavigationManager::instance().getCurrentPage());
-        page->addItem(new ActionItem("OFF", light, setOutsideMode, (int)OutsideMode::OFF, NavigationManager::instance()));
-        page->addItem(new ActionItem("ON", light, setOutsideMode, (int)OutsideMode::ON, NavigationManager::instance()));
-        page->addItem(new ActionItem("AUTO LIGHT", light, setOutsideMode, (int)OutsideMode::AUTO_LIGHT, NavigationManager::instance()));
-        page->addItem(new ActionItem("AUTO MOTION", light, setOutsideMode, (int)OutsideMode::AUTO_MOTION, NavigationManager::instance()));
+        page->addItem(new ActionItem("OFF", light, setOutsideModeAction, (int)OutsideMode::OFF, NavigationManager::instance()));
+        page->addItem(new ActionItem("ON", light, setOutsideModeAction, (int)OutsideMode::ON, NavigationManager::instance()));
+        page->addItem(new ActionItem("AUTO LIGHT", light, setOutsideModeAction, (int)OutsideMode::AUTO_LIGHT, NavigationManager::instance()));
+        page->addItem(new ActionItem("AUTO MOTION", light, setOutsideModeAction, (int)OutsideMode::AUTO_MOTION, NavigationManager::instance()));
         page->addItem(new BackMenuItem(NavigationManager::instance()));
         return page;
     }
