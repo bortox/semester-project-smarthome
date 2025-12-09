@@ -1,3 +1,12 @@
+/**
+ * @file FlexibleMenu.h
+ * @brief Dynamic menu system with JIT page allocation, scene integration, and timer scheduling
+ * @ingroup Core
+ * 
+ * Implements a memory-efficient menu system for LCD displays using Just-In-Time page creation.
+ * Pages are allocated on heap when entering and freed when exiting to minimize RAM usage.
+ * Supports device control, sensor monitoring, scene management, and timer scheduling.
+ */
 #ifndef FLEXIBLE_MENU_H
 #define FLEXIBLE_MENU_H
 
@@ -7,22 +16,58 @@ extern "C" {
     #include "lcd.h"
 }
 #include "Devices.h"
+#include "Scenes.h"      // FIX: Include for scene types
+#include "TimerSystem.h" // FIX: Include for TimerAction and TimerManager
 
 class MenuPage;
 class NavigationManager;
 class SubMenuItem;
 
+/**
+ * @brief Base menu item type discriminator
+ * @ingroup MenuCore
+ */
 enum class MenuItemType {
-    GENERIC,
-    SUBMENU
+    GENERIC,  ///< Standard menu item
+    SUBMENU   ///< Item that opens a submenu
 };
 
+/**
+ * @brief Abstract base class for all menu items
+ * @ingroup MenuCore
+ * 
+ * Provides interface for rendering and input handling. Items can optionally
+ * relate to specific devices for event-driven updates.
+ */
 class MenuItem {
 public:
     virtual ~MenuItem() {}
+    
+    /**
+     * @brief Renders the item on LCD
+     * @param row LCD row (0-3)
+     * @param selected True if item is currently selected
+     */
     virtual void draw(uint8_t row, bool selected) = 0;
-    virtual bool handleInput(char key) { return false; } // FIX: Ora ritorna bool
+    
+    /**
+     * @brief Handles user input
+     * @param key Input character ('U'=up, 'D'=down, 'E'=enter, 'B'=back)
+     * @return True if input was handled, false otherwise
+     */
+    virtual bool handleInput(char key) { return false; }
+    
+    /**
+     * @brief Returns item type for polymorphic dispatch
+     * @return MenuItemType enum value
+     */
     virtual MenuItemType getType() const { return MenuItemType::GENERIC; }
+    
+    /**
+     * @brief Checks if item is related to a specific device
+     * @param device Device pointer to check
+     * @return True if item should update when device changes
+     */
     virtual bool relatesTo(IDevice* device) { return false; }
 
 protected:
@@ -39,6 +84,14 @@ protected:
     }
 };
 
+/**
+ * @brief Menu page container with event-driven updates
+ * @ingroup MenuCore
+ * 
+ * Manages a collection of menu items with scrolling support. Listens to device
+ * events and triggers redraws when related devices change. Supports JIT lifecycle
+ * when used with NavigationManager stack.
+ */
 class MenuPage : public MenuItem, public IEventListener {
 private:
     const __FlashStringHelper* _title;
@@ -51,6 +104,11 @@ private:
     friend class NavigationManager;
 
 public:
+    /**
+     * @brief Constructs a menu page
+     * @param title Flash string title displayed at top
+     * @param parent Parent page (optional, for static hierarchies)
+     */
     MenuPage(const __FlashStringHelper* title, MenuPage* parent = nullptr) 
         : _title(title), _parent(parent), _selected_index(0), _scroll_offset(0), 
           _needs_redraw(true) {
@@ -64,10 +122,35 @@ public:
         for (size_t i = 0; i < _items.size(); i++) delete _items[i];
     }
 
+    /**
+     * @brief Adds item to page
+     * @param item Heap-allocated item (page takes ownership)
+     */
     void addItem(MenuItem* item) { _items.add(item); }
+    
+    /**
+     * @brief Gets item by index
+     * @param idx Item index
+     * @return Pointer to item or nullptr if out of bounds
+     */
     MenuItem* getItem(size_t idx) { return _items[idx]; }
+    
+    /**
+     * @brief Gets total number of items
+     * @return Item count
+     */
     size_t getItemsCount() const { return _items.size(); }
+    
+    /**
+     * @brief Gets parent page
+     * @return Parent pointer or nullptr for root
+     */
     MenuPage* getParent() const { return _parent; }
+    
+    /**
+     * @brief Gets currently selected item index
+     * @return Selected index
+     */
     size_t getSelectedIndex() const { return _selected_index; }
 
     void draw(uint8_t row, bool selected) override {
@@ -76,36 +159,82 @@ public:
         printLabel(_title);
     }
 
-    // FIX: DICHIARAZIONE con bool come return type
+    /**
+     * @brief Handles navigation input and delegates to items
+     * @param key Input character
+     * @return True if input was handled
+     */
     bool handleInput(char key) override;
+    
+    /**
+     * @brief Handles device events for related items
+     * @param type Event type
+     * @param device Device that triggered event
+     * @param value Associated value
+     */
     void handleEvent(EventType type, IDevice* device, int value) override;
     
+    /**
+     * @brief Checks if page needs redrawing
+     * @return True if redraw required
+     */
     bool needsRedraw() const { return _needs_redraw; }
+    
+    /**
+     * @brief Clears redraw flag after rendering
+     */
     void clearRedraw() { _needs_redraw = false; }
+    
+    /**
+     * @brief Forces full page redraw
+     */
     void forceRedraw() { _needs_redraw = true; }
 };
 
+/**
+ * @brief Singleton menu navigation manager with JIT page allocation
+ * @ingroup MenuCore
+ * 
+ * Manages a stack of MenuPage instances. Implements Just-In-Time strategy:
+ * - Pages are created on heap when entering (pushPage)
+ * - Pages are deleted when exiting (navigateBack)
+ * This minimizes RAM usage for complex menu hierarchies.
+ */
 class NavigationManager {
 private:
-    DynamicArray<MenuPage*> _stack;
-    bool _initialized;
+    DynamicArray<MenuPage*> _stack; ///< Page navigation stack
+    bool _initialized;              ///< LCD initialization flag
 
     NavigationManager() : _initialized(false) {}
 
 public:
+    /**
+     * @brief Gets singleton instance
+     * @return Reference to navigation manager
+     */
     static NavigationManager& instance() {
         static NavigationManager inst;
         return inst;
     }
 
+    /**
+     * @brief Marks LCD as initialized
+     */
     void setLCD() { _initialized = true; }
 
+    /**
+     * @brief Initializes navigation with root page
+     * @param root Pre-allocated root page (not JIT)
+     */
     void initialize(MenuPage* root) {
         _stack.add(root);
         draw();
     }
 
-    // JIT: Aggiunge una pagina creata dinamicamente allo stack
+    /**
+     * @brief Pushes JIT-allocated page onto stack
+     * @param page Heap-allocated page (manager takes ownership)
+     */
     void pushPage(MenuPage* page) {
         if (page) {
             _stack.add(page);
@@ -114,25 +243,41 @@ public:
         }
     }
 
-    // JIT: Rimuove la pagina corrente e la DISTRUGGE (free RAM)
+    /**
+     * @brief Navigates back and frees current page (JIT cleanup)
+     * 
+     * Pops current page from stack and deletes it to free RAM.
+     * Root page is never deleted.
+     */
     void navigateBack() {
         if (_stack.size() > 1) {
             MenuPage* current = _stack[_stack.size() - 1];
             _stack.remove(_stack.size() - 1);
-            delete current; // LIBERA MEMORIA QUI
+            delete current; // JIT: Free RAM
             
             getCurrentPage()->forceRedraw();
             draw();
         }
     }
 
+    /**
+     * @brief Gets current page from top of stack
+     * @return Current page or nullptr if stack empty
+     */
     MenuPage* getCurrentPage() {
         if (_stack.size() > 0) return _stack[_stack.size() - 1];
         return nullptr;
     }
 
+    /**
+     * @brief Delegates input to current page
+     * @param key Input character
+     */
     void handleInput(char key);
 
+    /**
+     * @brief Updates display if current page needs redraw
+     */
     void update() {
         MenuPage* current = getCurrentPage();
         if (current && current->needsRedraw()) {
@@ -141,6 +286,11 @@ public:
         }
     }
 
+    /**
+     * @brief Incrementally updates cursor position
+     * @param oldIndex Previous selection index
+     * @param newIndex New selection index
+     */
     void drawIncrementalCursor(size_t oldIndex, size_t newIndex) {
         MenuPage* current = getCurrentPage();
         if (!current || !_initialized) return;
@@ -162,6 +312,9 @@ public:
         }
     }
 
+    /**
+     * @brief Renders full page with scrolling support
+     */
     void draw() {
         MenuPage* current = getCurrentPage();
         if (!current || !_initialized) return;
@@ -258,12 +411,27 @@ inline void MenuPage::handleEvent(EventType type, IDevice* device, int value) {
 
 // --- ITEMS ---
 
+/**
+ * @brief Toggle control for light devices
+ * @ingroup MenuItems
+ */
 class DeviceToggleItem : public MenuItem {
 private:
     IDevice* _device;
 public:
+    /**
+     * @brief Constructs toggle item for device
+     * @param device Light device to control
+     */
     DeviceToggleItem(IDevice* device) : _device(device) {}
+    
     bool relatesTo(IDevice* dev) override { return _device == dev; }
+    
+    /**
+     * @brief Draws device name and ON/OFF state
+     * @param row LCD row
+     * @param selected Selection state
+     */
     void draw(uint8_t row, bool selected) override {
         LCD_set_cursor(0, row);
         LCD_write_str(selected ? "> " : "  ");
@@ -275,6 +443,11 @@ public:
             LCD_write_str(light->getState() ? "ON " : "OFF");
         }
     }
+    /**
+     * @brief Toggles device on 'E' key
+     * @param key Input character
+     * @return True if device was toggled
+     */
     bool handleInput(char key) override {
         if (key == 'E' && _device->isLight()) {
             static_cast<SimpleLight*>(_device)->toggle();
@@ -284,12 +457,27 @@ public:
     }
 };
 
-// Base class for slider rendering (Template Hoisting optimization)
-class SliderRenderer {
-protected:
-    static inline bool _customCharsLoaded = false;
+/**
+ * @brief Template-based value slider with pixel-perfect progress bar
+ * @ingroup MenuItems
+ * @tparam DeviceType Device class with getter/setter methods
+ * 
+ * Displays a two-row slider:
+ * - Row 1: Label and numeric value
+ * - Row 2: 100-pixel wide progress bar (20 chars × 5 pixels each)
+ */
+template<typename DeviceType>
+class ValueSliderItem : public MenuItem {
+private:
+    DeviceType* _device;
+    const __FlashStringHelper* _label;
+    uint8_t (DeviceType::*_getter)() const;
+    void (DeviceType::*_setter)(uint8_t);
+    uint8_t _min, _max, _step;
     
-    static void loadCustomChars() {
+    static bool _customCharsLoaded;
+    
+    void loadCustomChars() {
         if (!_customCharsLoaded) {
             const uint8_t customChars[5][8] = {
                 {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, // Empty
@@ -305,46 +493,18 @@ protected:
             _customCharsLoaded = true;
         }
     }
-    
-    // Extracted common progress bar drawing logic
-    static void drawProgressBar(uint8_t row, uint8_t val, uint8_t minVal, uint8_t maxVal) {
-        // Row 1: Full-width progress bar (20 chars = 100 pixels)
-        LCD_set_cursor(0, row + 1);
-        
-        // Map value to pixels (0-100 pixels across 20 chars)
-        uint16_t totalPixels = map(val, minVal, maxVal, 0, 100);
-        uint8_t fullBlocks = totalPixels / 5;
-        uint8_t partialPixels = totalPixels % 5;
-        
-        // Draw full blocks (0xFF = all 5 pixels filled)
-        for (uint8_t i = 0; i < fullBlocks && i < 20; i++) {
-            LCD_write_char(0xFF);
-        }
-        
-        // Draw partial block
-        if (fullBlocks < 20 && partialPixels > 0) {
-            LCD_write_char(partialPixels - 1); // Custom char 0-4
-            fullBlocks++;
-        }
-        
-        // Fill remaining with empty spaces
-        for (uint8_t i = fullBlocks; i < 20; i++) {
-            LCD_write_char(' ');
-        }
-    }
-};
-
-// Template-based Value Slider with Pixel-Perfect UI
-template<typename DeviceType>
-class ValueSliderItem : public MenuItem, public SliderRenderer {
-private:
-    DeviceType* _device;
-    const __FlashStringHelper* _label;
-    uint8_t (DeviceType::*_getter)() const;
-    void (DeviceType::*_setter)(uint8_t);
-    uint8_t _min, _max, _step;
 
 public:
+    /**
+     * @brief Constructs slider with member function pointers
+     * @param device Target device instance
+     * @param label Flash string label
+     * @param getter Member function returning current value
+     * @param setter Member function accepting new value
+     * @param minVal Minimum allowed value
+     * @param maxVal Maximum allowed value
+     * @param step Increment/decrement step size
+     */
     ValueSliderItem(DeviceType* device, 
                    const __FlashStringHelper* label,
                    uint8_t (DeviceType::*getter)() const,
@@ -357,6 +517,11 @@ public:
 
     bool relatesTo(IDevice* dev) override { return _device == dev; }
 
+    /**
+     * @brief Draws label, value, and progress bar
+     * @param row LCD row for label (bar drawn on row+1)
+     * @param selected Selection state
+     */
     void draw(uint8_t row, bool selected) override {
         // Row 0: Label and value
         LCD_set_cursor(0, row);
@@ -376,10 +541,36 @@ public:
             cursor_pos++;
         }
 
-        // Row 1: Progress bar (delegated to base class)
-        drawProgressBar(row, val, _min, _max);
+        // Row 1: Full-width progress bar (20 chars = 100 pixels)
+        LCD_set_cursor(0, row + 1);
+        
+        // Map value to pixels (0-100 pixels across 20 chars)
+        uint16_t totalPixels = map(val, _min, _max, 0, 100);
+        uint8_t fullBlocks = totalPixels / 5;
+        uint8_t partialPixels = totalPixels % 5;
+        
+        // Draw full blocks (0xFF = all 5 pixels filled)
+        for (uint8_t i = 0; i < fullBlocks && i < 20; i++) {
+            LCD_write_char(0xFF);
+        }
+        
+        // Draw partial block
+        if (fullBlocks < 20 && partialPixels > 0) {
+            LCD_write_char(partialPixels - 1); // Custom char 0-4
+            fullBlocks++;
+        }
+        
+        // Fill remaining with empty spaces
+        for (uint8_t i = fullBlocks; i < 20; i++) {
+            LCD_write_char(' ');
+        }
     }
 
+    /**
+     * @brief Handles up/down input to adjust value
+     * @param key Input character ('U'=increment, 'D'=decrement)
+     * @return True if value was changed
+     */
     bool handleInput(char key) override {
         uint8_t current = (_device->*_getter)();
         
@@ -410,7 +601,23 @@ public:
     }
 };
 
-// Template helper function for automatic type deduction
+// Static member initialization
+template<typename DeviceType>
+bool ValueSliderItem<DeviceType>::_customCharsLoaded = false;
+
+/**
+ * @brief Helper factory for slider creation with type deduction
+ * @ingroup MenuItems
+ * @tparam DeviceType Automatically deduced from device parameter
+ * @param device Device instance
+ * @param label Display label
+ * @param getter Value getter method
+ * @param setter Value setter method
+ * @param minVal Minimum value
+ * @param maxVal Maximum value
+ * @param step Step size
+ * @return Heap-allocated slider item
+ */
 template<typename DeviceType>
 ValueSliderItem<DeviceType>* makeSlider(
     DeviceType* device,
@@ -424,7 +631,14 @@ ValueSliderItem<DeviceType>* makeSlider(
     return new ValueSliderItem<DeviceType>(device, label, getter, setter, minVal, maxVal, step);
 }
 
-// Template-based Live Value Display Item
+/**
+ * @brief Template-based live value display with automatic updates
+ * @ingroup MenuItems
+ * @tparam T Object type containing the value getter method
+ * 
+ * Displays real-time values from sensors or statistics objects.
+ * Automatically updates when related device emits events.
+ */
 template<typename T>
 class LiveItem : public MenuItem {
 private:
@@ -459,13 +673,27 @@ private:
     }
 
 public:
-    // Constructor for stats (Min/Max/Avg)
+    /**
+     * @brief Constructs live item for statistics display
+     * @param label Display label
+     * @param object Object containing getter method
+     * @param getter Member function returning int16_t value
+     * @param unit Unit string (e.g., "C", "%")
+     * @param isTemp True for temperature formatting (XX.X°)
+     */
     LiveItem(const __FlashStringHelper* label, T* object, int16_t (T::*getter)() const,
              const __FlashStringHelper* unit, bool isTemp = false)
         : _label(label), _object(object), _getter(getter), _unit(unit), 
           _isTemperature(isTemp), _device(nullptr) {}
 
-    // Constructor for live sensor display
+    /**
+     * @brief Constructs live item for sensor display
+     * @param device Device for event correlation
+     * @param object Object containing getter method
+     * @param getter Member function returning int16_t value
+     * @param unit Unit string
+     * @param isTemp True for temperature formatting
+     */
     LiveItem(IDevice* device, T* object, int16_t (T::*getter)() const,
              const __FlashStringHelper* unit, bool isTemp = false)
         : _label(nullptr), _object(object), _getter(getter), _unit(unit),
@@ -473,6 +701,11 @@ public:
 
     bool relatesTo(IDevice* dev) override { return _device == dev; }
 
+    /**
+     * @brief Draws sensor name and value with unit
+     * @param row LCD row
+     * @param selected Selection state
+     */
     void draw(uint8_t row, bool selected) override {
         LCD_set_cursor(0, row);
         LCD_write_str(selected ? "> " : "  ");
@@ -493,7 +726,7 @@ public:
     bool handleInput(char key) override { return false; }
 };
 
-// Helper function for automatic type deduction
+// Helper factory for live item creation with type deduction
 template<typename T>
 LiveItem<T>* makeLiveItem(
     const __FlashStringHelper* label,
@@ -505,7 +738,10 @@ LiveItem<T>* makeLiveItem(
     return new LiveItem<T>(label, object, getter, unit, isTemp);
 }
 
-// Overload for device-based live item
+/**
+ * @brief Overload for device-based live item creation
+ * @ingroup MenuItems
+ */
 template<typename T>
 LiveItem<T>* makeLiveItem(
     IDevice* device,
@@ -517,16 +753,28 @@ LiveItem<T>* makeLiveItem(
     return new LiveItem<T>(device, object, getter, unit, isTemp);
 }
 
-// Specialized LiveItem for boolean PIR sensor
+/**
+ * @brief Specialized live display for PIR motion sensors
+ * @ingroup MenuItems
+ */
 class LivePIRItem : public MenuItem {
 private:
     PIRSensorDevice* _sensor;
 
 public:
+    /**
+     * @brief Constructs PIR display item
+     * @param sensor PIR sensor device
+     */
     LivePIRItem(PIRSensorDevice* sensor) : _sensor(sensor) {}
 
     bool relatesTo(IDevice* dev) override { return _sensor == dev; }
 
+    /**
+     * @brief Draws sensor name and Yes/No motion status
+     * @param row LCD row
+     * @param selected Selection state
+     */
     void draw(uint8_t row, bool selected) override {
         LCD_set_cursor(0, row);
         LCD_write_str(selected ? "> " : "  ");
@@ -538,23 +786,45 @@ public:
     bool handleInput(char key) override { return false; }
 };
 
-// NUOVO: Item per calibrazione luce
+/**
+ * @brief Light sensor calibration item
+ * @ingroup MenuItems
+ * 
+ * Allows user to set min (dark) or max (bright) calibration points
+ * for photoresistor sensors.
+ */
 class LightCalibrationItem : public MenuItem {
 private:
     const __FlashStringHelper* _label;
     PhotoresistorSensor* _sensor;
-    bool _isDark;  // true = calibra buio, false = calibra luce
+    bool _isDark;  ///< True = calibrate dark limit, False = calibrate bright limit
 
 public:
+    /**
+     * @brief Constructs calibration item
+     * @param label Display label
+     * @param sensor Light sensor to calibrate
+     * @param isDark True for dark calibration, false for bright
+     */
     LightCalibrationItem(const __FlashStringHelper* label, PhotoresistorSensor* sensor, bool isDark)
         : _label(label), _sensor(sensor), _isDark(isDark) {}
 
+    /**
+     * @brief Draws calibration label
+     * @param row LCD row
+     * @param selected Selection state
+     */
     void draw(uint8_t row, bool selected) override {
         LCD_set_cursor(0, row);
         LCD_write_str(selected ? "> " : "  ");
         printLabel(_label);
     }
 
+    /**
+     * @brief Executes calibration on 'E' key
+     * @param key Input character
+     * @return True if calibration was performed
+     */
     bool handleInput(char key) override {
         if (key == 'E') {
             if (_isDark) {
@@ -570,7 +840,13 @@ public:
     }
 };
 
-// NUOVO: Item per eseguire un'azione e tornare indietro (per liste scrollabili)
+/**
+ * @brief Action item for scrollable lists
+ * @ingroup MenuItems
+ * 
+ * Executes a function and automatically navigates back, useful for
+ * mode selection or preset lists.
+ */
 class ActionItem : public MenuItem {
 private:
     IDevice* _device;
@@ -580,15 +856,33 @@ private:
     NavigationManager& _nav;
 
 public:
+    /**
+     * @brief Constructs action item
+     * @param label Display label
+     * @param device Target device
+     * @param action Function pointer to execute
+     * @param param Integer parameter for action
+     * @param nav Navigation manager reference
+     */
     ActionItem(const char* label, IDevice* device, void (*action)(IDevice*, int), int param, NavigationManager& nav)
         : _device(device), _label(label), _action(action), _param(param), _nav(nav) {}
 
+    /**
+     * @brief Draws action label
+     * @param row LCD row
+     * @param selected Selection state
+     */
     void draw(uint8_t row, bool selected) override {
         LCD_set_cursor(0, row);
         LCD_write_str(selected ? "> " : "  ");
         LCD_write_str(_label);
     }
 
+    /**
+     * @brief Executes action and navigates back on 'E' key
+     * @param key Input character
+     * @return True if action was executed
+     */
     bool handleInput(char key) override {
         if (key == 'E') {
             _action(_device, _param);
@@ -599,23 +893,44 @@ public:
     }
 };
 
-// JIT: SubMenuItem ora usa un Builder invece di una pagina pre-allocata
+/**
+ * @brief Submenu item with JIT page creation
+ * @ingroup MenuItems
+ * 
+ * Uses PageBuilder function pointer to create pages on-demand.
+ * Pages are allocated when entering and freed when exiting to save RAM.
+ */
 class SubMenuItem : public MenuItem {
 private:
     const __FlashStringHelper* _label;
-    PageBuilder _builder;
-    void* _context;
+    PageBuilder _builder;     ///< Function pointer for JIT page creation
+    void* _context;           ///< Context data passed to builder
     NavigationManager& _nav;
 
 public:
+    /**
+     * @brief Constructs JIT submenu item
+     * @param label Display label
+     * @param builder Function that creates page on heap
+     * @param context Optional context data for builder
+     * @param nav Navigation manager reference
+     */
     SubMenuItem(const __FlashStringHelper* label, PageBuilder builder, void* context, NavigationManager& nav) 
         : _label(label), _builder(builder), _context(context), _nav(nav) {}
 
     MenuItemType getType() const override { return MenuItemType::SUBMENU; }
     
-    // Metodo per creare la pagina on-the-fly
+    /**
+     * @brief Creates page using builder function
+     * @return Heap-allocated page
+     */
     MenuPage* createPage() const { return _builder(_context); }
 
+    /**
+     * @brief Draws label with '>' indicator
+     * @param row LCD row
+     * @param selected Selection state
+     */
     void draw(uint8_t row, bool selected) override {
         LCD_set_cursor(0, row);
         LCD_write_str(selected ? "> " : "  ");
@@ -623,6 +938,11 @@ public:
         LCD_write_str(" >");
     }
 
+    /**
+     * @brief Creates and pushes page on 'E' key
+     * @param key Input character
+     * @return True if submenu was entered
+     */
     bool handleInput(char key) override {
         if (key == 'E') {
             MenuPage* newPage = createPage();
@@ -637,12 +957,28 @@ class BackMenuItem : public MenuItem {
 private:
     NavigationManager& _nav;
 public:
+    /**
+     * @brief Constructs back item
+     * @param nav Navigation manager reference
+     */
     BackMenuItem(NavigationManager& nav) : _nav(nav) {}
+    
+    /**
+     * @brief Draws "<< Back" label
+     * @param row LCD row
+     * @param selected Selection state
+     */
     void draw(uint8_t row, bool selected) override {
         LCD_set_cursor(0, row);
         LCD_write_str(selected ? "> " : "  ");
         LCD_write_str("<< Back");
     }
+    
+    /**
+     * @brief Navigates back on 'E' key
+     * @param key Input character
+     * @return True if navigation occurred
+     */
     bool handleInput(char key) override {
         if (key == 'E') {
             _nav.navigateBack();
@@ -652,8 +988,109 @@ public:
     }
 };
 
+/**
+ * @brief Scene activation/deactivation control
+ * @ingroup MenuItems
+ */
+class SceneToggleItem : public MenuItem {
+private:
+    IScene* _scene;
+
+public:
+    /**
+     * @brief Constructs scene toggle item
+     * @param scene Scene to control
+     */
+    SceneToggleItem(IScene* scene) : _scene(scene) {}
+
+    /**
+     * @brief Draws scene name and ON/OFF status
+     * @param row LCD row
+     * @param selected Selection state
+     */
+    void draw(uint8_t row, bool selected) override {
+        LCD_set_cursor(0, row);
+        LCD_write_str(selected ? "> " : "  ");
+        LCD_write_str(_scene->getName());
+        LCD_set_cursor(15, row);
+        LCD_write_str(_scene->isActive() ? "ON " : "OFF");
+    }
+
+    /**
+     * @brief Toggles scene activation on 'E' key
+     * @param key Input character
+     * @return True if scene was toggled
+     */
+    bool handleInput(char key) override {
+        if (key == 'E') {
+            if (_scene->isActive()) {
+                SceneManager::instance().removeScene(_scene);
+            } else {
+                SceneManager::instance().addScene(_scene);
+            }
+            return true;
+        }
+        return false;
+    }
+};
+
+/**
+ * @brief Timer scheduling item for device actions
+ * @ingroup MenuItems
+ */
+class ScheduleTimerItem : public MenuItem {
+private:
+    IDevice* _device;
+    const char* _label;
+    TimerAction _action;
+    unsigned long _delayMs;
+
+public:
+    /**
+     * @brief Constructs timer schedule item
+     * @param label Display label (e.g., "Turn ON in 5s")
+     * @param device Target device
+     * @param action Timer action (TURN_ON, TURN_OFF, TOGGLE)
+     * @param delayMs Delay in milliseconds
+     */
+    ScheduleTimerItem(const char* label, IDevice* device, TimerAction action, unsigned long delayMs)
+        : _device(device), _label(label), _action(action), _delayMs(delayMs) {}
+
+    /**
+     * @brief Draws timer option label
+     * @param row LCD row
+     * @param selected Selection state
+     */
+    void draw(uint8_t row, bool selected) override {
+        LCD_set_cursor(0, row);
+        LCD_write_str(selected ? "> " : "  ");
+        LCD_write_str(_label);
+    }
+
+    /**
+     * @brief Schedules timer and navigates back on 'E' key
+     * @param key Input character
+     * @return True if timer was scheduled
+     */
+    bool handleInput(char key) override {
+        if (key == 'E') {
+            TimerManager::instance().addTimer(_delayMs, _action, _device);
+            NavigationManager::instance().navigateBack();
+            return true;
+        }
+        return false;
+    }
+};
+
 // --- BUILDERS (Refactored without static wrappers) ---
 
+/**
+ * @brief Factory class for building menu page hierarchies
+ * @ingroup MenuFactory
+ * 
+ * Provides static builder functions that create menu pages on-demand.
+ * Used with SubMenuItem for JIT page allocation strategy.
+ */
 class MenuBuilder {
 private:
     // Helper action functions for ActionItem (minimal wrappers)
@@ -666,7 +1103,11 @@ private:
     }
 
 public:
-    // Simplified slider page builders using makeSlider
+    /**
+     * @brief Builds RGB red channel slider page
+     * @param context RGBLight* device
+     * @return Heap-allocated page
+     */
     static MenuPage* buildRedPage(void* context) {
         RGBLight* light = static_cast<RGBLight*>(context);
         MenuPage* page = new MenuPage(F("Red Channel"), nullptr);
@@ -677,6 +1118,11 @@ public:
         return page;
     }
 
+    /**
+     * @brief Builds RGB green channel slider page
+     * @param context RGBLight* device
+     * @return Heap-allocated page
+     */
     static MenuPage* buildGreenPage(void* context) {
         RGBLight* light = static_cast<RGBLight*>(context);
         MenuPage* page = new MenuPage(F("Green Channel"), nullptr);
@@ -687,6 +1133,11 @@ public:
         return page;
     }
 
+    /**
+     * @brief Builds RGB blue channel slider page
+     * @param context RGBLight* device
+     * @return Heap-allocated page
+     */
     static MenuPage* buildBluePage(void* context) {
         RGBLight* light = static_cast<RGBLight*>(context);
         MenuPage* page = new MenuPage(F("Blue Channel"), nullptr);
@@ -697,6 +1148,11 @@ public:
         return page;
     }
 
+    /**
+     * @brief Builds brightness slider page
+     * @param context DimmableLight* device
+     * @return Heap-allocated page
+     */
     static MenuPage* buildBrightnessPage(void* context) {
         DimmableLight* light = static_cast<DimmableLight*>(context);
         MenuPage* page = new MenuPage(F("Brightness"), nullptr);
@@ -706,6 +1162,11 @@ public:
         return page;
     }
 
+    /**
+     * @brief Builds custom RGB color page with channel submenu
+     * @param context RGBLight* device
+     * @return Heap-allocated page
+     */
     static MenuPage* buildCustomColorPage(void* context) {
         RGBLight* light = static_cast<RGBLight*>(context);
         MenuPage* page = new MenuPage(F("Custom Color"), nullptr);
@@ -719,6 +1180,11 @@ public:
         return page;
     }
 
+    /**
+     * @brief Builds RGB color preset selection page
+     * @param context RGBLight* device
+     * @return Heap-allocated page with preset options
+     */
     static MenuPage* buildRGBPresetsPage(void* context) {
         RGBLight* light = static_cast<RGBLight*>(context);
         MenuPage* page = new MenuPage(F("Select Preset"), NavigationManager::instance().getCurrentPage());
@@ -732,6 +1198,11 @@ public:
         return page;
     }
 
+    /**
+     * @brief Builds RGB light control page
+     * @param context RGBLight* device
+     * @return Heap-allocated page with toggle, brightness, presets
+     */
     static MenuPage* buildRGBLightPage(void* context) {
         RGBLight* light = static_cast<RGBLight*>(context);
         MenuPage* page = new MenuPage(F("RGB Light"), NavigationManager::instance().getCurrentPage());
@@ -739,19 +1210,31 @@ public:
         page->addItem(new SubMenuItem(F("Set Brightness"), buildBrightnessPage, light, NavigationManager::instance()));
         page->addItem(new SubMenuItem(F("Color Presets"), buildRGBPresetsPage, light, NavigationManager::instance()));
         page->addItem(new SubMenuItem(F("Custom Color"), buildCustomColorPage, light, NavigationManager::instance()));
+        page->addItem(new SubMenuItem(F("Schedule Timer"), buildTimerPage, light, NavigationManager::instance()));
         page->addItem(new BackMenuItem(NavigationManager::instance()));
         return page;
     }
 
+    /**
+     * @brief Builds dimmable light control page
+     * @param context DimmableLight* device
+     * @return Heap-allocated page with toggle and brightness
+     */
     static MenuPage* buildDimmableLightPage(void* context) {
         DimmableLight* light = static_cast<DimmableLight*>(context);
         MenuPage* page = new MenuPage(F("Dimmable Light"), NavigationManager::instance().getCurrentPage());
         page->addItem(new DeviceToggleItem(light));
         page->addItem(new SubMenuItem(F("Set Brightness"), buildBrightnessPage, light, NavigationManager::instance()));
+        page->addItem(new SubMenuItem(F("Schedule Timer"), buildTimerPage, light, NavigationManager::instance()));
         page->addItem(new BackMenuItem(NavigationManager::instance()));
         return page;
     }
 
+    /**
+     * @brief Builds outside light mode selection page
+     * @param context OutsideLight* device
+     * @return Heap-allocated page with mode options
+     */
     static MenuPage* buildOutsideModesPage(void* context) {
         OutsideLight* light = static_cast<OutsideLight*>(context);
         MenuPage* page = new MenuPage(F("Select Mode"), NavigationManager::instance().getCurrentPage());
@@ -763,6 +1246,11 @@ public:
         return page;
     }
 
+    /**
+     * @brief Builds outside light control page
+     * @param context OutsideLight* device
+     * @return Heap-allocated page
+     */
     static MenuPage* buildOutsideLightPage(void* context) {
         OutsideLight* light = (OutsideLight*)context;
         MenuPage* page = new MenuPage(F("Outside Light"), NavigationManager::instance().getCurrentPage());
@@ -771,6 +1259,11 @@ public:
         return page;
     }
 
+    /**
+     * @brief Builds lights overview page
+     * @param context Unused (nullptr)
+     * @return Heap-allocated page listing all lights from registry
+     */
     static MenuPage* buildLightsPage(void* context) {
         MenuPage* page = new MenuPage(F("Lights"), NavigationManager::instance().getCurrentPage());
         DeviceRegistry& registry = DeviceRegistry::instance();
@@ -792,7 +1285,11 @@ public:
         return page;
     }
 
-    // REFACTORED: Template-based sensor stats page
+    /**
+     * @brief Builds sensor statistics page
+     * @param context IDevice* sensor
+     * @return Heap-allocated page with live value and min/max/avg stats
+     */
     static MenuPage* buildSensorStatsPage(void* context) {
         IDevice* device = static_cast<IDevice*>(context);
         MenuPage* page = new MenuPage(F("Statistics"), NavigationManager::instance().getCurrentPage());
@@ -828,7 +1325,11 @@ public:
         return page;
     }
 
-    // REFACTORED: Light settings with template
+    /**
+     * @brief Builds light sensor settings page
+     * @param context PhotoresistorSensor* device
+     * @return Heap-allocated page with stats and calibration
+     */
     static MenuPage* buildLightSettingsPage(void* context) {
         PhotoresistorSensor* light = static_cast<PhotoresistorSensor*>(context);
         MenuPage* page = new MenuPage(F("Light Settings"), NavigationManager::instance().getCurrentPage());
@@ -844,6 +1345,11 @@ public:
         return page;
     }
 
+    /**
+     * @brief Builds sensors overview page
+     * @param context Unused (nullptr)
+     * @return Heap-allocated page listing all sensors from registry
+     */
     static MenuPage* buildSensorsPage(void* context) {
         MenuPage* page = new MenuPage(F("Sensors"), NavigationManager::instance().getCurrentPage());
         DeviceRegistry& registry = DeviceRegistry::instance();
@@ -869,11 +1375,61 @@ public:
         return page;
     }
 
+    /**
+     * @brief Builds scenes control page
+     * @param context Unused (nullptr)
+     * @return Heap-allocated page with scene toggle items
+     */
+    static MenuPage* buildScenesPage(void* context) {
+        MenuPage* page = new MenuPage(F("Scenes"), NavigationManager::instance().getCurrentPage());
+        
+        // Aggiungi scene disponibili (create staticamente in main)
+        extern NightModeScene nightMode;
+        extern PartyScene partyMode;
+        extern AlarmScene alarmMode;
+        
+        page->addItem(new SceneToggleItem(&nightMode));
+        page->addItem(new SceneToggleItem(&partyMode));
+        page->addItem(new SceneToggleItem(&alarmMode));
+        
+        page->addItem(new BackMenuItem(NavigationManager::instance()));
+        return page;
+    }
+
+    /**
+     * @brief Builds timer scheduling page for device
+     * @param context IDevice* target device
+     * @return Heap-allocated page with timer options
+     */
+    static MenuPage* buildTimerPage(void* context) {
+        IDevice* device = static_cast<IDevice*>(context);
+        MenuPage* page = new MenuPage(F("Schedule Timer"), NavigationManager::instance().getCurrentPage());
+        
+        if (device->isLight()) {
+            page->addItem(new ScheduleTimerItem("Turn ON in 5s", device, TimerAction::TURN_ON, 5000));
+            page->addItem(new ScheduleTimerItem("Turn ON in 30s", device, TimerAction::TURN_ON, 30000));
+            page->addItem(new ScheduleTimerItem("Turn ON in 1min", device, TimerAction::TURN_ON, 60000));
+            
+            page->addItem(new ScheduleTimerItem("Turn OFF in 5s", device, TimerAction::TURN_OFF, 5000));
+            page->addItem(new ScheduleTimerItem("Turn OFF in 30s", device, TimerAction::TURN_OFF, 30000));
+            page->addItem(new ScheduleTimerItem("Turn OFF in 1min", device, TimerAction::TURN_OFF, 60000));
+            
+            page->addItem(new ScheduleTimerItem("Toggle in 5s", device, TimerAction::TOGGLE, 5000));
+        }
+        
+        page->addItem(new BackMenuItem(NavigationManager::instance()));
+        return page;
+    }
+
+    /**
+     * @brief Builds root menu page
+     * @return Heap-allocated main menu (not JIT, never freed)
+     */
     static MenuPage* buildMainMenu() {
-        // Root page è l'unica creata staticamente all'inizio
         MenuPage* root = new MenuPage(F("Main Menu"));
         root->addItem(new SubMenuItem(F("Lights"), buildLightsPage, nullptr, NavigationManager::instance()));
         root->addItem(new SubMenuItem(F("Sensors"), buildSensorsPage, nullptr, NavigationManager::instance()));
+        root->addItem(new SubMenuItem(F("Scenes"), buildScenesPage, nullptr, NavigationManager::instance()));
         return root;
     }
 };

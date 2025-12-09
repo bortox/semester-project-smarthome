@@ -1,3 +1,8 @@
+/**
+ * @file Scenes.h
+ * @brief Scene management and concrete scene implementations
+ * @ingroup Automation
+ */
 #ifndef SCENES_H
 #define SCENES_H
 
@@ -7,6 +12,7 @@
 /**
  * @class IScene
  * @brief Abstract interface for scene implementations
+ * @ingroup Automation
  * 
  * Scenes are layers that can modify device states. Multiple scenes can be
  * active simultaneously, with conflicts resolved by priority (Painter's Algorithm).
@@ -67,6 +73,7 @@ public:
 /**
  * @class SceneManager
  * @brief Singleton managing active scenes with priority-based conflict resolution
+ * @ingroup Automation
  * 
  * Maintains a list of active scenes sorted by priority. During update(), scenes
  * are applied in ascending priority order (Painter's Algorithm), allowing higher
@@ -189,6 +196,7 @@ public:
 /**
  * @class NightModeScene
  * @brief Low priority scene that limits global brightness
+ * @ingroup Automation
  * 
  * Priority: 10 (Low - applied first, can be overridden by others)
  * 
@@ -226,6 +234,7 @@ public:
 /**
  * @class PartyScene
  * @brief Medium priority scene that cycles RGB light colors
+ * @ingroup Automation
  * 
  * Priority: 50 (Medium - can be overridden by Alarm, overrides Night Mode)
  * 
@@ -289,6 +298,7 @@ public:
 /**
  * @class AlarmScene
  * @brief Highest priority scene that flashes red on motion detection
+ * @ingroup Automation
  * 
  * Priority: 255 (Maximum - overrides all other scenes)
  * 

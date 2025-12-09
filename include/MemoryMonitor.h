@@ -1,3 +1,8 @@
+/**
+ * @file MemoryMonitor.h
+ * @brief RAM usage monitoring utilities
+ * @ingroup Core
+ */
 #pragma once
 #include <Arduino.h>
 #include "DebugConfig.h" // Assicurati di includere questo
@@ -5,11 +10,20 @@
 extern char __heap_start;
 extern char *__brkval;
 
+/**
+ * @brief Calculates free RAM between stack and heap
+ * @return Bytes of free memory
+ */
 static int getFreeMemory() {
     char top;
     return &top - (__brkval == 0 ? &__heap_start : __brkval);
 }
 
+/**
+ * @brief Prints memory usage report to Serial
+ * 
+ * Only active if DEBUG_SERIAL is enabled.
+ */
 static void printMemoryReport() {
 #if DEBUG_SERIAL
     int free_mem = getFreeMemory();

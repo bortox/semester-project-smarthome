@@ -1,3 +1,8 @@
+/**
+ * @file PhysicalInput.h
+ * @brief Hardware Abstraction Layer for physical inputs
+ * @ingroup HAL
+ */
 #ifndef PHYSICAL_INPUT_H
 #define PHYSICAL_INPUT_H
 
@@ -54,6 +59,7 @@ public:
 /**
  * @class NavButtonInput
  * @brief Button input specifically for menu navigation
+ * @ingroup HAL
  * 
  * Directly calls NavigationManager methods instead of using events
  */
@@ -71,6 +77,13 @@ public:
     void update();
 };
 
+/**
+ * @class InputManager
+ * @brief Singleton managing all physical inputs
+ * @ingroup HAL
+ * 
+ * Polls buttons and potentiometers in the main loop.
+ */
 class InputManager {
 private:
     DynamicArray<ButtonInput*> _buttons;

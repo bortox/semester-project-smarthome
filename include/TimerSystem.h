@@ -1,3 +1,8 @@
+/**
+ * @file TimerSystem.h
+ * @brief Scheduling system for delayed actions
+ * @ingroup Automation
+ */
 #ifndef TIMER_SYSTEM_H
 #define TIMER_SYSTEM_H
 
@@ -11,6 +16,7 @@ class DimmableLight;
 /**
  * @struct TimerTask
  * @brief Represents a scheduled action to be executed at a future time
+ * @ingroup Automation
  * 
  * Supports both device actions (TURN_ON, TOGGLE, etc.) and scene actions
  * (ACTIVATE_SCENE, DEACTIVATE_SCENE). Uses union to save RAM by storing
@@ -58,6 +64,7 @@ struct TimerTask {
 /**
  * @class TimerManager
  * @brief Singleton managing scheduled task execution without heap-heavy callbacks
+ * @ingroup Automation
  * 
  * Uses an enum-based approach to avoid std::function overhead. Each TimerTask
  * contains all necessary data, and actions are resolved via switch statement

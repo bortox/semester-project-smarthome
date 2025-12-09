@@ -1,17 +1,31 @@
+/**
+ * @file DebugConfig.h
+ * @brief Global debug configuration macros
+ * @ingroup Core
+ */
 #ifndef DEBUG_CONFIG_H
 #define DEBUG_CONFIG_H
 
 #include <Arduino.h>
 
-// Abilita/disabilita debug globalmente
-// Per produzione: cambiare a 0 o compilare con -DDEBUG_SERIAL=0
+/**
+ * @def DEBUG_SERIAL
+ * @brief Enable/Disable Serial debug output
+ * 
+ * Set to 0 for production to save Flash/RAM.
+ * Can be overridden via build flags.
+ */
 #ifndef DEBUG_SERIAL
   #define DEBUG_SERIAL 0
 #endif
 
-// Abilita/disabilita debug I2C con LED integrato
-// LED acceso = comunicazione I2C in corso
-// LED fisso = blocco I2C (identifica punto di hang)
+/**
+ * @def DEBUG_I2C
+ * @brief Enable/Disable I2C debugging via built-in LED
+ * 
+ * LED ON = I2C communication active
+ * LED Stuck ON = I2C bus hang
+ */
 #ifndef DEBUG_I2C
   #define DEBUG_I2C 1
 #endif
