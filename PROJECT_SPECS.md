@@ -29,6 +29,7 @@
    - **Dimmabili:** Sottomenu con Toggle + Slider brightness (±10%)
    - **RGB:** Sottomenu con preset colori e controllo canali RGB individuali
    - **Automazione (futuro):** Modalità Manual/Auto Light/Auto Light+Motion
+   - **Timer:** Schedule azioni future (TURN_ON/OFF in X secondi)
 
 3. **Monitoraggio sensori**
    - Display valore corrente in lista
@@ -36,7 +37,22 @@
    - **Luce:** Sottomenu con statistiche + calibrazione limiti (Dark/Bright)
    - **PIR:** Solo lettura (Yes/No movimento)
 
-4. **Event-driven architecture**
+4. **Scene System**
+   - **Multi-layer architecture:** Multiple scenes can be active simultaneously
+   - **Priority-based resolution:** Painter's Algorithm (high priority = applied last = overrides)
+   - **Night Mode (P10):** Global brightness reduction to 20%
+   - **Party Mode (P50):** RGB color cycling every 500ms
+   - **Alarm Mode (P255):** Red flashing on PIR motion detection
+   - **Menu integration:** Toggle scenes ON/OFF from menu
+
+5. **Timer System**
+   - **Enum-based scheduling:** No std::function overhead (~8B per task)
+   - **Device actions:** TURN_ON, TURN_OFF, TOGGLE, SET_BRIGHTNESS
+   - **Scene actions:** ACTIVATE_SCENE, DEACTIVATE_SCENE
+   - **Non-blocking execution:** Uses millis() for time tracking
+   - **Menu integration:** Schedule timers from device submenus
+
+6. **Event-driven architecture**
    - Bottone fisico → Device → EventSystem → Menu (aggiornamento automatico)
    - Nessun accoppiamento diretto Input ↔ UI
 
