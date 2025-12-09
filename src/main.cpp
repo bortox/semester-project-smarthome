@@ -9,11 +9,9 @@ extern "C" {
 #include "DebugConfig.h"
 
 void setup() {
-    Serial.begin(9600);
-    while (!Serial);
+    // NOTE: Serial disabled - D0/D1 used for navigation buttons
     
 #if DEBUG_I2C
-    // Inizializza LED integrato per debug I2C
     pinMode(LED_BUILTIN, OUTPUT);
     digitalWrite(LED_BUILTIN, LOW);
 #endif
@@ -27,98 +25,81 @@ void setup() {
 
     NavigationManager::instance().setLCD();
 
-    // Crea dispositivi
-    Serial.println(F("\n=== Creating Devices ==="));
-    DeviceFactory::createSimpleLight("LED 1", 3);
-    DeviceFactory::createDimmableLight("LED 2", 5);
-    
-    // Nuovi dispositivi
-    DeviceFactory::createRGBLight("RGB Strip", 9, 10, 11);
-    
-    // Sensori per luce esterna
-    static LightSensor photo("Photo", A0);
-    static MovementSensor pir("PIR", 2);
-    DeviceFactory::createOutsideLight("Garden", 6, &photo, &pir);
+    // ===== Create Devices =====
+    DeviceFactory::createDimmableLight("Kitchen", 6);
+    //DeviceFactory::createSimpleLight("Kitchen", 3);
+    DeviceFactory::createDimmableLight("Bedroom", 5);
+    DeviceFactory::createRGBLight("Ambient Light", 9, 10, 11);
+    DeviceFactory::createTemperatureSensor("Outside Temp");
 
-    // Aggiungi sensore di temperatura
-    DeviceFactory::createTemperatureSensor("Temp Sala");
     
-    // Aggiungi sensore di luce fotoresistore
-    DeviceFactory::createPhotoresistorSensor("Outside Light", A0);
-    
-    // NUOVO: Aggiungi sensore di movimento PIR
-    DeviceFactory::createPIRSensor("Motion PIR", 2);
-
-    // Collega bottoni ai LED
-    Serial.println(F("\n=== Setting up Buttons ==="));
+    // // ===== Setup Light Control Buttons =====
     DeviceRegistry& registry = DeviceRegistry::instance();
     
-    ButtonInput* btn1 = new ButtonInput(8, 1, registry.getDevices()[0], ButtonMode::ACTIVE_LOW);
-    ButtonInput* btn2 = new ButtonInput(7, 2, registry.getDevices()[1], ButtonMode::ACTIVE_LOW);
-    ButtonInput* btn3 = new ButtonInput(A2, 3, registry.getDevices()[2], ButtonMode::ACTIVE_LOW);
-    ButtonInput* btn4 = new ButtonInput(A3, 4, registry.getDevices()[3], ButtonMode::ACTIVE_LOW);
+    // D12 -> Living Room (index 0)
+    ButtonInput* btnLiving = new ButtonInput(13, 1, registry.getDevices()[0], ButtonMode::ACTIVE_LOW);
+    InputManager::instance().registerButton(btnLiving);
     
-    InputManager::instance().registerButton(btn1);
-    InputManager::instance().registerButton(btn2);
-    InputManager::instance().registerButton(btn3);
-    InputManager::instance().registerButton(btn4);
+    // D13 -> Kitchen (index 1)
+    ButtonInput* btnKitchen = new ButtonInput(16, 2, registry.getDevices()[1], ButtonMode::ACTIVE_LOW);
+    InputManager::instance().registerButton(btnKitchen);
+    
+    // D7 -> Bedroom (index 2)
+    ButtonInput* btnBedroom = new ButtonInput(A6, 3, registry.getDevices()[2], ButtonMode::ACTIVE_LOW);
+    InputManager::instance().registerButton(btnBedroom);
+    
+    // D8 -> Reserved (no action for now)
+    ButtonInput* btnReserved = new ButtonInput(A7, 4, nullptr, ButtonMode::ACTIVE_LOW);
+    InputManager::instance().registerButton(btnReserved);
 
-    // Configura potenziometri per controllo luminosità
-    Serial.println(F("\n=== Setting up Potentiometers ==="));
-    
-    // Potenziometro 1: Controlla LED 2 (Dimmable) su pin A6
-    DimmableLight* led2 = static_cast<DimmableLight*>(registry.getDevices()[1]);
-    PotentiometerInput* pot1 = new PotentiometerInput(A6, led2);
-    InputManager::instance().registerPotentiometer(pot1);
-    
-    // Potenziometro 2: Controlla RGB Strip brightness su pin A7
+
     DimmableLight* rgbLight = static_cast<DimmableLight*>(registry.getDevices()[2]);
-    PotentiometerInput* pot2 = new PotentiometerInput(A1, rgbLight);
+    PotentiometerInput* pot2 = new PotentiometerInput(A0, rgbLight);
     InputManager::instance().registerPotentiometer(pot2);
 
-    // Costruisci menu
-    Serial.println(F("\n=== Building Menu ==="));
+    static LightSensor photo("Photo", A3);
+    static MovementSensor pir("PIR", 7);
+    DeviceFactory::createOutsideLight("Garden", 3, &photo, &pir);
+
+    // Aggiungi sensore di luce fotoresistore
+    DeviceFactory::createPhotoresistorSensor("Outside Light", A3);
+    
+    // NUOVO: Aggiungi sensore di movimento PIR
+    DeviceFactory::createPIRSensor("Motion PIR", 7);
+
+
+
+    // ===== Setup Menu Navigation Buttons =====
+    NavButtonInput* navUp = new NavButtonInput(12, 'U', ButtonMode::ACTIVE_LOW); // R
+    NavButtonInput* navDown = new NavButtonInput(1, 'D', ButtonMode::ACTIVE_LOW);
+    NavButtonInput* navSelect = new NavButtonInput(4, 'E', ButtonMode::ACTIVE_LOW);
+    NavButtonInput* navBack = new NavButtonInput(2, 'B', ButtonMode::ACTIVE_LOW);
+    
+    InputManager::instance().registerNavButton(navUp);
+    InputManager::instance().registerNavButton(navDown);
+    InputManager::instance().registerNavButton(navSelect);
+    InputManager::instance().registerNavButton(navBack);
+
+    // ===== Build Menu =====
     MenuPage* mainMenu = MenuBuilder::buildMainMenu();
     NavigationManager::instance().initialize(mainMenu);
 
-    // Report memoria
-    Serial.println(F("\n=== Memory Report ==="));
-    printMemoryReport();
-
-    Serial.println(F("\n=== System Ready ==="));
-    Serial.println(F("Commands: w=UP s=DOWN e=SELECT q=BACK"));
+    LCD_clear();
+    LCD_set_cursor(0, 0);
+    LCD_write_str("System Ready!");
+    delay(1000);
 }
 
 void loop() {
-    // Aggiorna bottoni fisici
+    // Update all inputs (device buttons + navigation buttons)
     InputManager::instance().updateAll();
     
-    // Devices si aggiornano autonomamente
-    static unsigned long lastDeviceUpdate = 0;
-    if (millis() - lastDeviceUpdate > 100) {
-        auto& registry = DeviceRegistry::instance();
-        for (size_t i = 0; i < registry.getDevices().size(); i++) {
-            registry.getDevices()[i]->update();
-        }
-        lastDeviceUpdate = millis();
+    // Update all devices
+    DeviceRegistry& registry = DeviceRegistry::instance();
+    for (uint8_t i = 0; i < registry.getDevices().size(); i++) {
+        registry.getDevices()[i]->update();
     }
 
-    // Gestione input seriale
-    if (Serial.available()) {
-        char input = Serial.read();
-        while (Serial.available()) Serial.read();
-        
-        // Traduzione comandi
-        if (input == 'w') input = 'U';
-        else if (input == 's') input = 'D';
-        else if (input == 'e') input = 'E';
-        else if (input == 'q') input = 'B';
-        
-        NavigationManager::instance().handleInput(input);
-    }
-
-    // Ridisegna SOLO se necessario
+    // Update menu display (only redraws if needed)
     NavigationManager::instance().update();
-
-    delay(50);
 }

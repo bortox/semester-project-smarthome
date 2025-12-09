@@ -6,7 +6,7 @@
 // Abilita/disabilita debug globalmente
 // Per produzione: cambiare a 0 o compilare con -DDEBUG_SERIAL=0
 #ifndef DEBUG_SERIAL
-  #define DEBUG_SERIAL 1
+  #define DEBUG_SERIAL 0
 #endif
 
 // Abilita/disabilita debug I2C con LED integrato

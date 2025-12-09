@@ -6,6 +6,7 @@
 // Forward declarations
 class SimpleLight;
 class DimmableLight;
+class NavigationManager;
 
 enum class ButtonMode : uint8_t {
     ACTIVE_LOW,   // Bottone a GND quando premuto (pull-up attivo)
@@ -50,11 +51,31 @@ public:
     DimmableLight* getLinkedLight() const { return _light; }
 };
 
+/**
+ * @class NavButtonInput
+ * @brief Button input specifically for menu navigation
+ * 
+ * Directly calls NavigationManager methods instead of using events
+ */
+class NavButtonInput {
+private:
+    uint8_t _pin;
+    char _command;  // 'U', 'D', 'E', or 'B'
+    bool _lastState;
+    unsigned long _lastDebounceTime;
+    ButtonMode _mode;
+    static const uint8_t DEBOUNCE_DELAY = 50;
+
+public:
+    NavButtonInput(uint8_t pin, char command, ButtonMode mode = ButtonMode::ACTIVE_LOW);
+    void update();
+};
+
 class InputManager {
 private:
     DynamicArray<ButtonInput*> _buttons;
     DynamicArray<PotentiometerInput*> _potentiometers;
-    // Rimuovi _encoders e _knobs se non esistono nel progetto
+    DynamicArray<NavButtonInput*> _navButtons;  // NEW: Navigation buttons
 
     InputManager() {}
 
@@ -62,6 +83,7 @@ public:
     static InputManager& instance();
     void registerButton(ButtonInput* button);
     void registerPotentiometer(PotentiometerInput* pot);
+    void registerNavButton(NavButtonInput* navBtn);  // NEW
     void updateAll();
 };
 

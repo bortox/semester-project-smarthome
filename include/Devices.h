@@ -206,7 +206,7 @@ protected:
     uint8_t _currentBrightness;
     uint8_t _lastBrightness;
     unsigned long _lastUpdate;
-    static constexpr uint8_t MS_PER_STEP = 2;
+    static constexpr uint8_t MS_PER_STEP = 4;
 
 public:
     /**
@@ -215,7 +215,7 @@ public:
      * @param pin Arduino PWM pin to which the light is connected
      */
     DimmableLight(const char* name, uint8_t pin) 
-        : SimpleLight(name, pin), _targetBrightness(100), _currentBrightness(0), 
+        : SimpleLight(name, pin), _targetBrightness(0), _currentBrightness(0), 
           _lastBrightness(100), _lastUpdate(0) {
         const_cast<DeviceType&>(type) = DeviceType::LightDimmable;
     }
@@ -229,7 +229,9 @@ public:
      */
     virtual void setBrightness(uint8_t level) {
         _targetBrightness = constrain(level, 0, 100);
-        
+        if (_currentBrightness != _targetBrightness) {
+            _lastUpdate = millis();
+        }
         if (_targetBrightness > 0) {
             _lastBrightness = _targetBrightness;
         }
@@ -649,19 +651,18 @@ public:
 
 /**
  * @class TemperatureSensor
- * @brief Temperature sensor with statistics
+ * @brief Temperature sensor with statistics (NO FLOATS)
  * 
- * Uses an LM75 sensor to detect temperature
+ * Uses an LM75 sensor to detect temperature in decicelsius
  * and maintains min/max/average statistics
  */
 class TemperatureSensor : public IDevice {
 private:
-    float _temperature;
+    int16_t _temperature;  // Decicelsius (tenths of degree)
     unsigned long _lastRead;
     SensorStats _stats;
     LM75Sensor _lm75;
     static constexpr unsigned long UPDATE_INTERVAL_MS = 2000;
-    static constexpr int TEMP_SCALE_FACTOR = 10;
 
 public:
     /**
@@ -689,17 +690,17 @@ public:
     void update() override {
         if (millis() - _lastRead > UPDATE_INTERVAL_MS) {
             _lastRead = millis();
-            _temperature = _lm75.getValue();
-            _stats.addSample((int16_t)(_temperature * TEMP_SCALE_FACTOR));
-            EventSystem::instance().emit(EventType::SensorUpdated, this, (int)(_temperature * TEMP_SCALE_FACTOR));
+            _temperature = _lm75.getValue();  // Already in decicelsius
+            _stats.addSample(_temperature);
+            EventSystem::instance().emit(EventType::SensorUpdated, this, _temperature);
         }
     }
 
     /**
-     * @brief Gets the current temperature
-     * @return Temperature in degrees Celsius
+     * @brief Gets the current temperature in decicelsius
+     * @return Temperature * 10 (e.g., 205 = 20.5°C)
      */
-    float getTemperature() const { return _temperature; }
+    int16_t getTemperature() const { return _temperature; }
     
     /**
      * @brief Gets the sensor statistics
@@ -721,7 +722,7 @@ private:
     unsigned long _lastRead;
     LightSensor _photoSensor;
     SensorStats _stats;
-    static constexpr unsigned long UPDATE_INTERVAL_MS = 1000;
+    static constexpr unsigned long UPDATE_INTERVAL_MS = 10;
     static constexpr int CHANGE_THRESHOLD = 2;
 
 public:
