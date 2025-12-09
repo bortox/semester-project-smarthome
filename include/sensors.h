@@ -15,14 +15,14 @@ public:
     virtual T getValue() const = 0;
 };
 
-// LM75 TEMP SENSOR
+// LM75 TEMP SENSOR (NO FLOATS - Returns decicelsius)
 #ifndef LM75_ADR
 #define LM75_ADR 0x90
 #endif
 
-class LM75Sensor : public Sensor<float> {
+class LM75Sensor : public Sensor<int16_t> {
 public:
-    LM75Sensor(const char* name) : Sensor<float>(name) {}
+    LM75Sensor(const char* name) : Sensor<int16_t>(name) {}
     
     void begin() {
 #if DEBUG_I2C
@@ -37,11 +37,19 @@ public:
 #endif
     }
     
-    float getValue() const override {
+    /**
+     * @brief Gets temperature in decicelsius (tenths of degree)
+     * @return Temperature * 10 (e.g., 205 = 20.5°C)
+     * 
+     * LM75 resolution is 0.125°C (1/8), we need 0.1°C (1/10)
+     * Formula: decicelsius = (raw_value * 5) >> 2
+     * Explanation: raw * 0.125 * 10 = raw * 1.25 = raw * 5/4
+     */
+    int16_t getValue() const override {
 #if DEBUG_I2C
         digitalWrite(LED_BUILTIN, HIGH);
 #endif
-        unsigned int temp_data;
+        uint16_t temp_data;
         i2c_start_wait(LM75_ADR + I2C_WRITE);
         i2c_write(0x00);
         i2c_rep_start(LM75_ADR + I2C_READ);
@@ -54,11 +62,17 @@ public:
         
         temp_data = (high_byte << 8) | low_byte;
         temp_data = temp_data >> 5;
+        
+        // Handle negative temperatures
         if (high_byte & 0x80) {
             temp_data |= 0xF800;
-            return static_cast<int16_t>(temp_data) * 0.125f;
+            int16_t raw = static_cast<int16_t>(temp_data);
+            // raw * 0.125 * 10 = (raw * 5) / 4
+            return (raw * 5) >> 2;
         }
-        return temp_data * 0.125f;
+        
+        // Positive temperature: (raw * 5) / 4
+        return (static_cast<int16_t>(temp_data) * 5) >> 2;
     }
 };
 

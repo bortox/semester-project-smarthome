@@ -298,7 +298,6 @@ private:
     
     void loadCustomChars() {
         if (!_customCharsLoaded) {
-            // FIX: Dati locali invece di static membri PROGMEM
             const uint8_t customChars[5][8] = {
                 {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, // Empty
                 {0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10}, // 1 pixel
@@ -328,8 +327,8 @@ public:
     bool relatesTo(IDevice* dev) override { return _device == dev; }
 
     void draw(uint8_t row, bool selected) override {
+        // Row 0: Label and value
         LCD_set_cursor(0, row);
-        LCD_write_str(selected ? "< " : "  ");
         
         printLabel(_label);
         LCD_write_str(": ");
@@ -339,47 +338,64 @@ public:
         itoa(val, buf, 10);
         LCD_write_str(buf);
         
-        if (selected) LCD_write_str(" >");
+        // Clear rest of first row
+        uint8_t cursor_pos = strlen_P((const char*)_label) + 2 + strlen(buf);
+        while (cursor_pos < 20) {
+            LCD_write_char(' ');
+            cursor_pos++;
+        }
 
-        // Pixel-perfect progress bar (18 chars = 90 pixels)
+        // Row 1: Full-width progress bar (20 chars = 100 pixels)
         LCD_set_cursor(0, row + 1);
-        LCD_write_char('[');
         
-        // Map value to pixels (0-90)
-        uint16_t totalPixels = map(val, _min, _max, 0, 90);
+        // Map value to pixels (0-100 pixels across 20 chars)
+        uint16_t totalPixels = map(val, _min, _max, 0, 100);
         uint8_t fullBlocks = totalPixels / 5;
         uint8_t partialPixels = totalPixels % 5;
         
         // Draw full blocks (0xFF = all 5 pixels filled)
-        for (uint8_t i = 0; i < fullBlocks && i < 18; i++) {
+        for (uint8_t i = 0; i < fullBlocks && i < 20; i++) {
             LCD_write_char(0xFF);
         }
         
         // Draw partial block
-        if (fullBlocks < 18 && partialPixels > 0) {
+        if (fullBlocks < 20 && partialPixels > 0) {
             LCD_write_char(partialPixels - 1); // Custom char 0-4
             fullBlocks++;
         }
         
         // Fill remaining with empty spaces
-        for (uint8_t i = fullBlocks; i < 18; i++) {
+        for (uint8_t i = fullBlocks; i < 20; i++) {
             LCD_write_char(' ');
         }
-        
-        LCD_write_char(']');
     }
 
     bool handleInput(char key) override {
         uint8_t current = (_device->*_getter)();
+        
         if (key == 'U') {
-            uint8_t newVal = min(_max, (uint8_t)(current + _step));
+            // Safely increment with clamping
+            uint8_t newVal;
+            if (current > _max - _step) {
+                newVal = _max;
+            } else {
+                newVal = current + _step;
+            }
             (_device->*_setter)(newVal);
             return true;
+            
         } else if (key == 'D') {
-            uint8_t newVal = max(_min, (uint8_t)(current - _step));
+            // Safely decrement with clamping
+            uint8_t newVal;
+            if (current < _min + _step) {
+                newVal = _min;
+            } else {
+                newVal = current - _step;
+            }
             (_device->*_setter)(newVal);
             return true;
         }
+        
         return false;
     }
 };
@@ -397,31 +413,37 @@ ValueSliderItem<DeviceType>* makeSlider(
     void (DeviceType::*setter)(uint8_t),
     uint8_t minVal = 0,
     uint8_t maxVal = 100,
-    uint8_t step = 10
+    uint8_t step = 3
 ) {
     return new ValueSliderItem<DeviceType>(device, label, getter, setter, minVal, maxVal, step);
 }
 
-// KISS: Merged InfoItem
-class InfoItem : public MenuItem {
-public:
-    enum class Mode : uint8_t { STATIC, LIVE_TEMP, LIVE_LIGHT, LIVE_PIR };
-    
+// Template-based Live Value Display Item
+template<typename T>
+class LiveItem : public MenuItem {
 private:
     const __FlashStringHelper* _label;
-    Mode _mode;
-    IDevice* _device;
-    int16_t _staticValue;
+    T* _object;
+    int16_t (T::*_getter)() const;
     const __FlashStringHelper* _unit;
     bool _isTemperature;
+    IDevice* _device;  // For relatesTo() when T is a sensor
 
     void printValue(int16_t value) {
         char buf[8];
         if (_isTemperature) {
-            float val = value / 10.0f;
-            dtostrf(val, 4, 1, buf);
+            // Print as XX.X format (e.g., 205 -> "20.5")
+            int16_t whole = value / 10;
+            int16_t decimal = abs(value % 10);
+            
+            itoa(whole, buf, 10);
             LCD_write_str(buf);
-            LCD_write_char(0xDF);
+            LCD_write_char('.');
+            
+            buf[0] = '0' + decimal;
+            buf[1] = '\0';
+            LCD_write_str(buf);
+            LCD_write_char(0xDF);  // Degree symbol
         } else {
             itoa(value, buf, 10);
             LCD_write_str(buf);
@@ -431,14 +453,17 @@ private:
     }
 
 public:
-    InfoItem(const __FlashStringHelper* label, int16_t value, 
+    // Constructor for stats (Min/Max/Avg)
+    LiveItem(const __FlashStringHelper* label, T* object, int16_t (T::*getter)() const,
              const __FlashStringHelper* unit, bool isTemp = false)
-        : _label(label), _mode(Mode::STATIC), _device(nullptr), 
-          _staticValue(value), _unit(unit), _isTemperature(isTemp) {}
+        : _label(label), _object(object), _getter(getter), _unit(unit), 
+          _isTemperature(isTemp), _device(nullptr) {}
 
-    InfoItem(IDevice* device, const __FlashStringHelper* unit, Mode mode)
-        : _label(nullptr), _mode(mode), _device(device), _staticValue(0), 
-          _unit(unit), _isTemperature(mode == Mode::LIVE_TEMP) {}
+    // Constructor for live sensor display
+    LiveItem(IDevice* device, T* object, int16_t (T::*getter)() const,
+             const __FlashStringHelper* unit, bool isTemp = false)
+        : _label(nullptr), _object(object), _getter(getter), _unit(unit),
+          _isTemperature(isTemp), _device(device) {}
 
     bool relatesTo(IDevice* dev) override { return _device == dev; }
 
@@ -446,37 +471,62 @@ public:
         LCD_set_cursor(0, row);
         LCD_write_str(selected ? "> " : "  ");
         
-        if (_mode == Mode::STATIC) {
+        if (_label) {
             printLabel(_label);
-            LCD_write_str(": ");
-            printValue(_staticValue);
-        } else {
-            if (_label) {
-                printLabel(_label);
-            } else {
-                LCD_write_str(_device->name);
-            }
-            LCD_write_str(": ");
-            
-            switch (_mode) {
-                case Mode::LIVE_TEMP: {
-                    int16_t value = (int16_t)(static_cast<TemperatureSensor*>(_device)->getTemperature() * 10);
-                    printValue(value);
-                    break;
-                }
-                case Mode::LIVE_LIGHT: {
-                    int16_t value = static_cast<PhotoresistorSensor*>(_device)->getValue();
-                    printValue(value);
-                    break;
-                }
-                case Mode::LIVE_PIR:
-                    LCD_write_str(static_cast<PIRSensorDevice*>(_device)->isMotionDetected() ? "Yes" : "No");
-                    break;
-                case Mode::STATIC:
-                    // Already handled above
-                    break;
-            }
+        } else if (_device) {
+            LCD_write_str(_device->name);
         }
+        
+        LCD_write_str(": ");
+        
+        // Call member function pointer to get value
+        int16_t value = (_object->*_getter)();
+        printValue(value);
+    }
+
+    bool handleInput(char key) override { return false; }
+};
+
+// Helper function for automatic type deduction
+template<typename T>
+LiveItem<T>* makeLiveItem(
+    const __FlashStringHelper* label,
+    T* object,
+    int16_t (T::*getter)() const,
+    const __FlashStringHelper* unit,
+    bool isTemp = false
+) {
+    return new LiveItem<T>(label, object, getter, unit, isTemp);
+}
+
+// Overload for device-based live item
+template<typename T>
+LiveItem<T>* makeLiveItem(
+    IDevice* device,
+    T* object,
+    int16_t (T::*getter)() const,
+    const __FlashStringHelper* unit,
+    bool isTemp = false
+) {
+    return new LiveItem<T>(device, object, getter, unit, isTemp);
+}
+
+// Specialized LiveItem for boolean PIR sensor
+class LivePIRItem : public MenuItem {
+private:
+    PIRSensorDevice* _sensor;
+
+public:
+    LivePIRItem(PIRSensorDevice* sensor) : _sensor(sensor) {}
+
+    bool relatesTo(IDevice* dev) override { return _sensor == dev; }
+
+    void draw(uint8_t row, bool selected) override {
+        LCD_set_cursor(0, row);
+        LCD_write_str(selected ? "> " : "  ");
+        LCD_write_str(_sensor->name);
+        LCD_write_str(": ");
+        LCD_write_str(_sensor->isMotionDetected() ? "Yes" : "No");
     }
 
     bool handleInput(char key) override { return false; }
@@ -616,7 +666,7 @@ public:
         MenuPage* page = new MenuPage(F("Red Channel"), nullptr);
         if (!page) return nullptr;
         
-        page->addItem(makeSlider(light, F("Red"), &RGBLight::getRed, &RGBLight::setRed, 0, 255, 10));
+        page->addItem(makeSlider(light, F("Red"), &RGBLight::getRed, &RGBLight::setRed, 0, 255, 3));
         page->addItem(new BackMenuItem(NavigationManager::instance()));
         return page;
     }
@@ -626,7 +676,7 @@ public:
         MenuPage* page = new MenuPage(F("Green Channel"), nullptr);
         if (!page) return nullptr;
         
-        page->addItem(makeSlider(light, F("Green"), &RGBLight::getGreen, &RGBLight::setGreen, 0, 255, 10));
+        page->addItem(makeSlider(light, F("Green"), &RGBLight::getGreen, &RGBLight::setGreen, 0, 255, 3));
         page->addItem(new BackMenuItem(NavigationManager::instance()));
         return page;
     }
@@ -636,7 +686,7 @@ public:
         MenuPage* page = new MenuPage(F("Blue Channel"), nullptr);
         if (!page) return nullptr;
         
-        page->addItem(makeSlider(light, F("Blue"), &RGBLight::getBlue, &RGBLight::setBlue, 0, 255, 10));
+        page->addItem(makeSlider(light, F("Blue"), &RGBLight::getBlue, &RGBLight::setBlue, 0, 255, 3));
         page->addItem(new BackMenuItem(NavigationManager::instance()));
         return page;
     }
@@ -646,8 +696,7 @@ public:
         MenuPage* page = new MenuPage(F("Brightness"), nullptr);
         if (!page) return nullptr;
         
-        page->addItem(makeSlider(light, F("Level"), &DimmableLight::getBrightness, &DimmableLight::setBrightness, 0, 100, 10));
-        page->addItem(new BackMenuItem(NavigationManager::instance()));
+        page->addItem(makeSlider(light, F("Level"), &DimmableLight::getBrightness, &DimmableLight::setBrightness, 0, 100, 2));
         return page;
     }
 
@@ -737,35 +786,43 @@ public:
         return page;
     }
 
-    // KISS: Refactored using InfoItem
+    // REFACTORED: Template-based sensor stats page
     static MenuPage* buildSensorStatsPage(void* context) {
         IDevice* device = static_cast<IDevice*>(context);
         MenuPage* page = new MenuPage(F("Statistics"), NavigationManager::instance().getCurrentPage());
         
         if (device->type == DeviceType::SensorTemperature) {
             TemperatureSensor* temp = static_cast<TemperatureSensor*>(device);
-            SensorStats& stats = temp->getStats();
+            SensorStats* stats = &temp->getStats();
             
-            page->addItem(new InfoItem(device, F("C"), InfoItem::Mode::LIVE_TEMP));
-            page->addItem(new InfoItem(F("Min"), stats.getMin(), F("C"), true));
-            page->addItem(new InfoItem(F("Max"), stats.getMax(), F("C"), true));
-            page->addItem(new InfoItem(F("Avg"), stats.getAverage(), F("C"), true));
+            // Live current temperature
+            page->addItem(makeLiveItem(device, temp, &TemperatureSensor::getTemperature, F("C"), true));
+            
+            // Statistics using template
+            page->addItem(makeLiveItem(F("Min"), stats, &SensorStats::getMin, F("C"), true));
+            page->addItem(makeLiveItem(F("Max"), stats, &SensorStats::getMax, F("C"), true));
+            page->addItem(makeLiveItem(F("Avg"), stats, &SensorStats::getAverage, F("C"), true));
             
         } else if (device->type == DeviceType::SensorLight) {
             PhotoresistorSensor* light = static_cast<PhotoresistorSensor*>(device);
-            SensorStats& stats = light->getStats();
+            SensorStats* stats = &light->getStats();
             
-            page->addItem(new InfoItem(device, F("%"), InfoItem::Mode::LIVE_LIGHT));
-            page->addItem(new InfoItem(F("Min"), stats.getMin(), F("%"), false));
-            page->addItem(new InfoItem(F("Max"), stats.getMax(), F("%"), false));
-            page->addItem(new InfoItem(F("Avg"), stats.getAverage(), F("%"), false));
+            // Live current light level (returns int16_t via getValue)
+            page->addItem(makeLiveItem(device, light, 
+                static_cast<int16_t (PhotoresistorSensor::*)() const>(&PhotoresistorSensor::getValue), 
+                F("%"), false));
+            
+            // Statistics
+            page->addItem(makeLiveItem(F("Min"), stats, &SensorStats::getMin, F("%"), false));
+            page->addItem(makeLiveItem(F("Max"), stats, &SensorStats::getMax, F("%"), false));
+            page->addItem(makeLiveItem(F("Avg"), stats, &SensorStats::getAverage, F("%"), false));
         }
         
         page->addItem(new BackMenuItem(NavigationManager::instance()));
         return page;
     }
 
-    // NUOVO: Builder per pagina impostazioni luce (Stats + Calibrazione)
+    // REFACTORED: Light settings with template
     static MenuPage* buildLightSettingsPage(void* context) {
         PhotoresistorSensor* light = static_cast<PhotoresistorSensor*>(context);
         MenuPage* page = new MenuPage(F("Light Settings"), NavigationManager::instance().getCurrentPage());
@@ -796,8 +853,8 @@ public:
                     page->addItem(new SubMenuItem(F("Light Sensor"), buildLightSettingsPage, d, NavigationManager::instance()));
                     
                 } else if (d->type == DeviceType::SensorPIR) {
-                    // KISS: Reuse InfoItem for PIR display
-                    page->addItem(new InfoItem(d, F(""), InfoItem::Mode::LIVE_PIR));
+                    // Use specialized PIR item
+                    page->addItem(new LivePIRItem(static_cast<PIRSensorDevice*>(d)));
                 }
             }
         }

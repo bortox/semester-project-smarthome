@@ -1,5 +1,6 @@
 #include "PhysicalInput.h"
 #include "Devices.h"
+#include "FlexibleMenu.h"  // For NavigationManager
 
 ButtonInput::ButtonInput(uint8_t pin, uint8_t buttonId, IDevice* linkedDevice, ButtonMode mode) 
     : _pin(pin), _buttonId(buttonId), _lastState(false), 
@@ -60,8 +61,44 @@ void InputManager::registerPotentiometer(PotentiometerInput* pot) {
     _potentiometers.add(pot);
 }
 
+// ====================== NavButtonInput Implementation ======================
+
+NavButtonInput::NavButtonInput(uint8_t pin, char command, ButtonMode mode)
+    : _pin(pin), _command(command), _lastState(false), _lastDebounceTime(0), _mode(mode) {
+    
+    if (_mode == ButtonMode::ACTIVE_LOW) {
+        pinMode(_pin, INPUT_PULLUP);
+    } else {
+        pinMode(_pin, INPUT);
+    }
+}
+
+void NavButtonInput::update() {
+    bool currentReading = digitalRead(_pin);
+    
+    if (_mode == ButtonMode::ACTIVE_LOW) {
+        currentReading = !currentReading;
+    }
+    
+    if (currentReading && !_lastState) {
+        if ((millis() - _lastDebounceTime) > DEBOUNCE_DELAY) {
+            // Call NavigationManager directly
+            NavigationManager::instance().handleInput(_command);
+        }
+        _lastDebounceTime = millis();
+    }
+    
+    _lastState = currentReading;
+}
+
+// ====================== InputManager Updates ======================
+
+void InputManager::registerNavButton(NavButtonInput* navBtn) {
+    _navButtons.add(navBtn);
+}
+
 void InputManager::updateAll() {
-    // Aggiorna pulsanti
+    // Aggiorna pulsanti dispositivi
     for (uint8_t i = 0; i < _buttons.size(); i++) {
         _buttons[i]->update();
     }
@@ -71,7 +108,10 @@ void InputManager::updateAll() {
         _potentiometers[i]->update();
     }
     
-    // Rimossi loop per _encoders e _knobs
+    // NEW: Aggiorna pulsanti navigazione
+    for (uint8_t i = 0; i < _navButtons.size(); i++) {
+        _navButtons[i]->update();
+    }
 }
 
 // ====================== PotentiometerInput Implementation ======================

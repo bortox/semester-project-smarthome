@@ -39,5 +39,12 @@ At the end of every menu, we have the option to go back.
 
 ## Memory consumption results
 
-For now, we have used 80% of the RAM and have only 300B free after the menu creation. It will be quite hard to wire also that modulino library. 
+The system has been heavily optimized for RAM usage on the ATmega328P (2KB total):
+
+- **No floating-point arithmetic**: Temperature stored as decicelsius (int16_t), eliminating float overhead
+- **Template-based menu items**: LiveItem<T> replaces bloated InfoItem, reducing code duplication
+- **JIT menu allocation**: Pages created on-demand and destroyed when navigating back
+- **DynamicArray auto-shrinking**: Automatic memory reclamation when capacity exceeds usage by threshold
+
+Current usage: ~80% RAM with ~400B free after menu creation. The removal of float operations saves approximately 2KB of Flash (library overhead) and reduces stack usage during menu rendering.
 

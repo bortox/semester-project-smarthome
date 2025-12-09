@@ -10,16 +10,13 @@
 - **Display:** LCD I2C 20×4 caratteri (0x27)
 - **Sensori:**
   - LM75 I2C temperatura (0x90)
-  - Fotoresistore analogico (futuro)
-  - PIR movimento digitale (futuro)
 - **Attuatori:**
-  - 2× LED semplici (D4, D7) - ON/OFF
-  - 2× LED PWM (D5, D6) - Dimming 0-100%
-  - 1× LED RGB PWM (futuro)
+  - 1× LED semplice (D3 - Kitchen) - ON/OFF
+  - 2× LED PWM (D11 Living Room, D5 Bedroom) - Dimming 0-100%
 - **Input:**
-  - 4× Bottoni (A0-A3) - Controllo diretto dispositivi
-  - Serial console - Navigazione menu (w/s/e/q)
-  - Rotary encoder (futuro) - Sostituzione serial
+  - 4× Bottoni Luci (D12, D13, D7, D8) - Controllo diretto dispositivi
+  - 4× Bottoni Menu (D0 UP, D1 DOWN, D2 SELECT, D4 BACK) - Navigazione menu
+  - ~~Serial console~~ - **DISABILITATO** (D0/D1 usati da bottoni)
 
 ### Funzionalità Core
 1. **Menu gerarchico dinamico**
@@ -60,6 +57,7 @@
 │  UI LAYER (FlexibleMenu.h)             │
 │  - MenuPage (container + event listener)│
 │  - MenuItem (abstract item interface)  │
+│  - LiveItem<T> (template-based display)│  ← NEW: Generic value display
 │  - NavigationManager (stack + render)  │
 │  - MenuBuilder (factory dinamico)      │
 └──────────────┬──────────────────────────┘
@@ -67,14 +65,14 @@
 ┌──────────────▼──────────────────────────┐
 │  DEVICE LAYER (Devices.h)              │
 │  - SimpleLight / DimmableLight         │
-│  - TemperatureSensor (con LM75)        │
+│  - TemperatureSensor (int16_t only)    │  ← OPTIMIZED: No floats
 │  - SensorStats (min/max/avg)           │
 │  - DeviceFactory (allocazione devices) │
 └──────────────┬──────────────────────────┘
                │
 ┌──────────────▼──────────────────────────┐
 │  INPUT LAYER (PhysicalInput.h)         │
-│  - ButtonInput (debouncing + events)   │  ← FIX: Emette evento invece di chiamata diretta
+│  - ButtonInput (debouncing + events)   │
 │  - ButtonMode (ACTIVE_LOW/HIGH)        │
 │  - InputManager (poll tutti bottoni)   │
 └──────────────┬──────────────────────────┘
@@ -82,7 +80,7 @@
 ┌──────────────▼──────────────────────────┐
 │  CORE SYSTEM (CoreSystem.h)            │
 │  - IDevice / IEventListener (interface)│
-│  - EventSystem (observer pattern)      │  ← FIX: Filtra eventi per tipo
+│  - EventSystem (observer pattern)      │
 │  - DeviceRegistry (singleton)          │
 │  - DynamicArray<T> (ottimizzato RAM)   │
 └─────────────────────────────────────────┘
@@ -143,6 +141,28 @@
 5. **Stringhe in PROGMEM**
    - Usare `F()` macro ovunque possibile
    - Menu labels hardcoded (const char*)
+
+6. **No Floating-Point Arithmetic**
+   - Temperature stored as decicelsius (int16_t × 10)
+   - LM75 conversion: `(raw * 5) >> 2` instead of `raw * 0.125f`
+   - Risparmio Flash: ~2KB (no float library linking)
+   - Risparmio Stack: ~40B per function call
+
+7. **Template-Based LiveItem**
+   ```cpp
+   // OLD: Multiple specialized classes
+   class StaticInfoItem { ... }
+   class LiveTempItem { ... }
+   class LiveLightItem { ... }
+   
+   // NEW: Single template
+   template<typename T>
+   class LiveItem {
+       int16_t (T::*_getter)() const;
+       // ...
+   };
+   ```
+   - Risparmio: ~150B Flash per item type eliminated
 
 ### Budget RAM (2048B totali)
 | Component | RAM Usage |
