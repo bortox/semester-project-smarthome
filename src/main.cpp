@@ -7,6 +7,13 @@ extern "C" {
 #include "MemoryMonitor.h"
 #include "PhysicalInput.h"
 #include "DebugConfig.h"
+#include "TimerSystem.h"
+#include "Scenes.h"
+
+// Global scene instances (needed for menu access)
+NightModeScene nightMode;
+PartyScene partyMode;
+AlarmScene alarmMode;
 
 void setup() {
     // NOTE: Serial disabled - D0/D1 used for navigation buttons
@@ -27,31 +34,24 @@ void setup() {
 
     // ===== Create Devices =====
     DeviceFactory::createDimmableLight("Kitchen", 6);
-    //DeviceFactory::createSimpleLight("Kitchen", 3);
     DeviceFactory::createDimmableLight("Bedroom", 5);
     DeviceFactory::createRGBLight("Ambient Light", 9, 10, 11);
     DeviceFactory::createTemperatureSensor("Outside Temp");
-
     
-    // // ===== Setup Light Control Buttons =====
+    // ===== Setup Light Control Buttons =====
     DeviceRegistry& registry = DeviceRegistry::instance();
     
-    // D12 -> Living Room (index 0)
     ButtonInput* btnLiving = new ButtonInput(13, 1, registry.getDevices()[0], ButtonMode::ACTIVE_LOW);
     InputManager::instance().registerButton(btnLiving);
     
-    // D13 -> Kitchen (index 1)
     ButtonInput* btnKitchen = new ButtonInput(16, 2, registry.getDevices()[1], ButtonMode::ACTIVE_LOW);
     InputManager::instance().registerButton(btnKitchen);
     
-    // D7 -> Bedroom (index 2)
     ButtonInput* btnBedroom = new ButtonInput(A6, 3, registry.getDevices()[2], ButtonMode::ACTIVE_LOW);
     InputManager::instance().registerButton(btnBedroom);
     
-    // D8 -> Reserved (no action for now)
     ButtonInput* btnReserved = new ButtonInput(A7, 4, nullptr, ButtonMode::ACTIVE_LOW);
     InputManager::instance().registerButton(btnReserved);
-
 
     DimmableLight* rgbLight = static_cast<DimmableLight*>(registry.getDevices()[2]);
     PotentiometerInput* pot2 = new PotentiometerInput(A0, rgbLight);
@@ -61,16 +61,11 @@ void setup() {
     static MovementSensor pir("PIR", 7);
     DeviceFactory::createOutsideLight("Garden", 3, &photo, &pir);
 
-    // Aggiungi sensore di luce fotoresistore
     DeviceFactory::createPhotoresistorSensor("Outside Light", A3);
-    
-    // NUOVO: Aggiungi sensore di movimento PIR
     DeviceFactory::createPIRSensor("Motion PIR", 7);
 
-
-
     // ===== Setup Menu Navigation Buttons =====
-    NavButtonInput* navUp = new NavButtonInput(12, 'U', ButtonMode::ACTIVE_LOW); // R
+    NavButtonInput* navUp = new NavButtonInput(12, 'U', ButtonMode::ACTIVE_LOW);
     NavButtonInput* navDown = new NavButtonInput(1, 'D', ButtonMode::ACTIVE_LOW);
     NavButtonInput* navSelect = new NavButtonInput(4, 'E', ButtonMode::ACTIVE_LOW);
     NavButtonInput* navBack = new NavButtonInput(2, 'B', ButtonMode::ACTIVE_LOW);
@@ -91,15 +86,21 @@ void setup() {
 }
 
 void loop() {
-    // Update all inputs (device buttons + navigation buttons)
+    // 1. Update all inputs (highest priority - user commands)
     InputManager::instance().updateAll();
     
-    // Update all devices
+    // 2. Update all devices (base physics layer)
     DeviceRegistry& registry = DeviceRegistry::instance();
     for (uint8_t i = 0; i < registry.getDevices().size(); i++) {
         registry.getDevices()[i]->update();
     }
 
-    // Update menu display (only redraws if needed)
+    // 3. Apply active scenes (overwrites device states by priority)
+    SceneManager::instance().update();
+
+    // 4. Execute expired timers (schedules future actions)
+    TimerManager::instance().update();
+
+    // 5. Update menu display (only redraws if needed)
     NavigationManager::instance().update();
 }

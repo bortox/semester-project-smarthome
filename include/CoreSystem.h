@@ -24,6 +24,19 @@ enum EventType : uint8_t {  // uint8_t invece di int
     EVENT_ALARM
 };
 
+/**
+ * @enum TimerAction
+ * @brief Actions that can be scheduled by the timer system
+ */
+enum class TimerAction : uint8_t {
+    TURN_ON,
+    TURN_OFF,
+    TOGGLE,
+    SET_BRIGHTNESS,
+    ACTIVATE_SCENE,
+    DEACTIVATE_SCENE
+};
+
 // --- DynamicArray ottimizzato ---
 template <typename T>
 class DynamicArray {

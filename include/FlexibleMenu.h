@@ -284,19 +284,12 @@ public:
     }
 };
 
-// Template-based Value Slider with Pixel-Perfect UI
-template<typename DeviceType>
-class ValueSliderItem : public MenuItem {
-private:
-    DeviceType* _device;
-    const __FlashStringHelper* _label;
-    uint8_t (DeviceType::*_getter)() const;
-    void (DeviceType::*_setter)(uint8_t);
-    uint8_t _min, _max, _step;
+// Base class for slider rendering (Template Hoisting optimization)
+class SliderRenderer {
+protected:
+    static inline bool _customCharsLoaded = false;
     
-    static bool _customCharsLoaded;
-    
-    void loadCustomChars() {
+    static void loadCustomChars() {
         if (!_customCharsLoaded) {
             const uint8_t customChars[5][8] = {
                 {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, // Empty
@@ -312,6 +305,44 @@ private:
             _customCharsLoaded = true;
         }
     }
+    
+    // Extracted common progress bar drawing logic
+    static void drawProgressBar(uint8_t row, uint8_t val, uint8_t minVal, uint8_t maxVal) {
+        // Row 1: Full-width progress bar (20 chars = 100 pixels)
+        LCD_set_cursor(0, row + 1);
+        
+        // Map value to pixels (0-100 pixels across 20 chars)
+        uint16_t totalPixels = map(val, minVal, maxVal, 0, 100);
+        uint8_t fullBlocks = totalPixels / 5;
+        uint8_t partialPixels = totalPixels % 5;
+        
+        // Draw full blocks (0xFF = all 5 pixels filled)
+        for (uint8_t i = 0; i < fullBlocks && i < 20; i++) {
+            LCD_write_char(0xFF);
+        }
+        
+        // Draw partial block
+        if (fullBlocks < 20 && partialPixels > 0) {
+            LCD_write_char(partialPixels - 1); // Custom char 0-4
+            fullBlocks++;
+        }
+        
+        // Fill remaining with empty spaces
+        for (uint8_t i = fullBlocks; i < 20; i++) {
+            LCD_write_char(' ');
+        }
+    }
+};
+
+// Template-based Value Slider with Pixel-Perfect UI
+template<typename DeviceType>
+class ValueSliderItem : public MenuItem, public SliderRenderer {
+private:
+    DeviceType* _device;
+    const __FlashStringHelper* _label;
+    uint8_t (DeviceType::*_getter)() const;
+    void (DeviceType::*_setter)(uint8_t);
+    uint8_t _min, _max, _step;
 
 public:
     ValueSliderItem(DeviceType* device, 
@@ -345,29 +376,8 @@ public:
             cursor_pos++;
         }
 
-        // Row 1: Full-width progress bar (20 chars = 100 pixels)
-        LCD_set_cursor(0, row + 1);
-        
-        // Map value to pixels (0-100 pixels across 20 chars)
-        uint16_t totalPixels = map(val, _min, _max, 0, 100);
-        uint8_t fullBlocks = totalPixels / 5;
-        uint8_t partialPixels = totalPixels % 5;
-        
-        // Draw full blocks (0xFF = all 5 pixels filled)
-        for (uint8_t i = 0; i < fullBlocks && i < 20; i++) {
-            LCD_write_char(0xFF);
-        }
-        
-        // Draw partial block
-        if (fullBlocks < 20 && partialPixels > 0) {
-            LCD_write_char(partialPixels - 1); // Custom char 0-4
-            fullBlocks++;
-        }
-        
-        // Fill remaining with empty spaces
-        for (uint8_t i = fullBlocks; i < 20; i++) {
-            LCD_write_char(' ');
-        }
+        // Row 1: Progress bar (delegated to base class)
+        drawProgressBar(row, val, _min, _max);
     }
 
     bool handleInput(char key) override {
@@ -399,10 +409,6 @@ public:
         return false;
     }
 };
-
-// Static member initialization
-template<typename DeviceType>
-bool ValueSliderItem<DeviceType>::_customCharsLoaded = false;
 
 // Template helper function for automatic type deduction
 template<typename DeviceType>
