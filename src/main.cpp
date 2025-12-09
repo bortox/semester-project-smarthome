@@ -1,3 +1,12 @@
+/**
+ * @file main.cpp
+ * @brief Main application entry point
+ * @ingroup Core
+ * 
+ * Orchestrates the initialization of devices, inputs, and the main event loop.
+ * Connects the physical layer (Buttons/Sensors) with the logic layer (Scenes/Timers)
+ * and the presentation layer (LCD Menu).
+ */
 #include <Arduino.h>
 extern "C" {
   #include "i2cmaster.h"
@@ -15,6 +24,14 @@ NightModeScene nightMode;
 PartyScene partyMode;
 AlarmScene alarmMode;
 
+/**
+ * @brief System initialization
+ * 
+ * 1. Initializes I2C and LCD
+ * 2. Creates devices via Factory
+ * 3. Registers physical inputs (Buttons/Pots)
+ * 4. Builds the dynamic menu structure
+ */
 void setup() {
     // NOTE: Serial disabled - D0/D1 used for navigation buttons
     
@@ -85,6 +102,16 @@ void setup() {
     delay(1000);
 }
 
+/**
+ * @brief Main execution loop
+ * 
+ * Runs the system cycle:
+ * 1. Poll Inputs
+ * 2. Update Devices (Physics)
+ * 3. Apply Scenes (Logic/Overrides)
+ * 4. Process Timers (Automation)
+ * 5. Render UI
+ */
 void loop() {
     // 1. Update all inputs (highest priority - user commands)
     InputManager::instance().updateAll();

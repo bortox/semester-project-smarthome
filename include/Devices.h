@@ -437,6 +437,9 @@ public:
      * Applies the brightness_multiplier and updates all three channels
      */
     void setBrightness(uint8_t level) override {
+        if (_currentBrightness != _targetBrightness) {
+            _lastUpdate = millis();
+        }
         targetBrightness() = constrain(level, 0, 100);
         
         if (targetBrightness() > 0) {

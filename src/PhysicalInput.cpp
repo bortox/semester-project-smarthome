@@ -1,3 +1,8 @@
+/**
+ * @file PhysicalInput.cpp
+ * @brief Implementation of hardware input handling
+ * @ingroup HAL
+ */
 #include "PhysicalInput.h"
 #include "Devices.h"
 #include "FlexibleMenu.h"  // For NavigationManager

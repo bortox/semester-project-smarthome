@@ -1,43 +1,76 @@
+/**
+ * @file CoreSystem.h
+ * @brief Core system definitions, interfaces, and memory management
+ * @ingroup Core
+ */
 #ifndef CORE_SYSTEM_H
 #define CORE_SYSTEM_H
 
 #include <Arduino.h>
 
 // --- Enums ---
+/**
+ * @enum DeviceType
+ * @brief Enumeration of supported device types
+ * @ingroup Core
+ */
 enum class DeviceType : uint8_t {
-    LightSimple,
-    LightDimmable,
-    LightRGB,        // FIX: Aggiunto nuovo tipo
-    LightOutside,    // FIX: Aggiunto nuovo tipo
-    SensorTemperature,
-    SensorLight,    // FIX: Nuovo tipo
-    SensorPIR,      // NEW: PIR motion sensor type
-    Unknown
+    LightSimple,        ///< Basic On/Off light
+    LightDimmable,      ///< Light with brightness control
+    LightRGB,           ///< RGB Light with color control
+    LightOutside,       ///< Outdoor light with automation logic
+    SensorTemperature,  ///< Temperature sensor (LM75)
+    SensorLight,        ///< Photoresistor light sensor
+    SensorPIR,          ///< Passive Infrared motion sensor
+    Unknown             ///< Undefined device type
 };
 
+/**
+ * @enum EventType
+ * @brief Types of events propagated through the system
+ * @ingroup Core
+ */
 enum EventType : uint8_t {  // uint8_t invece di int
-    EVENT_NONE,
-    DeviceStateChanged,
-    DeviceValueChanged,
-    SensorUpdated,
-    ButtonPressed,
-    EVENT_ALARM
+    EVENT_NONE,             ///< No event
+    DeviceStateChanged,     ///< Device turned On/Off
+    DeviceValueChanged,     ///< Device value (brightness/color) changed
+    SensorUpdated,          ///< Sensor reading updated
+    ButtonPressed,          ///< Physical button pressed
+    EVENT_ALARM             ///< Alarm system triggered
 };
 
 /**
  * @enum TimerAction
  * @brief Actions that can be scheduled by the timer system
+ * @ingroup Automation
  */
 enum class TimerAction : uint8_t {
-    TURN_ON,
-    TURN_OFF,
-    TOGGLE,
-    SET_BRIGHTNESS,
-    ACTIVATE_SCENE,
-    DEACTIVATE_SCENE
+    TURN_ON,            ///< Turn device ON
+    TURN_OFF,           ///< Turn device OFF
+    TOGGLE,             ///< Toggle device state
+    SET_BRIGHTNESS,     ///< Set specific brightness level
+    ACTIVATE_SCENE,     ///< Activate a scene
+    DEACTIVATE_SCENE    ///< Deactivate a scene
 };
 
 // --- DynamicArray ottimizzato ---
+/**
+ * @class DynamicArray
+ * @brief Memory-optimized dynamic array implementation
+ * @tparam T Type of elements stored in the array
+ * @ingroup Core
+ * 
+ * A lightweight vector-like container optimized for embedded systems.
+ * 
+ * @warning Not interrupt-safe.
+ * @warning Uses manual memory management (new/delete). Ensure heap space is sufficient.
+ * 
+ * Growth Strategy:
+ * - Initial capacity: 0
+ * - Growth step: 4 elements
+ * - Max capacity: 64 elements
+ * - Shrink threshold: 8 unused slots
+ */
 template <typename T>
 class DynamicArray {
 private:
@@ -60,6 +93,11 @@ public:
     DynamicArray(const DynamicArray&) = delete;
     DynamicArray& operator=(const DynamicArray&) = delete;
 
+    /**
+     * @brief Adds an element to the array
+     * @param item Element to add
+     * @return true if successful, false if capacity limit reached or allocation failed
+     */
     bool add(const T& item) {
         if (_size >= _capacity) {
             uint8_t newCapacity = _capacity + GROW_STEP;
@@ -85,6 +123,12 @@ public:
         return true;
     }
 
+    /**
+     * @brief Removes an element at specific index
+     * @param index Index of element to remove
+     * 
+     * Shifts subsequent elements left. Triggers shrink if waste exceeds threshold.
+     */
     void remove(uint8_t index) {
         if (index < _size) {
             for (uint8_t i = index; i < _size - 1; i++) {
@@ -130,6 +174,11 @@ public:
 };
 
 // --- Interfaces ---
+/**
+ * @class IDevice
+ * @brief Abstract base interface for all hardware devices
+ * @ingroup Devices
+ */
 class IDevice {
 public:
     const char* const name;
@@ -150,13 +199,34 @@ typedef MenuPage* (*PageBuilder)(void* context);
 typedef int (*ValueGetter)(IDevice*);
 typedef void (*ValueSetter)(IDevice*, int);
 
+/**
+ * @class IEventListener
+ * @brief Interface for the Observer Pattern
+ * @ingroup Core
+ * 
+ * Classes implementing this interface can subscribe to system events.
+ */
 class IEventListener {
 public:
     virtual ~IEventListener() {}
+    /**
+     * @brief Callback triggered when an event occurs
+     * @param type Type of event
+     * @param source Pointer to the device that originated the event
+     * @param value Optional data value associated with the event
+     */
     virtual void handleEvent(EventType type, IDevice* source, int value) = 0;
 };
 
 // --- Event System ---
+/**
+ * @class EventSystem
+ * @brief Singleton managing event propagation (Observer Pattern)
+ * @ingroup Core
+ * 
+ * Central hub for dispatching events from producers (Inputs/Sensors) 
+ * to consumers (UI/Logic).
+ */
 class EventSystem {
 private:
     struct ListenerEntry {
@@ -168,6 +238,10 @@ private:
     EventSystem() {}
 
 public:
+    /**
+     * @brief Access the singleton instance
+     * @return Reference to EventSystem
+     */
     static EventSystem& instance() {
         static EventSystem inst;
         return inst;
@@ -214,6 +288,13 @@ public:
 };
 
 // --- Device Registry ---
+/**
+ * @class DeviceRegistry
+ * @brief Singleton registry for all system devices
+ * @ingroup Core
+ * 
+ * Acts as a central repository for accessing devices by index or type.
+ */
 class DeviceRegistry {
 private:
     DynamicArray<IDevice*> _devices;

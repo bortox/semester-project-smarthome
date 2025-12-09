@@ -12,6 +12,10 @@ Then, an RGBLight is composed out of three dimmable lights. We can thus drive ea
 
 Ultimately, an AutomaticLight is initialized via a SimpleLight (since it was not explicitely requested in the report to make it dimmable) object, a Movement Sensor and a Photoresistor. Note that, thanks to the code structure, it would be a matter of probably just three rows to add another AutomaticLight on the opposite side of the home and update it
 
+## Sensors
+
+A Sensor is an object with a template function (that can return double, float, int, bool, in short different data types depending on the sensor type) and an obligatory implementation of the getValue() function, and a DATA_UNIT char constant per type of sensor (defaults to none, but can be for example C° for temperature).
+
 ## Scenes
 
 The system now includes a **Scene Management System** with priority-based conflict resolution (Painter's Algorithm).

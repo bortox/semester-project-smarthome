@@ -1,0 +1,17 @@
+PROJECT_NAME           = "Home Automation System"
+PROJECT_BRIEF          = "C++ Embedded Home Automation for Arduino Nano"
+OUTPUT_DIRECTORY       = docs
+INPUT                  = include src
+RECURSIVE              = YES
+OPTIMIZE_OUTPUT_FOR_C  = YES
+JAVADOC_AUTOBRIEF      = YES
+EXTRACT_ALL            = YES
+EXTRACT_PRIVATE        = NO
+EXTRACT_STATIC         = YES
+HAVE_DOT               = YES
+CALL_GRAPH             = YES
+CALLER_GRAPH           = YES
+GENERATE_LATEX         = NO
+GENERATE_HTML          = YES
+HTML_TIMESTAMP         = YES
+TAB_SIZE               = 4
