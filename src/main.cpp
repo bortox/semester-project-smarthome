@@ -76,7 +76,7 @@ void setup() {
 
     static LightSensor photo("Photo", A3);
     static MovementSensor pir("PIR", 7);
-    DeviceFactory::createOutsideLight("Garden", 3, &photo, &pir);
+    DeviceFactory::createOutsideLight("Garden", 8, &photo, &pir);
 
     DeviceFactory::createPhotoresistorSensor("Outside Light", A3);
     DeviceFactory::createPIRSensor("Motion PIR", 7);

@@ -201,7 +201,7 @@ public:
  * Priority: 10 (Low - applied first, can be overridden by others)
  * 
  * Reduces all light brightness to 20% by modifying the global multiplier.
- * This is a passive effect applied via SimpleLight::setBrightnessMultiplier(),
+ * This is a passive effect applied via DimmableLight::setBrightnessMultiplier(),
  * so update() is empty.
  */
 class NightModeScene : public IScene {
@@ -217,12 +217,12 @@ public:
         IScene::enter();
         // Save current multiplier and apply night mode
         _savedMultiplier = 100; // Assume default is 100
-        SimpleLight::setBrightnessMultiplier(20);
+        DimmableLight::setBrightnessMultiplier(20);
     }
 
     void exit() override {
         // Restore previous brightness multiplier
-        SimpleLight::setBrightnessMultiplier(_savedMultiplier);
+        DimmableLight::setBrightnessMultiplier(_savedMultiplier);
         IScene::exit();
     }
 
