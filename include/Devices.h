@@ -111,11 +111,6 @@ class SimpleLight : public IDevice, public IEventListener {
 protected:
     uint8_t _pin;
     bool _state;
-    // Integer-based brightness multiplier (0-100)
-    static uint8_t& brightness_multiplier() {
-        static uint8_t multiplier = 100;
-        return multiplier;
-    }
 
 public:
     /**
@@ -181,16 +176,6 @@ public:
             toggle();
         }
     }
-    
-    /**
-     * @brief Sets the global brightness multiplier
-     * @param multiplier Value between 0 and 100
-     * 
-     * Useful for implementing night mode (e.g., 20 for 20%)
-     */
-    static void setBrightnessMultiplier(uint8_t multiplier) {
-        brightness_multiplier() = constrain(multiplier, 0, 100);
-    }
 };
 
 /**
@@ -206,7 +191,14 @@ protected:
     uint8_t _currentBrightness;
     uint8_t _lastBrightness;
     unsigned long _lastUpdate;
+    uint8_t _lastMultiplier;
     static constexpr uint8_t MS_PER_STEP = 4;
+    
+    // Integer-based brightness multiplier (0-100)
+    static uint8_t& brightness_multiplier() {
+        static uint8_t multiplier = 100;
+        return multiplier;
+    }
 
 public:
     /**
@@ -216,7 +208,7 @@ public:
      */
     DimmableLight(const char* name, uint8_t pin) 
         : SimpleLight(name, pin), _targetBrightness(0), _currentBrightness(0), 
-          _lastBrightness(100), _lastUpdate(0) {
+          _lastBrightness(100), _lastUpdate(0), _lastMultiplier(100) {
         const_cast<DeviceType&>(type) = DeviceType::LightDimmable;
     }
 
@@ -253,6 +245,13 @@ public:
      */
     void update() override {
         unsigned long now = millis();
+        
+        // Check if multiplier changed (e.g., Night Mode toggled)
+        if (_lastMultiplier != brightness_multiplier()) {
+            _lastMultiplier = brightness_multiplier();
+            applyHardware(); // Immediately apply new multiplier
+        }
+        
         unsigned long diffTime = now - _lastUpdate;
         
         if (diffTime >= MS_PER_STEP && _currentBrightness != _targetBrightness) {
@@ -284,6 +283,16 @@ public:
         } else {
             setBrightness(_lastBrightness > 0 ? _lastBrightness : 100);
         }
+    }
+    
+    /**
+     * @brief Sets the global brightness multiplier
+     * @param multiplier Value between 0 and 100
+     * 
+     * Useful for implementing night mode (e.g., 20 for 20%)
+     */
+    static void setBrightnessMultiplier(uint8_t multiplier) {
+        brightness_multiplier() = constrain(multiplier, 0, 100);
     }
     
 protected:
@@ -457,6 +466,12 @@ public:
      */
     void update() override {
         unsigned long now = millis();
+        
+        // Check if multiplier changed (e.g., Night Mode toggled)
+        if (_lastMultiplier != brightness_multiplier()) {
+            _lastMultiplier = brightness_multiplier();
+            applyColor(); // Immediately apply new multiplier
+        }
         
         // Update brightness
         unsigned long diffTime = now - _lastUpdate;

@@ -1158,7 +1158,7 @@ public:
         MenuPage* page = new MenuPage(F("Brightness"), nullptr);
         if (!page) return nullptr;
         
-        page->addItem(makeSlider(light, F("Level"), &DimmableLight::getBrightness, &DimmableLight::setBrightness, 0, 100, 2));
+        page->addItem(makeSlider(light, F("Level"), &DimmableLight::getBrightness, &DimmableLight::setBrightness, 0, 100, 15));
         return page;
     }
 
