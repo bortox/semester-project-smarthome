@@ -877,11 +877,209 @@ public:
 };
 
 /**
+ * @class RamSensorDevice
+ * @brief RAM usage monitoring device with statistics
+ * 
+ * Wraps low-level RamUsageSensor with event system integration
+ * and min/max/average tracking.
+ */
+class RamSensorDevice : public IDevice {
+private:
+    int16_t _freeRam;
+    int16_t _lastReported;
+    unsigned long _lastRead;
+    SensorStats _stats;
+    RamUsageSensor _ramSensor;
+    static constexpr unsigned long UPDATE_INTERVAL_MS = 10000;
+    static constexpr int16_t CHANGE_THRESHOLD = 16;
+
+public:
+    /**
+     * @brief Constructor for RAM sensor device
+     * @param name Device identifier name
+     */
+    RamSensorDevice(const char* name)
+        : IDevice(name, DeviceType::SensorRAM), _freeRam(0), _lastReported(0), 
+          _lastRead(0), _ramSensor(name) {
+        DeviceRegistry::instance().registerDevice(this);
+        _freeRam = _ramSensor.getValue();
+        _lastReported = _freeRam;
+    }
+
+    /**
+     * @brief Checks if the device is a sensor
+     * @return true always
+     */
+    bool isSensor() const override { return true; }
+
+    /**
+     * @brief Periodic reading update
+     * 
+     * Reads free RAM every 10 seconds.
+     * Emits SensorUpdated event only if change exceeds threshold.
+     */
+    void update() override {
+        unsigned long now = millis();
+        if (now - _lastRead >= UPDATE_INTERVAL_MS) {
+            _lastRead = now;
+            _freeRam = _ramSensor.getValue();
+            _stats.addSample(_freeRam);
+            
+            if (abs(_freeRam - _lastReported) > CHANGE_THRESHOLD) {
+                _lastReported = _freeRam;
+                EventSystem::instance().emit(EventType::SensorUpdated, this, _freeRam);
+            }
+        }
+    }
+
+    /**
+     * @brief Gets the current free RAM in bytes
+     * @return Free RAM bytes
+     */
+    int16_t getValue() const { return _freeRam; }
+    
+    /**
+     * @brief Gets the sensor statistics
+     * @return Reference to SensorStats object
+     */
+    SensorStats& getStats() { return _stats; }
+};
+
+/**
+ * @class VccSensorDevice
+ * @brief VCC voltage monitoring device with statistics
+ * 
+ * Wraps low-level VccSensor with event system integration
+ * and min/max/average tracking.
+ */
+class VccSensorDevice : public IDevice {
+private:
+    int16_t _vcc;
+    unsigned long _lastRead;
+    SensorStats _stats;
+    VccSensor _vccSensor;
+    static constexpr unsigned long UPDATE_INTERVAL_MS = 10000;
+
+public:
+    /**
+     * @brief Constructor for VCC sensor device
+     * @param name Device identifier name
+     */
+    VccSensorDevice(const char* name)
+        : IDevice(name, DeviceType::SensorVCC), _vcc(0), _lastRead(0), _vccSensor(name) {
+        DeviceRegistry::instance().registerDevice(this);
+        _vcc = _vccSensor.getValue();
+    }
+
+    /**
+     * @brief Checks if the device is a sensor
+     * @return true always
+     */
+    bool isSensor() const override { return true; }
+
+    /**
+     * @brief Periodic reading update
+     * 
+     * Reads VCC every 10 seconds and updates statistics.
+     * Emits SensorUpdated event.
+     */
+    void update() override {
+        unsigned long now = millis();
+        if (now - _lastRead >= UPDATE_INTERVAL_MS) {
+            _lastRead = now;
+            _vcc = _vccSensor.getValue();
+            _stats.addSample(_vcc);
+            EventSystem::instance().emit(EventType::SensorUpdated, this, _vcc);
+        }
+    }
+
+    /**
+     * @brief Gets the current VCC in millivolts
+     * @return VCC in mV (e.g., 5000 for 5.0V)
+     */
+    int16_t getValue() const { return _vcc; }
+    
+    /**
+     * @brief Gets the sensor statistics
+     * @return Reference to SensorStats object
+     */
+    SensorStats& getStats() { return _stats; }
+};
+
+/**
+ * @class LoopTimeSensorDevice
+ * @brief Loop execution time monitoring device with statistics
+ * 
+ * Wraps low-level LoopTimeSensor with event system integration
+ * and min/max/average tracking.
+ */
+class LoopTimeSensorDevice : public IDevice {
+private:
+    int16_t _loopTime;
+    unsigned long _lastRead;
+    SensorStats _stats;
+    LoopTimeSensor _loopSensor;
+    static constexpr unsigned long UPDATE_INTERVAL_MS = 1000;
+
+public:
+    /**
+     * @brief Constructor for loop time sensor device
+     * @param name Device identifier name
+     */
+    LoopTimeSensorDevice(const char* name)
+        : IDevice(name, DeviceType::SensorLoopTime), _loopTime(0), _lastRead(0), _loopSensor(name) {
+        DeviceRegistry::instance().registerDevice(this);
+    }
+
+    /**
+     * @brief Checks if the device is a sensor
+     * @return true always
+     */
+    bool isSensor() const override { return true; }
+
+    /**
+     * @brief Registers a loop iteration time
+     * @param microseconds Duration of the loop iteration in microseconds
+     * 
+     * Call this from main.cpp at the end of each loop().
+     */
+    static void registerLoopTime(uint16_t microseconds) {
+        LoopTimeSensor::registerTime(microseconds);
+    }
+
+    /**
+     * @brief Periodic update handles window rotation and stats
+     * 
+     * Updates measurement window and emits SensorUpdated event.
+     */
+    void update() override {
+        _loopSensor.updateWindow();
+        
+        unsigned long now = millis();
+        if (now - _lastRead >= UPDATE_INTERVAL_MS) {
+            _lastRead = now;
+            _loopTime = _loopSensor.getValue();
+            _stats.addSample(_loopTime);
+            EventSystem::instance().emit(EventType::SensorUpdated, this, _loopTime);
+        }
+    }
+
+    /**
+     * @brief Gets the maximum loop time from last window
+     * @return Loop time in microseconds
+     */
+    int16_t getValue() const { return _loopTime; }
+    
+    /**
+     * @brief Gets the sensor statistics
+     * @return Reference to SensorStats object
+     */
+    SensorStats& getStats() { return _stats; }
+};
+
+/**
  * @class DeviceFactory
  * @brief Factory for creating devices
- * 
- * Provides static methods to create instances of various
- * device types with controlled dynamic allocation
  */
 class DeviceFactory {
 public:
@@ -949,6 +1147,30 @@ public:
      */
     static void createPIRSensor(const char* name, uint8_t pin) {
         new PIRSensorDevice(name, pin);
+    }
+    
+    /**
+     * @brief Creates a RAM usage sensor
+     * @param name Device name
+     */
+    static void createRamSensor(const char* name) {
+        new RamSensorDevice(name);
+    }
+    
+    /**
+     * @brief Creates a VCC voltage sensor
+     * @param name Device name
+     */
+    static void createVoltageSensor(const char* name) {
+        new VccSensorDevice(name);
+    }
+    
+    /**
+     * @brief Creates a loop time sensor
+     * @param name Device name
+     */
+    static void createLoopTimeSensor(const char* name) {
+        new LoopTimeSensorDevice(name);
     }
 };
 
