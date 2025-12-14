@@ -30,7 +30,7 @@ enum class DeviceType : uint8_t {
  * @brief Types of events propagated through the system
  * @ingroup Core
  */
-enum EventType : uint8_t {  // uint8_t invece di int
+enum EventType : uint8_t {  // uint8_t instead of int
     EVENT_NONE,             ///< No event
     DeviceStateChanged,     ///< Device turned On/Off
     DeviceValueChanged,     ///< Device value (brightness/color) changed
@@ -40,17 +40,16 @@ enum EventType : uint8_t {  // uint8_t invece di int
 };
 
 /**
- * @enum TimerAction
- * @brief Actions that can be scheduled by the timer system
- * @ingroup Automation
+ * @enum InputEvent
+ * @brief Navigation events for the menu system
+ * @ingroup Core
  */
-enum class TimerAction : uint8_t {
-    TURN_ON,            ///< Turn device ON
-    TURN_OFF,           ///< Turn device OFF
-    TOGGLE,             ///< Toggle device state
-    SET_BRIGHTNESS,     ///< Set specific brightness level
-    ACTIVATE_SCENE,     ///< Activate a scene
-    DEACTIVATE_SCENE    ///< Deactivate a scene
+enum class InputEvent : uint8_t {
+    NONE,
+    UP,
+    DOWN,
+    ENTER,
+    BACK
 };
 
 // --- DynamicArray ottimizzato ---

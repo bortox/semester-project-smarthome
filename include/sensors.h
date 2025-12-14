@@ -1,9 +1,7 @@
 #pragma once
 #include <Arduino.h>
 #include "DebugConfig.h"
-extern "C" { 
-    #include "i2cmaster.h"
- }
+#include "i2cmaster.h"
 
 // BASE SENSOR
 template<typename T>

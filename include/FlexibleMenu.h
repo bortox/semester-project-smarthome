@@ -1,11 +1,11 @@
 /**
  * @file FlexibleMenu.h
- * @brief Dynamic menu system with JIT page allocation, scene integration, and timer scheduling
+ * @brief Dynamic menu system with JIT page allocation and scene integration
  * @ingroup Core
  * 
  * Implements a memory-efficient menu system for LCD displays using Just-In-Time page creation.
  * Pages are allocated on heap when entering and freed when exiting to minimize RAM usage.
- * Supports device control, sensor monitoring, scene management, and timer scheduling.
+ * Supports device control, sensor monitoring, and scene management.
  */
 #ifndef FLEXIBLE_MENU_H
 #define FLEXIBLE_MENU_H
@@ -17,7 +17,6 @@ extern "C" {
 }
 #include "Devices.h"
 #include "Scenes.h"      // FIX: Include for scene types
-#include "TimerSystem.h" // FIX: Include for TimerAction and TimerManager
 
 class MenuPage;
 class NavigationManager;
@@ -52,10 +51,10 @@ public:
     
     /**
      * @brief Handles user input
-     * @param key Input character ('U'=up, 'D'=down, 'E'=enter, 'B'=back)
+     * @param event Input event (UP, DOWN, ENTER, BACK)
      * @return True if input was handled, false otherwise
      */
-    virtual bool handleInput(char key) { return false; }
+    virtual bool handleInput(InputEvent event) { return false; }
     
     /**
      * @brief Returns item type for polymorphic dispatch
@@ -161,10 +160,10 @@ public:
 
     /**
      * @brief Handles navigation input and delegates to items
-     * @param key Input character
+     * @param event Input event
      * @return True if input was handled
      */
-    bool handleInput(char key) override;
+    bool handleInput(InputEvent event) override;
     
     /**
      * @brief Handles device events for related items
@@ -271,9 +270,9 @@ public:
 
     /**
      * @brief Delegates input to current page
-     * @param key Input character
+     * @param event Input event
      */
-    void handleInput(char key);
+    void handleInput(InputEvent event);
 
     /**
      * @brief Updates display if current page needs redraw
@@ -353,20 +352,20 @@ public:
 };
 
 // FIX: DEFINIZIONI di MenuPage::handleInput e handleEvent DOPO NavigationManager
-inline bool MenuPage::handleInput(char key) {
+inline bool MenuPage::handleInput(InputEvent event) {
     size_t oldIndex = _selected_index;
 
-    // FIX: Prima prova a passare l'input all'item corrente
+    // FIX: First try to pass input to the current item
     if (_selected_index < _items.size()) {
-        bool handled = _items[_selected_index]->handleInput(key);
+        bool handled = _items[_selected_index]->handleInput(event);
         if (handled) {
             _needs_redraw = true;
-            return true; // FIX: Propaga il fatto che è stato gestito
+            return true; // FIX: Propagate that it was handled
         }
     }
 
-    // Se l'item non ha gestito l'input, fai navigazione normale
-    if (key == 'U') {
+    // If item didn't handle input, perform normal navigation
+    if (event == InputEvent::UP) {
         if (_selected_index > 0) { 
             _selected_index--; 
             
@@ -375,11 +374,11 @@ inline bool MenuPage::handleInput(char key) {
                 _needs_redraw = true;
             } else {
                 NavigationManager::instance().drawIncrementalCursor(oldIndex, _selected_index);
-                return true; // FIX: Gestito dalla navigazione
+                return true; // FIX: Handled by navigation
             }
         }
-        return true; // FIX: Gestito (anche se non c'è movimento)
-    } else if (key == 'D') {
+        return true; // FIX: Handled (even if no movement)
+    } else if (event == InputEvent::DOWN) {
         if (_selected_index < static_cast<size_t>(_items.size() - 1)) {
             _selected_index++; 
             
@@ -388,13 +387,13 @@ inline bool MenuPage::handleInput(char key) {
                 _needs_redraw = true;
             } else {
                 NavigationManager::instance().drawIncrementalCursor(oldIndex, _selected_index);
-                return true; // FIX: Gestito dalla navigazione
+                return true; // FIX: Handled by navigation
             }
         }
-        return true; // FIX: Gestito (anche se non c'è movimento)
+        return true; // FIX: Handled (anche se non c'è movimento)
     }
     
-    return false; // Altri tasti non gestiti
+    return false; // Other keys not handled
 }
 
 inline void MenuPage::handleEvent(EventType type, IDevice* device, int value) {
@@ -445,11 +444,11 @@ public:
     }
     /**
      * @brief Toggles device on 'E' key
-     * @param key Input character
+     * @param event Input event
      * @return True if device was toggled
      */
-    bool handleInput(char key) override {
-        if (key == 'E' && _device->isLight()) {
+    bool handleInput(InputEvent event) override {
+        if (event == InputEvent::ENTER && _device->isLight()) {
             static_cast<SimpleLight*>(_device)->toggle();
             return true;
         }
@@ -568,13 +567,13 @@ public:
 
     /**
      * @brief Handles up/down input to adjust value
-     * @param key Input character ('U'=increment, 'D'=decrement)
+     * @param event Input event (UP=increment, DOWN=decrement)
      * @return True if value was changed
      */
-    bool handleInput(char key) override {
+    bool handleInput(InputEvent event) override {
         uint8_t current = (_device->*_getter)();
         
-        if (key == 'U') {
+        if (event == InputEvent::UP) {
             // Safely increment with clamping
             uint8_t newVal;
             if (current > _max - _step) {
@@ -585,7 +584,7 @@ public:
             (_device->*_setter)(newVal);
             return true;
             
-        } else if (key == 'D') {
+        } else if (event == InputEvent::DOWN) {
             // Safely decrement with clamping
             uint8_t newVal;
             if (current < _min + _step) {
@@ -723,7 +722,7 @@ public:
         printValue(value);
     }
 
-    bool handleInput(char key) override { return false; }
+    bool handleInput(InputEvent event) override { return false; }
 };
 
 // Helper factory for live item creation with type deduction
@@ -783,7 +782,7 @@ public:
         LCD_write_str(_sensor->isMotionDetected() ? "Yes" : "No");
     }
 
-    bool handleInput(char key) override { return false; }
+    bool handleInput(InputEvent event) override { return false; }
 };
 
 /**
@@ -822,17 +821,17 @@ public:
 
     /**
      * @brief Executes calibration on 'E' key
-     * @param key Input character
+     * @param event Input event
      * @return True if calibration was performed
      */
-    bool handleInput(char key) override {
-        if (key == 'E') {
+    bool handleInput(InputEvent event) override {
+        if (event == InputEvent::ENTER) {
             if (_isDark) {
                 _sensor->calibrateCurrentAsMin();
             } else {
                 _sensor->calibrateCurrentAsMax();
             }
-            // Forza aggiornamento immediato
+            // Force immediate update
             EventSystem::instance().emit(EventType::SensorUpdated, _sensor, _sensor->getValue());
             return true;
         }
@@ -880,11 +879,11 @@ public:
 
     /**
      * @brief Executes action and navigates back on 'E' key
-     * @param key Input character
+     * @param event Input event
      * @return True if action was executed
      */
-    bool handleInput(char key) override {
-        if (key == 'E') {
+    bool handleInput(InputEvent event) override {
+        if (event == InputEvent::ENTER) {
             _action(_device, _param);
             _nav.navigateBack();
             return true;
@@ -940,11 +939,11 @@ public:
 
     /**
      * @brief Creates and pushes page on 'E' key
-     * @param key Input character
+     * @param event Input event
      * @return True if submenu was entered
      */
-    bool handleInput(char key) override {
-        if (key == 'E') {
+    bool handleInput(InputEvent event) override {
+        if (event == InputEvent::ENTER) {
             MenuPage* newPage = createPage();
             _nav.pushPage(newPage);
             return true;
@@ -976,11 +975,11 @@ public:
     
     /**
      * @brief Navigates back on 'E' key
-     * @param key Input character
+     * @param event Input event
      * @return True if navigation occurred
      */
-    bool handleInput(char key) override {
-        if (key == 'E') {
+    bool handleInput(InputEvent event) override {
+        if (event == InputEvent::ENTER) {
             _nav.navigateBack();
             return true;
         }
@@ -1018,11 +1017,11 @@ public:
 
     /**
      * @brief Toggles scene activation on 'E' key
-     * @param key Input character
+     * @param event Input event
      * @return True if scene was toggled
      */
-    bool handleInput(char key) override {
-        if (key == 'E') {
+    bool handleInput(InputEvent event) override {
+        if (event == InputEvent::ENTER) {
             if (_scene->isActive()) {
                 SceneManager::instance().removeScene(_scene);
             } else {
@@ -1034,55 +1033,7 @@ public:
     }
 };
 
-/**
- * @brief Timer scheduling item for device actions
- * @ingroup MenuItems
- */
-class ScheduleTimerItem : public MenuItem {
-private:
-    IDevice* _device;
-    const char* _label;
-    TimerAction _action;
-    unsigned long _delayMs;
-
-public:
-    /**
-     * @brief Constructs timer schedule item
-     * @param label Display label (e.g., "Turn ON in 5s")
-     * @param device Target device
-     * @param action Timer action (TURN_ON, TURN_OFF, TOGGLE)
-     * @param delayMs Delay in milliseconds
-     */
-    ScheduleTimerItem(const char* label, IDevice* device, TimerAction action, unsigned long delayMs)
-        : _device(device), _label(label), _action(action), _delayMs(delayMs) {}
-
-    /**
-     * @brief Draws timer option label
-     * @param row LCD row
-     * @param selected Selection state
-     */
-    void draw(uint8_t row, bool selected) override {
-        LCD_set_cursor(0, row);
-        LCD_write_str(selected ? "> " : "  ");
-        LCD_write_str(_label);
-    }
-
-    /**
-     * @brief Schedules timer and navigates back on 'E' key
-     * @param key Input character
-     * @return True if timer was scheduled
-     */
-    bool handleInput(char key) override {
-        if (key == 'E') {
-            TimerManager::instance().addTimer(_delayMs, _action, _device);
-            NavigationManager::instance().navigateBack();
-            return true;
-        }
-        return false;
-    }
-};
-
-// --- BUILDERS (Refactored without static wrappers) ---
+// --- BUILDERS (Refactored senza wrapper statiche) ---
 
 /**
  * @brief Factory class for building menu page hierarchies
@@ -1210,7 +1161,6 @@ public:
         page->addItem(new SubMenuItem(F("Set Brightness"), buildBrightnessPage, light, NavigationManager::instance()));
         page->addItem(new SubMenuItem(F("Color Presets"), buildRGBPresetsPage, light, NavigationManager::instance()));
         page->addItem(new SubMenuItem(F("Custom Color"), buildCustomColorPage, light, NavigationManager::instance()));
-        page->addItem(new SubMenuItem(F("Schedule Timer"), buildTimerPage, light, NavigationManager::instance()));
         page->addItem(new BackMenuItem(NavigationManager::instance()));
         return page;
     }
@@ -1225,7 +1175,6 @@ public:
         MenuPage* page = new MenuPage(F("Dimmable Light"), NavigationManager::instance().getCurrentPage());
         page->addItem(new DeviceToggleItem(light));
         page->addItem(new SubMenuItem(F("Set Brightness"), buildBrightnessPage, light, NavigationManager::instance()));
-        page->addItem(new SubMenuItem(F("Schedule Timer"), buildTimerPage, light, NavigationManager::instance()));
         page->addItem(new BackMenuItem(NavigationManager::instance()));
         return page;
     }
@@ -1397,31 +1346,6 @@ public:
     }
 
     /**
-     * @brief Builds timer scheduling page for device
-     * @param context IDevice* target device
-     * @return Heap-allocated page with timer options
-     */
-    static MenuPage* buildTimerPage(void* context) {
-        IDevice* device = static_cast<IDevice*>(context);
-        MenuPage* page = new MenuPage(F("Schedule Timer"), NavigationManager::instance().getCurrentPage());
-        
-        if (device->isLight()) {
-            page->addItem(new ScheduleTimerItem("Turn ON in 5s", device, TimerAction::TURN_ON, 5000));
-            page->addItem(new ScheduleTimerItem("Turn ON in 30s", device, TimerAction::TURN_ON, 30000));
-            page->addItem(new ScheduleTimerItem("Turn ON in 1min", device, TimerAction::TURN_ON, 60000));
-            
-            page->addItem(new ScheduleTimerItem("Turn OFF in 5s", device, TimerAction::TURN_OFF, 5000));
-            page->addItem(new ScheduleTimerItem("Turn OFF in 30s", device, TimerAction::TURN_OFF, 30000));
-            page->addItem(new ScheduleTimerItem("Turn OFF in 1min", device, TimerAction::TURN_OFF, 60000));
-            
-            page->addItem(new ScheduleTimerItem("Toggle in 5s", device, TimerAction::TOGGLE, 5000));
-        }
-        
-        page->addItem(new BackMenuItem(NavigationManager::instance()));
-        return page;
-    }
-
-    /**
      * @brief Builds root menu page
      * @return Heap-allocated main menu (not JIT, never freed)
      */
@@ -1435,13 +1359,13 @@ public:
 };
 
 // Definizione di NavigationManager::handleInput
-inline void NavigationManager::handleInput(char key) {
+inline void NavigationManager::handleInput(InputEvent event) {
     MenuPage* current = getCurrentPage();
     if (!current) return;
     
-    if (key == 'B') {
+    if (event == InputEvent::BACK) {
         navigateBack();
-    } else if (key == 'E') {
+    } else if (event == InputEvent::ENTER) {
         size_t idx = current->getSelectedIndex();
         if (idx < current->getItemsCount()) {
             MenuItem* item = current->getItem(idx);
@@ -1450,11 +1374,11 @@ inline void NavigationManager::handleInput(char key) {
                 MenuPage* newPage = sub->createPage();
                 pushPage(newPage);
             } else {
-                item->handleInput(key);
+                item->handleInput(event);
             }
         }
     } else {
-        current->handleInput(key);
+        current->handleInput(event);
     }
     
     if (getCurrentPage()) getCurrentPage()->forceRedraw();

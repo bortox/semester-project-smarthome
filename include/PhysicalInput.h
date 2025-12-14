@@ -7,6 +7,7 @@
 #define PHYSICAL_INPUT_H
 
 #include "CoreSystem.h"
+#include "modulinoknob.h" // NEW: Inclusione del driver hardware
 
 // Forward declarations
 class SimpleLight;
@@ -59,36 +60,56 @@ public:
 /**
  * @class NavButtonInput
  * @brief Button input specifically for menu navigation
- * @ingroup HAL
- * 
- * Directly calls NavigationManager methods instead of using events
  */
 class NavButtonInput {
 private:
     uint8_t _pin;
-    char _command;  // 'U', 'D', 'E', or 'B'
+    InputEvent _command;  // Strongly typed event
     bool _lastState;
     unsigned long _lastDebounceTime;
     ButtonMode _mode;
     static const uint8_t DEBOUNCE_DELAY = 50;
 
 public:
-    NavButtonInput(uint8_t pin, char command, ButtonMode mode = ButtonMode::ACTIVE_LOW);
+    NavButtonInput(uint8_t pin, InputEvent command, ButtonMode mode = ButtonMode::ACTIVE_LOW);
     void update();
+};
+
+/**
+ * @class KnobInput
+ * @brief Adapter class that connects ModulinoKnob to NavigationManager
+ * @ingroup HAL
+ * 
+ * Maps rotary encoder events to menu characters:
+ * - Clockwise -> DOWN (Next)
+ * - Counter-Clockwise -> UP (Prev)
+ * - Click -> ENTER
+ * - Double Click / Long Press -> BACK
+ */
+class KnobInput { // NEW CLASS
+private:
+    ModulinoKnob _hwDriver; // L'istanza del driver I2C
+
+public:
+    KnobInput() {}
+
+    bool begin() {
+        return _hwDriver.begin();
+    }
+
+    void update(); // Implementazione definita sotto o nel .cpp
 };
 
 /**
  * @class InputManager
  * @brief Singleton managing all physical inputs
- * @ingroup HAL
- * 
- * Polls buttons and potentiometers in the main loop.
  */
 class InputManager {
 private:
     DynamicArray<ButtonInput*> _buttons;
     DynamicArray<PotentiometerInput*> _potentiometers;
-    DynamicArray<NavButtonInput*> _navButtons;  // NEW: Navigation buttons
+    DynamicArray<NavButtonInput*> _navButtons;
+    KnobInput* _knob = nullptr; // NEW: Puntatore opzionale al knob
 
     InputManager() {}
 
@@ -96,7 +117,13 @@ public:
     static InputManager& instance();
     void registerButton(ButtonInput* button);
     void registerPotentiometer(PotentiometerInput* pot);
-    void registerNavButton(NavButtonInput* navBtn);  // NEW
+    void registerNavButton(NavButtonInput* navBtn);
+    
+    // NEW: Registrazione del knob
+    void registerKnob(KnobInput* knob) {
+        _knob = knob;
+    }
+
     void updateAll();
 };
 

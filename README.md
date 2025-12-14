@@ -47,28 +47,6 @@ Multiple scenes can be active simultaneously. Conflicts are resolved using **pri
 
 Example: If Night Mode (10) and Alarm Mode (255) are both active, Alarm's red flash will override Night Mode's dimming.
 
-## Timer System
-
-A lightweight **enum-based timer system** without std::function overhead.
-
-### Features
-
-- Schedule device actions (TURN_ON, TURN_OFF, TOGGLE, SET_BRIGHTNESS)
-- Schedule scene actions (ACTIVATE_SCENE, DEACTIVATE_SCENE)
-- Non-blocking execution using millis()
-- Automatic task removal after execution
-- Memory footprint: ~8 bytes per task
-
-### Usage Example
-
-```cpp
-// Turn on light in 30 seconds
-TimerManager::instance().addTimer(30000, TimerAction::TURN_ON, myLight);
-
-// Activate party mode in 1 minute
-TimerManager::instance().addSceneTimer(60000, TimerAction::ACTIVATE_SCENE, &partyMode);
-```
-
 ## Menu Builder
 
 Here, the magic happens. We can divide the home in different groups of devices, which will be "Inside" and "Outside". So we will have two main submenus: inside and outside. Then, for every device inside or outside, if it is a sensor we can click on the device name and get more information about the value (for example, we could implement min/max/average value or show a chart). 
