@@ -14,7 +14,7 @@ extern char *__brkval;
  * @brief Calculates free RAM between stack and heap
  * @return Bytes of free memory
  */
-static int getFreeMemory() {
+inline int getFreeMemory() {
     char top;
     return &top - (__brkval == 0 ? &__heap_start : __brkval);
 }
@@ -24,7 +24,7 @@ static int getFreeMemory() {
  * 
  * Only active if DEBUG_SERIAL is enabled.
  */
-static void printMemoryReport() {
+inline void printMemoryReport() {
 #if DEBUG_SERIAL
     int free_mem = getFreeMemory();
     char *heap_end = __brkval;

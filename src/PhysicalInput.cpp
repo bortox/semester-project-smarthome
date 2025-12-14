@@ -17,7 +17,7 @@ ButtonInput::ButtonInput(uint8_t pin, uint8_t buttonId, IDevice* linkedDevice, B
         pinMode(_pin, INPUT);
     }
     
-    // FIX: Registra per eventi del device linkato (per aggiornare stato locale)
+    // FIX: Register for linked device events (to update local state)
     EventSystem::instance().addListener(this, EventType::DeviceStateChanged);
 }
 
@@ -39,17 +39,17 @@ void ButtonInput::update() {
 }
 
 void ButtonInput::onButtonPressed() {
-    // FIX: Emetti evento invece di chiamare direttamente toggle()
-    // Questo ripristina l'Observer Pattern e mantiene il disaccoppiamento
+    // FIX: Emit event instead of calling toggle() directly
+    // This restores the Observer Pattern and maintains decoupling
     if (_linkedDevice) {
         EventSystem::instance().emit(EventType::ButtonPressed, _linkedDevice, _buttonId);
     }
 }
 
 void ButtonInput::handleEvent(EventType type, IDevice* device, int value) {
-    // FIX: Reagisci agli eventi del device linkato per aggiornare UI se necessario
+    // FIX: React to linked device events to update UI if necessary
     if (type == EventType::DeviceStateChanged && device == _linkedDevice) {
-        // Opzionale: feedback LED bottone, log, etc.
+        // Optional: button LED feedback, log, etc.
     }
 }
 
@@ -68,7 +68,7 @@ void InputManager::registerPotentiometer(PotentiometerInput* pot) {
 
 // ====================== NavButtonInput Implementation ======================
 
-NavButtonInput::NavButtonInput(uint8_t pin, char command, ButtonMode mode)
+NavButtonInput::NavButtonInput(uint8_t pin, InputEvent command, ButtonMode mode)
     : _pin(pin), _command(command), _lastState(false), _lastDebounceTime(0), _mode(mode) {
     
     if (_mode == ButtonMode::ACTIVE_LOW) {
@@ -87,7 +87,7 @@ void NavButtonInput::update() {
     
     if (currentReading && !_lastState) {
         if ((millis() - _lastDebounceTime) > DEBOUNCE_DELAY) {
-            // Call NavigationManager directly
+            // Call NavigationManager directly with strongly typed event
             NavigationManager::instance().handleInput(_command);
         }
         _lastDebounceTime = millis();
@@ -102,20 +102,26 @@ void InputManager::registerNavButton(NavButtonInput* navBtn) {
     _navButtons.add(navBtn);
 }
 
+
 void InputManager::updateAll() {
-    // Aggiorna pulsanti dispositivi
-    for (uint8_t i = 0; i < _buttons.size(); i++) {
+    // Update standard buttons
+    for (size_t i = 0; i < _buttons.size(); i++) {
         _buttons[i]->update();
     }
-
-    // Aggiorna potenziometri
-    for (uint8_t i = 0; i < _potentiometers.size(); i++) {
+    
+    // Update potentiometers
+    for (size_t i = 0; i < _potentiometers.size(); i++) {
         _potentiometers[i]->update();
     }
-    
-    // NEW: Aggiorna pulsanti navigazione
-    for (uint8_t i = 0; i < _navButtons.size(); i++) {
+
+    // Update navigation buttons (if still used)
+    for (size_t i = 0; i < _navButtons.size(); i++) {
         _navButtons[i]->update();
+    }
+
+    // NEW: Update knob if registered
+    if (_knob != nullptr) {
+        _knob->update();
     }
 }
 
@@ -152,5 +158,47 @@ void PotentiometerInput::update() {
         }
         
         _lastMappedValue = mappedValue;
+    }
+}
+
+
+#include "FlexibleMenu.h" // Required for NavigationManager
+
+// --- KnobInput Implementation ---
+
+void KnobInput::update() {
+    // Update hardware driver and get event
+    KnobEvent e = _hwDriver.update();
+    
+    // Reference to navigation manager
+    NavigationManager& nav = NavigationManager::instance();
+
+    switch (e) {
+          case KnobEvent::DOWN: 
+            // Clockwise Rotation -> Down in list (Next)
+            // Note: In sliders this decrements the value.
+            // If you want CW to increment sliders, change DOWN to UP here,
+            // but menu navigation will be inverted (CW goes up).
+            nav.handleInput(InputEvent::DOWN); 
+            break;
+
+        case KnobEvent::UP: 
+            // Counter-Clockwise Rotation -> Up in list (Prev)
+            nav.handleInput(InputEvent::UP); 
+            break;
+
+        case KnobEvent::ENTER: 
+            // Single Click -> Enter
+            nav.handleInput(InputEvent::ENTER); 
+            break;
+
+        case KnobEvent::BACK: 
+            // Double Click or Long Press -> Back
+            nav.handleInput(InputEvent::BACK); 
+            break;
+
+        case KnobEvent::NONE:
+        default:
+            break;
     }
 }
