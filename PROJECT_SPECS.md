@@ -10,12 +10,16 @@
 - **Display:** LCD I2C 20×4 caratteri (0x27)
 - **Sensori:**
   - LM75 I2C temperatura (0x90)
+  - Photoresistor (analog)
+  - HC-SR501 PIR motion sensor (digital)
 - **Attuatori:**
   - 1× LED semplice (D3 - Kitchen) - ON/OFF
   - 2× LED PWM (D11 Living Room, D5 Bedroom) - Dimming 0-100%
+  - RGB LED (3× PWM channels)
 - **Input:**
   - 4× Bottoni Luci (D12, D13, D7, D8) - Controllo diretto dispositivi
   - 4× Bottoni Menu (D0 UP, D1 DOWN, D2 SELECT, D4 BACK) - Navigazione menu
+  - 1× Potenziometro (A1) - Controllo brightness
   - ~~Serial console~~ - **DISABILITATO** (D0/D1 usati da bottoni)
 
 ### Funzionalità Core
@@ -382,18 +386,10 @@ class AutomatedLight : public IEventListener {
 - Slider per threshold luce
 - Event-driven: sensore luce/PIR → decision → attuazione
 
-### Fase 3: Rotary Encoder
-```cpp
-class RotaryInput : public IEventListener {
-    volatile int _position;
-    void onClockwise() { /* emit UP event */ }
-    void onCounterClockwise() { /* emit DOWN event */ }
-    void onButtonPress() { /* emit SELECT event */ }
-};
-```
-- Sostituisce serial input
-- ISR per gestione interrupt
-- Emette stessi comandi 'U'/'D'/'E' → zero refactoring menu
+### Fase 3: Espansione Input
+- Aggiungere più potenziometri per controllo individuale luci
+- Supporto per sensori aggiuntivi (umidità, pressione)
+- Integrazione con moduli wireless (nRF24L01, ESP8266)
 
 ### Fase 4: RGB Light
 ```cpp

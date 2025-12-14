@@ -22,6 +22,9 @@ enum class DeviceType : uint8_t {
     SensorTemperature,  ///< Temperature sensor (LM75)
     SensorLight,        ///< Photoresistor light sensor
     SensorPIR,          ///< Passive Infrared motion sensor
+    SensorRAM,          ///< Virtual sensor for RAM usage
+    SensorVCC,          ///< Virtual sensor for supply voltage
+    SensorLoopTime,     ///< Virtual sensor for main loop latency
     Unknown             ///< Undefined device type
 };
 

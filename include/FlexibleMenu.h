@@ -1247,10 +1247,7 @@ public:
             TemperatureSensor* temp = static_cast<TemperatureSensor*>(device);
             SensorStats* stats = &temp->getStats();
             
-            // Live current temperature
             page->addItem(makeLiveItem(device, temp, &TemperatureSensor::getTemperature, F("C"), true));
-            
-            // Statistics using template
             page->addItem(makeLiveItem(F("Min"), stats, &SensorStats::getMin, F("C"), true));
             page->addItem(makeLiveItem(F("Max"), stats, &SensorStats::getMax, F("C"), true));
             page->addItem(makeLiveItem(F("Avg"), stats, &SensorStats::getAverage, F("C"), true));
@@ -1259,15 +1256,39 @@ public:
             PhotoresistorSensor* light = static_cast<PhotoresistorSensor*>(device);
             SensorStats* stats = &light->getStats();
             
-            // Live current light level (returns int16_t via getValue)
             page->addItem(makeLiveItem(device, light, 
                 static_cast<int16_t (PhotoresistorSensor::*)() const>(&PhotoresistorSensor::getValue), 
                 F("%"), false));
-            
-            // Statistics
             page->addItem(makeLiveItem(F("Min"), stats, &SensorStats::getMin, F("%"), false));
             page->addItem(makeLiveItem(F("Max"), stats, &SensorStats::getMax, F("%"), false));
             page->addItem(makeLiveItem(F("Avg"), stats, &SensorStats::getAverage, F("%"), false));
+            
+        } else if (device->type == DeviceType::SensorRAM) {
+            RamSensorDevice* ram = static_cast<RamSensorDevice*>(device);
+            SensorStats* stats = &ram->getStats();
+            
+            page->addItem(makeLiveItem(device, ram, &RamSensorDevice::getValue, F("B"), false));
+            page->addItem(makeLiveItem(F("Min"), stats, &SensorStats::getMin, F("B"), false));
+            page->addItem(makeLiveItem(F("Max"), stats, &SensorStats::getMax, F("B"), false));
+            page->addItem(makeLiveItem(F("Avg"), stats, &SensorStats::getAverage, F("B"), false));
+            
+        } else if (device->type == DeviceType::SensorVCC) {
+            VccSensorDevice* vcc = static_cast<VccSensorDevice*>(device);
+            SensorStats* stats = &vcc->getStats();
+            
+            page->addItem(makeLiveItem(device, vcc, &VccSensorDevice::getValue, F("mV"), false));
+            page->addItem(makeLiveItem(F("Min"), stats, &SensorStats::getMin, F("mV"), false));
+            page->addItem(makeLiveItem(F("Max"), stats, &SensorStats::getMax, F("mV"), false));
+            page->addItem(makeLiveItem(F("Avg"), stats, &SensorStats::getAverage, F("mV"), false));
+            
+        } else if (device->type == DeviceType::SensorLoopTime) {
+            LoopTimeSensorDevice* loop = static_cast<LoopTimeSensorDevice*>(device);
+            SensorStats* stats = &loop->getStats();
+            
+            page->addItem(makeLiveItem(device, loop, &LoopTimeSensorDevice::getValue, F("us"), false));
+            page->addItem(makeLiveItem(F("Min"), stats, &SensorStats::getMin, F("us"), false));
+            page->addItem(makeLiveItem(F("Max"), stats, &SensorStats::getMax, F("us"), false));
+            page->addItem(makeLiveItem(F("Avg"), stats, &SensorStats::getAverage, F("us"), false));
         }
         
         page->addItem(new BackMenuItem(NavigationManager::instance()));
@@ -1314,8 +1335,16 @@ public:
                     page->addItem(new SubMenuItem(F("Light Sensor"), buildLightSettingsPage, d, NavigationManager::instance()));
                     
                 } else if (d->type == DeviceType::SensorPIR) {
-                    // Use specialized PIR item
                     page->addItem(new LivePIRItem(static_cast<PIRSensorDevice*>(d)));
+                    
+                } else if (d->type == DeviceType::SensorRAM) {
+                    page->addItem(new SubMenuItem(F("Free RAM"), buildSensorStatsPage, d, NavigationManager::instance()));
+                    
+                } else if (d->type == DeviceType::SensorVCC) {
+                    page->addItem(new SubMenuItem(F("VCC Voltage"), buildSensorStatsPage, d, NavigationManager::instance()));
+                    
+                } else if (d->type == DeviceType::SensorLoopTime) {
+                    page->addItem(new SubMenuItem(F("Loop Time"), buildSensorStatsPage, d, NavigationManager::instance()));
                 }
             }
         }

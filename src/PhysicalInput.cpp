@@ -104,25 +104,22 @@ void InputManager::registerNavButton(NavButtonInput* navBtn) {
 
 
 void InputManager::updateAll() {
-    // Update standard buttons
-    for (size_t i = 0; i < _buttons.size(); i++) {
-        _buttons[i]->update();
+    // Update regular buttons
+    for (uint8_t i = 0; i < _buttons.size(); i++) {
+        if (_buttons[i]) _buttons[i]->update();
     }
-    
+
     // Update potentiometers
-    for (size_t i = 0; i < _potentiometers.size(); i++) {
-        _potentiometers[i]->update();
+    for (uint8_t i = 0; i < _potentiometers.size(); i++) {
+        if (_potentiometers[i]) _potentiometers[i]->update();
     }
 
-    // Update navigation buttons (if still used)
-    for (size_t i = 0; i < _navButtons.size(); i++) {
-        _navButtons[i]->update();
+    // Update navigation buttons
+    for (uint8_t i = 0; i < _navButtons.size(); i++) {
+        if (_navButtons[i]) _navButtons[i]->update();
     }
 
-    // NEW: Update knob if registered
-    if (_knob != nullptr) {
-        _knob->update();
-    }
+    // Modulino knob support removed — no additional update call here.
 }
 
 // ====================== PotentiometerInput Implementation ======================
@@ -158,47 +155,5 @@ void PotentiometerInput::update() {
         }
         
         _lastMappedValue = mappedValue;
-    }
-}
-
-
-#include "FlexibleMenu.h" // Required for NavigationManager
-
-// --- KnobInput Implementation ---
-
-void KnobInput::update() {
-    // Update hardware driver and get event
-    KnobEvent e = _hwDriver.update();
-    
-    // Reference to navigation manager
-    NavigationManager& nav = NavigationManager::instance();
-
-    switch (e) {
-          case KnobEvent::DOWN: 
-            // Clockwise Rotation -> Down in list (Next)
-            // Note: In sliders this decrements the value.
-            // If you want CW to increment sliders, change DOWN to UP here,
-            // but menu navigation will be inverted (CW goes up).
-            nav.handleInput(InputEvent::DOWN); 
-            break;
-
-        case KnobEvent::UP: 
-            // Counter-Clockwise Rotation -> Up in list (Prev)
-            nav.handleInput(InputEvent::UP); 
-            break;
-
-        case KnobEvent::ENTER: 
-            // Single Click -> Enter
-            nav.handleInput(InputEvent::ENTER); 
-            break;
-
-        case KnobEvent::BACK: 
-            // Double Click or Long Press -> Back
-            nav.handleInput(InputEvent::BACK); 
-            break;
-
-        case KnobEvent::NONE:
-        default:
-            break;
     }
 }

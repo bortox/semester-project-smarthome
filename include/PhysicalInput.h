@@ -7,7 +7,6 @@
 #define PHYSICAL_INPUT_H
 
 #include "CoreSystem.h"
-#include "modulinoknob.h" // NEW: Inclusione del driver hardware
 
 // Forward declarations
 class SimpleLight;
@@ -76,31 +75,6 @@ public:
 };
 
 /**
- * @class KnobInput
- * @brief Adapter class that connects ModulinoKnob to NavigationManager
- * @ingroup HAL
- * 
- * Maps rotary encoder events to menu characters:
- * - Clockwise -> DOWN (Next)
- * - Counter-Clockwise -> UP (Prev)
- * - Click -> ENTER
- * - Double Click / Long Press -> BACK
- */
-class KnobInput { // NEW CLASS
-private:
-    ModulinoKnob _hwDriver; // L'istanza del driver I2C
-
-public:
-    KnobInput() {}
-
-    bool begin() {
-        return _hwDriver.begin();
-    }
-
-    void update(); // Implementazione definita sotto o nel .cpp
-};
-
-/**
  * @class InputManager
  * @brief Singleton managing all physical inputs
  */
@@ -109,7 +83,6 @@ private:
     DynamicArray<ButtonInput*> _buttons;
     DynamicArray<PotentiometerInput*> _potentiometers;
     DynamicArray<NavButtonInput*> _navButtons;
-    KnobInput* _knob = nullptr; // NEW: Puntatore opzionale al knob
 
     InputManager() {}
 
@@ -118,11 +91,6 @@ public:
     void registerButton(ButtonInput* button);
     void registerPotentiometer(PotentiometerInput* pot);
     void registerNavButton(NavButtonInput* navBtn);
-    
-    // NEW: Registrazione del knob
-    void registerKnob(KnobInput* knob) {
-        _knob = knob;
-    }
 
     void updateAll();
 };

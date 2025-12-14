@@ -2,6 +2,7 @@
 #include <Arduino.h>
 #include "DebugConfig.h"
 #include "i2cmaster.h"
+#include "MemoryMonitor.h"
 
 // BASE SENSOR
 template<typename T>
@@ -111,4 +112,133 @@ public:
         pinMode(_pin, INPUT);
     }
     bool getValue() const override { return digitalRead(_pin); }
+};
+
+// ===== VIRTUAL SENSORS =====
+
+/**
+ * @class RamUsageSensor
+ * @brief Low-level RAM monitoring sensor
+ * 
+ * Measures free memory between heap and stack using AVR memory layout.
+ */
+class RamUsageSensor : public Sensor<int16_t> {
+public:
+    RamUsageSensor(const char* name) : Sensor<int16_t>(name) {}
+    
+    /**
+     * @brief Gets current free RAM in bytes
+     * @return Free memory bytes
+     */
+    int16_t getValue() const override {
+        return getFreeMemory();
+    }
+};
+
+/**
+ * @class VccSensor
+ * @brief Low-level VCC voltage sensor
+ * 
+ * Uses internal 1.1V bandgap reference to measure supply voltage.
+ * Compatible with ATmega328P and ATmega32U4.
+ */
+class VccSensor : public Sensor<int16_t> {
+public:
+    VccSensor(const char* name) : Sensor<int16_t>(name) {}
+    
+    /**
+     * @brief Reads VCC using internal 1.1V reference
+     * @return VCC in millivolts (e.g., 5000 for 5.0V)
+     */
+    int16_t getValue() const override {
+        // Save current ADMUX state
+        uint8_t savedADMUX = ADMUX;
+        
+        // Set reference to AVcc and measure internal 1.1V bandgap
+        #if defined(__AVR_ATmega32U4__)
+            // ATmega32U4: MUX[4:0] = 11110 for bandgap
+            ADMUX = _BV(REFS0) | _BV(MUX4) | _BV(MUX3) | _BV(MUX2) | _BV(MUX1);
+        #else
+            // ATmega328P: MUX[3:0] = 1110 for bandgap
+            ADMUX = _BV(REFS0) | _BV(MUX3) | _BV(MUX2) | _BV(MUX1);
+        #endif
+        
+        // Wait for voltage to stabilize
+        delayMicroseconds(250);
+        
+        // Start conversion
+        ADCSRA |= _BV(ADSC);
+        
+        // Wait for conversion to complete
+        while (bit_is_set(ADCSRA, ADSC));
+        
+        // Read ADC value (low byte first for atomic read)
+        uint8_t low = ADCL;
+        uint8_t high = ADCH;
+        uint16_t adcValue = (high << 8) | low;
+        
+        // Restore ADMUX
+        ADMUX = savedADMUX;
+        
+        // Calculate VCC: VCC = 1.1V * 1024 / ADC
+        // Using 1125300L = 1.1 * 1023 * 1000 for millivolt result
+        if (adcValue == 0) return 0;
+        return (int16_t)(1125300L / adcValue);
+    }
+};
+
+/**
+ * @class LoopTimeSensor
+ * @brief Low-level loop execution time sensor
+ * 
+ * Tracks maximum loop time within measurement windows.
+ * External code must call registerTime() at end of each loop iteration.
+ */
+class LoopTimeSensor : public Sensor<int16_t> {
+private:
+    static LoopTimeSensor* _instance;
+    uint16_t _currentMax;
+    uint16_t _reportedMax;
+    unsigned long _windowStart;
+    static constexpr unsigned long WINDOW_MS = 1000;
+
+public:
+    LoopTimeSensor(const char* name) : Sensor<int16_t>(name), _currentMax(0), _reportedMax(0), _windowStart(0) {
+        _instance = this;
+        _windowStart = millis();
+    }
+    
+    /**
+     * @brief Registers a loop iteration time
+     * @param microseconds Duration of the loop iteration
+     * 
+     * Call this from main loop. Tracks maximum value within current window.
+     */
+    static void registerTime(uint16_t microseconds) {
+        if (_instance && microseconds > _instance->_currentMax) {
+            _instance->_currentMax = microseconds;
+        }
+    }
+    
+    /**
+     * @brief Gets the maximum loop time from last window
+     * @return Loop time in microseconds
+     */
+    int16_t getValue() const override {
+        return (int16_t)_reportedMax;
+    }
+    
+    /**
+     * @brief Updates the measurement window
+     * 
+     * Call periodically to rotate windows and update reported value.
+     */
+    void updateWindow() {
+        unsigned long now = millis();
+        if (now - _windowStart >= WINDOW_MS) {
+            _reportedMax = _currentMax;
+            _currentMax = 0;
+            _windowStart = now;
+        }
+    }
 };

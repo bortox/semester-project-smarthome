@@ -47,20 +47,25 @@ void setup() {
     NavigationManager::instance().setLCD();
 
     // ===== Create Devices =====
-    DeviceFactory::createDimmableLight("Kitchen", 6);
-    DeviceFactory::createDimmableLight("Bedroom", 5);
+    DeviceFactory::createDimmableLight("Kitchen", 5);
+    DeviceFactory::createDimmableLight("Bedroom", 8);
     DeviceFactory::createRGBLight("Ambient Light", 9, 10, 11);
-    DeviceFactory::createTemperatureSensor("Outside Temp");
     static LightSensor photo("Photo", A3);
     static MovementSensor pir("PIR", 7);
-    DeviceFactory::createOutsideLight("Garden", 8, &photo, &pir);
-
+    DeviceFactory::createOutsideLight("Garden", 6, &photo, &pir);
+    DeviceFactory::createTemperatureSensor("Outside Temp");
     DeviceFactory::createPhotoresistorSensor("Outside Light", A3);
     DeviceFactory::createPIRSensor("Motion PIR", 7);
+    
+    // ===== Create Virtual Sensors =====
+    DeviceFactory::createRamSensor("Free RAM");
+    DeviceFactory::createVoltageSensor("VCC");
+    DeviceFactory::createLoopTimeSensor("Loop Time");
+    
     // ===== Setup Light Control Buttons =====
     DeviceRegistry& registry = DeviceRegistry::instance();
     
-    ButtonInput* btnLiving = new ButtonInput(3, 1, registry.getDevices()[0], ButtonMode::ACTIVE_LOW);
+    ButtonInput* btnLiving = new ButtonInput(3, 1, registry.getDevices()[1], ButtonMode::ACTIVE_LOW);
     InputManager::instance().registerButton(btnLiving);
     
     ButtonInput* btnKitchen = new ButtonInput(A2, 2, registry.getDevices()[1], ButtonMode::ACTIVE_LOW);
@@ -72,12 +77,12 @@ void setup() {
     ButtonInput* btnReserved = new ButtonInput(A7, 4, registry.getDevices()[2], ButtonMode::ACTIVE_LOW);
     InputManager::instance().registerButton(btnReserved);
 
-    DimmableLight* rgbLight = static_cast<DimmableLight*>(registry.getDevices()[2]);
-    PotentiometerInput* pot2 = new PotentiometerInput(A0, rgbLight);
+    DimmableLight* outLight = static_cast<DimmableLight*>(registry.getDevices()[1]);
+    PotentiometerInput* pot2 = new PotentiometerInput(A1, outLight);
     InputManager::instance().registerPotentiometer(pot2);
 
-    PotentiometerInput* pot1 = new PotentiometerInput(A1, rgbLight);
-    InputManager::instance().registerPotentiometer(pot1);
+    // PotentiometerInput* pot1 = new PotentiometerInput(A1, rgbLight);
+    // InputManager::instance().registerPotentiometer(pot1);
 
     
 
@@ -112,6 +117,8 @@ void setup() {
  * 4. Render UI
  */
 void loop() {
+    unsigned long loopStart = micros();
+    
     // 1. Update all inputs (highest priority - user commands)
     InputManager::instance().updateAll();
     
@@ -126,4 +133,9 @@ void loop() {
 
     // 4. Update menu display (only redraws if needed)
     NavigationManager::instance().update();
+    
+    // 5. Register loop execution time for monitoring
+    unsigned long loopEnd = micros();
+    uint16_t loopDuration = (uint16_t)(loopEnd - loopStart);
+    LoopTimeSensorDevice::registerLoopTime(loopDuration);
 }
