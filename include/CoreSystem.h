@@ -80,9 +80,9 @@ private:
     uint8_t _size;
     uint8_t _capacity;
     
-    static constexpr uint8_t GROW_STEP = 4; 
+    static constexpr uint8_t GROW_STEP = 2; 
     static constexpr uint8_t MAX_CAPACITY = 64;
-    static constexpr uint8_t SHRINK_THRESHOLD = 8; // Shrink when unused space > 8
+    static constexpr uint8_t SHRINK_THRESHOLD = 4; // Shrink when unused space > 4
 
 public:
     DynamicArray() : _data(nullptr), _size(0), _capacity(0) {}
@@ -183,10 +183,11 @@ public:
  */
 class IDevice {
 public:
-    const char* const name;
+    // CHANGED: Use FlashStringHelper to save RAM
+    const __FlashStringHelper* const name;
     const DeviceType type;
     
-    IDevice(const char* n, DeviceType t) : name(n), type(t) {}
+    IDevice(const __FlashStringHelper* n, DeviceType t) : name(n), type(t) {}
     virtual ~IDevice() {}
     virtual void update() = 0;
     virtual bool isLight() const { return false; }

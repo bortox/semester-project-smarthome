@@ -8,9 +8,9 @@
 template<typename T>
 class Sensor {
 protected:
-    const char* _name;
+    const __FlashStringHelper* _name;
 public:
-    Sensor(const char* name) : _name(name) {}
+    Sensor(const __FlashStringHelper* name) : _name(name) {}
     virtual T getValue() const = 0;
 };
 
@@ -21,7 +21,7 @@ public:
 
 class LM75Sensor : public Sensor<int16_t> {
 public:
-    LM75Sensor(const char* name) : Sensor<int16_t>(name) {}
+    LM75Sensor(const __FlashStringHelper* name) : Sensor<int16_t>(name) {}
     
     void begin() {
 #if DEBUG_I2C
@@ -83,7 +83,7 @@ private:
     int _rawMax;  // Calibrated bright value
 
 public:
-    LightSensor(const char* name, uint8_t pin) 
+    LightSensor(const __FlashStringHelper* name, uint8_t pin) 
         : Sensor<int>(name), _pin(pin), _rawMin(1023), _rawMax(0) {
         pinMode(_pin, INPUT_PULLUP);
     }
@@ -108,7 +108,7 @@ class MovementSensor : public Sensor<bool> {
 private:
     uint8_t _pin;
 public:
-    MovementSensor(const char* name, uint8_t pin) : Sensor<bool>(name), _pin(pin) {
+    MovementSensor(const __FlashStringHelper* name, uint8_t pin) : Sensor<bool>(name), _pin(pin) {
         pinMode(_pin, INPUT);
     }
     bool getValue() const override { return digitalRead(_pin); }
@@ -124,7 +124,7 @@ public:
  */
 class RamUsageSensor : public Sensor<int16_t> {
 public:
-    RamUsageSensor(const char* name) : Sensor<int16_t>(name) {}
+    RamUsageSensor(const __FlashStringHelper* name) : Sensor<int16_t>(name) {}
     
     /**
      * @brief Gets current free RAM in bytes
@@ -144,7 +144,7 @@ public:
  */
 class VccSensor : public Sensor<int16_t> {
 public:
-    VccSensor(const char* name) : Sensor<int16_t>(name) {}
+    VccSensor(const __FlashStringHelper* name) : Sensor<int16_t>(name) {}
     
     /**
      * @brief Reads VCC using internal 1.1V reference
@@ -203,7 +203,7 @@ private:
     static constexpr unsigned long WINDOW_MS = 1000;
 
 public:
-    LoopTimeSensor(const char* name) : Sensor<int16_t>(name), _currentMax(0), _reportedMax(0), _windowStart(0) {
+    LoopTimeSensor(const __FlashStringHelper* name) : Sensor<int16_t>(name), _currentMax(0), _reportedMax(0), _windowStart(0) {
         _instance = this;
         _windowStart = millis();
     }

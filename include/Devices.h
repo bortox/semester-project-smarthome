@@ -118,7 +118,7 @@ public:
      * @param name Device identifier name
      * @param pin Arduino pin to which the light is connected
      */
-    SimpleLight(const char* name, uint8_t pin) 
+    SimpleLight(const __FlashStringHelper* name, uint8_t pin) 
         : IDevice(name, DeviceType::LightSimple), _pin(pin), _state(false) {
         pinMode(_pin, OUTPUT);
         digitalWrite(_pin, LOW);
@@ -206,7 +206,7 @@ public:
      * @param name Device identifier name
      * @param pin Arduino PWM pin to which the light is connected
      */
-    DimmableLight(const char* name, uint8_t pin) 
+    DimmableLight(const __FlashStringHelper* name, uint8_t pin) 
         : SimpleLight(name, pin), _targetBrightness(0), _currentBrightness(0), 
           _lastBrightness(100), _lastUpdate(0), _lastMultiplier(100) {
         const_cast<DeviceType&>(type) = DeviceType::LightDimmable;
@@ -379,7 +379,7 @@ public:
      * @param pin_g PWM pin for green
      * @param pin_b PWM pin for blue
      */
-    RGBLight(const char* name, uint8_t pin_r, uint8_t pin_g, uint8_t pin_b) 
+    RGBLight(const __FlashStringHelper* name, uint8_t pin_r, uint8_t pin_g, uint8_t pin_b) 
         : DimmableLight(name, pin_r), _pin_g(pin_g), _pin_b(pin_b), 
           _targetColor({PWM_MAX, PWM_MAX, PWM_MAX}), _currentColor({0, 0, 0}), 
           _lastColorUpdate(0) {
@@ -616,7 +616,7 @@ public:
      * @param photo Pointer to light sensor
      * @param motion Pointer to motion sensor
      */
-    OutsideLight(const char* name, uint8_t pin, LightSensor* photo, MovementSensor* motion)
+    OutsideLight(const __FlashStringHelper* name, uint8_t pin, LightSensor* photo, MovementSensor* motion)
         : SimpleLight(name, pin), _mode(OutsideMode::OFF), _photo(photo), _motion(motion) {
         const_cast<DeviceType&>(type) = DeviceType::LightOutside;
     }
@@ -687,7 +687,7 @@ public:
      * @brief Constructor for temperature sensor
      * @param name Device identifier name
      */
-    TemperatureSensor(const char* name) 
+    TemperatureSensor(const __FlashStringHelper* name) 
         : IDevice(name, DeviceType::SensorTemperature), _temperature(0), _lastRead(0), _lm75(name) {
         _lm75.begin();
         DeviceRegistry::instance().registerDevice(this);
@@ -740,7 +740,8 @@ private:
     unsigned long _lastRead;
     LightSensor _photoSensor;
     SensorStats _stats;
-    static constexpr unsigned long UPDATE_INTERVAL_MS = 10;
+    // Increased interval to prevent event flooding and LCD flickering
+    static constexpr unsigned long UPDATE_INTERVAL_MS = 250;
     static constexpr int CHANGE_THRESHOLD = 2;
 
 public:
@@ -749,7 +750,7 @@ public:
      * @param name Device identifier name
      * @param pin Arduino analog pin
      */
-    PhotoresistorSensor(const char* name, uint8_t pin) 
+    PhotoresistorSensor(const __FlashStringHelper* name, uint8_t pin) 
         : IDevice(name, DeviceType::SensorLight), _lightLevel(0), _lastRead(0), _photoSensor(name, pin) {
         DeviceRegistry::instance().registerDevice(this);
     }
@@ -840,7 +841,7 @@ public:
      * @param name Device identifier name
      * @param pin Arduino digital pin
      */
-    PIRSensorDevice(const char* name, uint8_t pin) 
+    PIRSensorDevice(const __FlashStringHelper* name, uint8_t pin) 
         : IDevice(name, DeviceType::SensorPIR), _motionDetected(false), _lastRead(0), _pirSensor(name, pin) {
         DeviceRegistry::instance().registerDevice(this);
     }
@@ -898,7 +899,7 @@ public:
      * @brief Constructor for RAM sensor device
      * @param name Device identifier name
      */
-    RamSensorDevice(const char* name)
+    RamSensorDevice(const __FlashStringHelper* name)
         : IDevice(name, DeviceType::SensorRAM), _freeRam(0), _lastReported(0), 
           _lastRead(0), _ramSensor(name) {
         DeviceRegistry::instance().registerDevice(this);
@@ -965,7 +966,7 @@ public:
      * @brief Constructor for VCC sensor device
      * @param name Device identifier name
      */
-    VccSensorDevice(const char* name)
+    VccSensorDevice(const __FlashStringHelper* name)
         : IDevice(name, DeviceType::SensorVCC), _vcc(0), _lastRead(0), _vccSensor(name) {
         DeviceRegistry::instance().registerDevice(this);
         _vcc = _vccSensor.getValue();
@@ -1026,7 +1027,7 @@ public:
      * @brief Constructor for loop time sensor device
      * @param name Device identifier name
      */
-    LoopTimeSensorDevice(const char* name)
+    LoopTimeSensorDevice(const __FlashStringHelper* name)
         : IDevice(name, DeviceType::SensorLoopTime), _loopTime(0), _lastRead(0), _loopSensor(name) {
         DeviceRegistry::instance().registerDevice(this);
     }
@@ -1088,7 +1089,7 @@ public:
      * @param name Device name
      * @param pin Arduino pin
      */
-    static void createSimpleLight(const char* name, uint8_t pin) {
+    static void createSimpleLight(const __FlashStringHelper* name, uint8_t pin) {
         new SimpleLight(name, pin);
     }
 
@@ -1097,7 +1098,7 @@ public:
      * @param name Device name
      * @param pin Arduino PWM pin
      */
-    static void createDimmableLight(const char* name, uint8_t pin) {
+    static void createDimmableLight(const __FlashStringHelper* name, uint8_t pin) {
         new DimmableLight(name, pin);
     }
 
@@ -1105,7 +1106,7 @@ public:
      * @brief Creates a temperature sensor
      * @param name Device name
      */
-    static void createTemperatureSensor(const char* name) {
+    static void createTemperatureSensor(const __FlashStringHelper* name) {
         new TemperatureSensor(name);
     }
     
@@ -1116,7 +1117,7 @@ public:
      * @param g PWM pin for green
      * @param b PWM pin for blue
      */
-    static void createRGBLight(const char* name, uint8_t r, uint8_t g, uint8_t b) {
+    static void createRGBLight(const __FlashStringHelper* name, uint8_t r, uint8_t g, uint8_t b) {
         new RGBLight(name, r, g, b);
     }
     
@@ -1127,7 +1128,7 @@ public:
      * @param p Pointer to light sensor
      * @param m Pointer to motion sensor
      */
-    static void createOutsideLight(const char* name, uint8_t pin, LightSensor* p, MovementSensor* m) {
+    static void createOutsideLight(const __FlashStringHelper* name, uint8_t pin, LightSensor* p, MovementSensor* m) {
         new OutsideLight(name, pin, p, m);
     }
     
@@ -1136,7 +1137,7 @@ public:
      * @param name Device name
      * @param pin Arduino analog pin
      */
-    static void createPhotoresistorSensor(const char* name, uint8_t pin) {
+    static void createPhotoresistorSensor(const __FlashStringHelper* name, uint8_t pin) {
         new PhotoresistorSensor(name, pin);
     }
     
@@ -1145,7 +1146,7 @@ public:
      * @param name Device name
      * @param pin Arduino digital pin
      */
-    static void createPIRSensor(const char* name, uint8_t pin) {
+    static void createPIRSensor(const __FlashStringHelper* name, uint8_t pin) {
         new PIRSensorDevice(name, pin);
     }
     
@@ -1153,7 +1154,7 @@ public:
      * @brief Creates a RAM usage sensor
      * @param name Device name
      */
-    static void createRamSensor(const char* name) {
+    static void createRamSensor(const __FlashStringHelper* name) {
         new RamSensorDevice(name);
     }
     
@@ -1161,7 +1162,7 @@ public:
      * @brief Creates a VCC voltage sensor
      * @param name Device name
      */
-    static void createVoltageSensor(const char* name) {
+    static void createVoltageSensor(const __FlashStringHelper* name) {
         new VccSensorDevice(name);
     }
     
@@ -1169,7 +1170,7 @@ public:
      * @brief Creates a loop time sensor
      * @param name Device name
      */
-    static void createLoopTimeSensor(const char* name) {
+    static void createLoopTimeSensor(const __FlashStringHelper* name) {
         new LoopTimeSensorDevice(name);
     }
 };
