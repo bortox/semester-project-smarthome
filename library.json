@@ -1,0 +1,8 @@
+{
+  "name": "project-overrides",
+  "dependencies": {
+    "Wire": {
+      "exclude": ["**/twimaster.c"]
+    }
+  }
+}
