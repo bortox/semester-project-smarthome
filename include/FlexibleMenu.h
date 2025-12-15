@@ -434,7 +434,7 @@ public:
     void draw(uint8_t row, bool selected) override {
         LCD_set_cursor(0, row);
         LCD_write_str(selected ? "> " : "  ");
-        LCD_write_str(_device->name);
+        printLabel(_device->name); // CHANGED: Use printLabel helper for Flash strings
         LCD_set_cursor(15, row);
         
         if (_device->isLight()) {
@@ -478,16 +478,20 @@ private:
     
     void loadCustomChars() {
         if (!_customCharsLoaded) {
-            const uint8_t customChars[5][8] = {
-                {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, // Empty
-                {0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10}, // 1 pixel
-                {0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18}, // 2 pixels
-                {0x1C, 0x1C, 0x1C, 0x1C, 0x1C, 0x1C, 0x1C, 0x1C}, // 3 pixels
-                {0x1E, 0x1E, 0x1E, 0x1E, 0x1E, 0x1E, 0x1E, 0x1E}  // 4 pixels
+            // CHANGED: Store bitmaps in PROGMEM
+            static const uint8_t customChars[] PROGMEM = {
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // Empty
+                0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, // 1 pixel
+                0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, // 2 pixels
+                0x1C, 0x1C, 0x1C, 0x1C, 0x1C, 0x1C, 0x1C, 0x1C, // 3 pixels
+                0x1E, 0x1E, 0x1E, 0x1E, 0x1E, 0x1E, 0x1E, 0x1E  // 4 pixels
             };
             
+            uint8_t buffer[8];
             for (uint8_t i = 0; i < 5; i++) {
-                LCDcreateChar(i, const_cast<uint8_t*>(customChars[i]));
+                // Read from Flash
+                memcpy_P(buffer, &customChars[i * 8], 8);
+                LCDcreateChar(i, buffer);
             }
             _customCharsLoaded = true;
         }
@@ -712,7 +716,7 @@ public:
         if (_label) {
             printLabel(_label);
         } else if (_device) {
-            LCD_write_str(_device->name);
+            printLabel(_device->name); // CHANGED: Use printLabel helper for Flash strings
         }
         
         LCD_write_str(": ");
@@ -777,7 +781,7 @@ public:
     void draw(uint8_t row, bool selected) override {
         LCD_set_cursor(0, row);
         LCD_write_str(selected ? "> " : "  ");
-        LCD_write_str(_sensor->name);
+        printLabel(_sensor->name); // CHANGED: Use printLabel helper for Flash strings
         LCD_write_str(": ");
         LCD_write_str(_sensor->isMotionDetected() ? "Yes" : "No");
     }
@@ -849,22 +853,20 @@ public:
 class ActionItem : public MenuItem {
 private:
     IDevice* _device;
-    const char* _label;
+    const __FlashStringHelper* _label;
     void (*_action)(IDevice*, int);
     int _param;
-    NavigationManager& _nav;
 
 public:
     /**
      * @brief Constructs action item
-     * @param label Display label
+     * @param label Display label (Flash String)
      * @param device Target device
      * @param action Function pointer to execute
      * @param param Integer parameter for action
-     * @param nav Navigation manager reference
      */
-    ActionItem(const char* label, IDevice* device, void (*action)(IDevice*, int), int param, NavigationManager& nav)
-        : _device(device), _label(label), _action(action), _param(param), _nav(nav) {}
+    ActionItem(const __FlashStringHelper* label, IDevice* device, void (*action)(IDevice*, int), int param)
+        : _device(device), _label(label), _action(action), _param(param) {}
 
     /**
      * @brief Draws action label
@@ -874,7 +876,7 @@ public:
     void draw(uint8_t row, bool selected) override {
         LCD_set_cursor(0, row);
         LCD_write_str(selected ? "> " : "  ");
-        LCD_write_str(_label);
+        printLabel(_label);
     }
 
     /**
@@ -885,7 +887,7 @@ public:
     bool handleInput(InputEvent event) override {
         if (event == InputEvent::ENTER) {
             _action(_device, _param);
-            _nav.navigateBack();
+            NavigationManager::instance().navigateBack();
             return true;
         }
         return false;
@@ -904,7 +906,6 @@ private:
     const __FlashStringHelper* _label;
     PageBuilder _builder;     ///< Function pointer for JIT page creation
     void* _context;           ///< Context data passed to builder
-    NavigationManager& _nav;
 
 public:
     /**
@@ -912,10 +913,9 @@ public:
      * @param label Display label
      * @param builder Function that creates page on heap
      * @param context Optional context data for builder
-     * @param nav Navigation manager reference
      */
-    SubMenuItem(const __FlashStringHelper* label, PageBuilder builder, void* context, NavigationManager& nav) 
-        : _label(label), _builder(builder), _context(context), _nav(nav) {}
+    SubMenuItem(const __FlashStringHelper* label, PageBuilder builder, void* context) 
+        : _label(label), _builder(builder), _context(context) {}
 
     MenuItemType getType() const override { return MenuItemType::SUBMENU; }
     
@@ -945,7 +945,7 @@ public:
     bool handleInput(InputEvent event) override {
         if (event == InputEvent::ENTER) {
             MenuPage* newPage = createPage();
-            _nav.pushPage(newPage);
+            NavigationManager::instance().pushPage(newPage);
             return true;
         }
         return false;
@@ -953,14 +953,11 @@ public:
 };
 
 class BackMenuItem : public MenuItem {
-private:
-    NavigationManager& _nav;
 public:
     /**
      * @brief Constructs back item
-     * @param nav Navigation manager reference
      */
-    BackMenuItem(NavigationManager& nav) : _nav(nav) {}
+    BackMenuItem() {}
     
     /**
      * @brief Draws "<< Back" label
@@ -980,7 +977,7 @@ public:
      */
     bool handleInput(InputEvent event) override {
         if (event == InputEvent::ENTER) {
-            _nav.navigateBack();
+            NavigationManager::instance().navigateBack();
             return true;
         }
         return false;
@@ -1065,7 +1062,7 @@ public:
         if (!page) return nullptr;
         
         page->addItem(makeSlider(light, F("Red"), &RGBLight::getRed, &RGBLight::setRed, 0, 255, 3));
-        page->addItem(new BackMenuItem(NavigationManager::instance()));
+        page->addItem(new BackMenuItem());
         return page;
     }
 
@@ -1080,7 +1077,7 @@ public:
         if (!page) return nullptr;
         
         page->addItem(makeSlider(light, F("Green"), &RGBLight::getGreen, &RGBLight::setGreen, 0, 255, 3));
-        page->addItem(new BackMenuItem(NavigationManager::instance()));
+        page->addItem(new BackMenuItem());
         return page;
     }
 
@@ -1095,7 +1092,7 @@ public:
         if (!page) return nullptr;
         
         page->addItem(makeSlider(light, F("Blue"), &RGBLight::getBlue, &RGBLight::setBlue, 0, 255, 3));
-        page->addItem(new BackMenuItem(NavigationManager::instance()));
+        page->addItem(new BackMenuItem());
         return page;
     }
 
@@ -1123,10 +1120,10 @@ public:
         MenuPage* page = new MenuPage(F("Custom Color"), nullptr);
         if (!page) return nullptr;
 
-        page->addItem(new SubMenuItem(F("Set Red"), buildRedPage, light, NavigationManager::instance()));
-        page->addItem(new SubMenuItem(F("Set Green"), buildGreenPage, light, NavigationManager::instance()));
-        page->addItem(new SubMenuItem(F("Set Blue"), buildBluePage, light, NavigationManager::instance()));
-        page->addItem(new BackMenuItem(NavigationManager::instance()));
+        page->addItem(new SubMenuItem(F("Set Red"), buildRedPage, light));
+        page->addItem(new SubMenuItem(F("Set Green"), buildGreenPage, light));
+        page->addItem(new SubMenuItem(F("Set Blue"), buildBluePage, light));
+        page->addItem(new BackMenuItem());
 
         return page;
     }
@@ -1139,13 +1136,15 @@ public:
     static MenuPage* buildRGBPresetsPage(void* context) {
         RGBLight* light = static_cast<RGBLight*>(context);
         MenuPage* page = new MenuPage(F("Select Preset"), NavigationManager::instance().getCurrentPage());
-        page->addItem(new ActionItem("Warm White", light, setRGBPresetAction, (int)RGBPreset::WARM_WHITE, NavigationManager::instance()));
-        page->addItem(new ActionItem("Cool White", light, setRGBPresetAction, (int)RGBPreset::COOL_WHITE, NavigationManager::instance()));
-        page->addItem(new ActionItem("Red", light, setRGBPresetAction, (int)RGBPreset::RED, NavigationManager::instance()));
-        page->addItem(new ActionItem("Green", light, setRGBPresetAction, (int)RGBPreset::GREEN, NavigationManager::instance()));
-        page->addItem(new ActionItem("Blue", light, setRGBPresetAction, (int)RGBPreset::BLUE, NavigationManager::instance()));
-        page->addItem(new ActionItem("Ocean", light, setRGBPresetAction, (int)RGBPreset::OCEAN, NavigationManager::instance()));
-        page->addItem(new BackMenuItem(NavigationManager::instance()));
+        if (!page) return nullptr;
+
+        page->addItem(new ActionItem(F("Warm White"), light, setRGBPresetAction, (int)RGBPreset::WARM_WHITE));
+        page->addItem(new ActionItem(F("Cool White"), light, setRGBPresetAction, (int)RGBPreset::COOL_WHITE));
+        page->addItem(new ActionItem(F("Red"), light, setRGBPresetAction, (int)RGBPreset::RED));
+        page->addItem(new ActionItem(F("Green"), light, setRGBPresetAction, (int)RGBPreset::GREEN));
+        page->addItem(new ActionItem(F("Blue"), light, setRGBPresetAction, (int)RGBPreset::BLUE));
+        page->addItem(new ActionItem(F("Ocean"), light, setRGBPresetAction, (int)RGBPreset::OCEAN));
+        page->addItem(new BackMenuItem());
         return page;
     }
 
@@ -1157,11 +1156,13 @@ public:
     static MenuPage* buildRGBLightPage(void* context) {
         RGBLight* light = static_cast<RGBLight*>(context);
         MenuPage* page = new MenuPage(F("RGB Light"), NavigationManager::instance().getCurrentPage());
+        if (!page) return nullptr;
+
         page->addItem(new DeviceToggleItem(light));
-        page->addItem(new SubMenuItem(F("Set Brightness"), buildBrightnessPage, light, NavigationManager::instance()));
-        page->addItem(new SubMenuItem(F("Color Presets"), buildRGBPresetsPage, light, NavigationManager::instance()));
-        page->addItem(new SubMenuItem(F("Custom Color"), buildCustomColorPage, light, NavigationManager::instance()));
-        page->addItem(new BackMenuItem(NavigationManager::instance()));
+        page->addItem(new SubMenuItem(F("Set Brightness"), buildBrightnessPage, light));
+        page->addItem(new SubMenuItem(F("Color Presets"), buildRGBPresetsPage, light));
+        page->addItem(new SubMenuItem(F("Custom Color"), buildCustomColorPage, light));
+        page->addItem(new BackMenuItem());
         return page;
     }
 
@@ -1173,9 +1174,11 @@ public:
     static MenuPage* buildDimmableLightPage(void* context) {
         DimmableLight* light = static_cast<DimmableLight*>(context);
         MenuPage* page = new MenuPage(F("Dimmable Light"), NavigationManager::instance().getCurrentPage());
+        if (!page) return nullptr;
+
         page->addItem(new DeviceToggleItem(light));
-        page->addItem(new SubMenuItem(F("Set Brightness"), buildBrightnessPage, light, NavigationManager::instance()));
-        page->addItem(new BackMenuItem(NavigationManager::instance()));
+        page->addItem(new SubMenuItem(F("Set Brightness"), buildBrightnessPage, light));
+        page->addItem(new BackMenuItem());
         return page;
     }
 
@@ -1187,11 +1190,13 @@ public:
     static MenuPage* buildOutsideModesPage(void* context) {
         OutsideLight* light = static_cast<OutsideLight*>(context);
         MenuPage* page = new MenuPage(F("Select Mode"), NavigationManager::instance().getCurrentPage());
-        page->addItem(new ActionItem("OFF", light, setOutsideModeAction, (int)OutsideMode::OFF, NavigationManager::instance()));
-        page->addItem(new ActionItem("ON", light, setOutsideModeAction, (int)OutsideMode::ON, NavigationManager::instance()));
-        page->addItem(new ActionItem("AUTO LIGHT", light, setOutsideModeAction, (int)OutsideMode::AUTO_LIGHT, NavigationManager::instance()));
-        page->addItem(new ActionItem("AUTO MOTION", light, setOutsideModeAction, (int)OutsideMode::AUTO_MOTION, NavigationManager::instance()));
-        page->addItem(new BackMenuItem(NavigationManager::instance()));
+        if (!page) return nullptr;
+
+        page->addItem(new ActionItem(F("OFF"), light, setOutsideModeAction, (int)OutsideMode::OFF));
+        page->addItem(new ActionItem(F("ON"), light, setOutsideModeAction, (int)OutsideMode::ON));
+        page->addItem(new ActionItem(F("AUTO LIGHT"), light, setOutsideModeAction, (int)OutsideMode::AUTO_LIGHT));
+        page->addItem(new ActionItem(F("AUTO MOTION"), light, setOutsideModeAction, (int)OutsideMode::AUTO_MOTION));
+        page->addItem(new BackMenuItem());
         return page;
     }
 
@@ -1203,8 +1208,10 @@ public:
     static MenuPage* buildOutsideLightPage(void* context) {
         OutsideLight* light = (OutsideLight*)context;
         MenuPage* page = new MenuPage(F("Outside Light"), NavigationManager::instance().getCurrentPage());
-        page->addItem(new SubMenuItem(F("Set Mode"), buildOutsideModesPage, light, NavigationManager::instance()));
-        page->addItem(new BackMenuItem(NavigationManager::instance()));
+        if (!page) return nullptr;
+
+        page->addItem(new SubMenuItem(F("Set Mode"), buildOutsideModesPage, light));
+        page->addItem(new BackMenuItem());
         return page;
     }
 
@@ -1215,6 +1222,8 @@ public:
      */
     static MenuPage* buildLightsPage(void* context) {
         MenuPage* page = new MenuPage(F("Lights"), NavigationManager::instance().getCurrentPage());
+        if (!page) return nullptr;
+
         DeviceRegistry& registry = DeviceRegistry::instance();
         DynamicArray<IDevice*>& devices = registry.getDevices();
         
@@ -1223,14 +1232,14 @@ public:
             if (d->type == DeviceType::LightSimple) {
                 page->addItem(new DeviceToggleItem(d));
             } else if (d->type == DeviceType::LightDimmable) {
-                page->addItem(new SubMenuItem(F("Dimmable"), buildDimmableLightPage, d, NavigationManager::instance()));
+                page->addItem(new SubMenuItem(d->name, buildDimmableLightPage, d));
             } else if (d->type == DeviceType::LightRGB) {
-                page->addItem(new SubMenuItem(F("RGB Light"), buildRGBLightPage, d, NavigationManager::instance()));
+                page->addItem(new SubMenuItem(d->name, buildRGBLightPage, d));
             } else if (d->type == DeviceType::LightOutside) {
-                page->addItem(new SubMenuItem(F("Outside Light"), buildOutsideLightPage, d, NavigationManager::instance()));
+                page->addItem(new SubMenuItem(d->name, buildOutsideLightPage, d));
             }
         }
-        page->addItem(new BackMenuItem(NavigationManager::instance()));
+        page->addItem(new BackMenuItem());
         return page;
     }
 
@@ -1242,6 +1251,7 @@ public:
     static MenuPage* buildSensorStatsPage(void* context) {
         IDevice* device = static_cast<IDevice*>(context);
         MenuPage* page = new MenuPage(F("Statistics"), NavigationManager::instance().getCurrentPage());
+        if (!page) return nullptr;
         
         if (device->type == DeviceType::SensorTemperature) {
             TemperatureSensor* temp = static_cast<TemperatureSensor*>(device);
@@ -1291,7 +1301,7 @@ public:
             page->addItem(makeLiveItem(F("Avg"), stats, &SensorStats::getAverage, F("us"), false));
         }
         
-        page->addItem(new BackMenuItem(NavigationManager::instance()));
+        page->addItem(new BackMenuItem());
         return page;
     }
 
@@ -1303,15 +1313,16 @@ public:
     static MenuPage* buildLightSettingsPage(void* context) {
         PhotoresistorSensor* light = static_cast<PhotoresistorSensor*>(context);
         MenuPage* page = new MenuPage(F("Light Settings"), NavigationManager::instance().getCurrentPage());
+        if (!page) return nullptr;
         
         // Sottomenu statistiche
-        page->addItem(new SubMenuItem(F("View Stats"), buildSensorStatsPage, light, NavigationManager::instance()));
+        page->addItem(new SubMenuItem(F("View Stats"), buildSensorStatsPage, light));
         
         // Calibrazione
         page->addItem(new LightCalibrationItem(F("Set Dark Limit"), light, true));
         page->addItem(new LightCalibrationItem(F("Set Bright Limit"), light, false));
         
-        page->addItem(new BackMenuItem(NavigationManager::instance()));
+        page->addItem(new BackMenuItem());
         return page;
     }
 
@@ -1322,6 +1333,8 @@ public:
      */
     static MenuPage* buildSensorsPage(void* context) {
         MenuPage* page = new MenuPage(F("Sensors"), NavigationManager::instance().getCurrentPage());
+        if (!page) return nullptr;
+
         DeviceRegistry& registry = DeviceRegistry::instance();
         DynamicArray<IDevice*>& devices = registry.getDevices();
         
@@ -1329,27 +1342,27 @@ public:
             IDevice* d = devices[i];
             if (d->isSensor()) {
                 if (d->type == DeviceType::SensorTemperature) {
-                    page->addItem(new SubMenuItem(F("Temperature"), buildSensorStatsPage, d, NavigationManager::instance()));
+                    page->addItem(new SubMenuItem(F("Temperature"), buildSensorStatsPage, d));
                     
                 } else if (d->type == DeviceType::SensorLight) {
-                    page->addItem(new SubMenuItem(F("Light Sensor"), buildLightSettingsPage, d, NavigationManager::instance()));
+                    page->addItem(new SubMenuItem(F("Light Sensor"), buildLightSettingsPage, d));
                     
                 } else if (d->type == DeviceType::SensorPIR) {
                     page->addItem(new LivePIRItem(static_cast<PIRSensorDevice*>(d)));
                     
                 } else if (d->type == DeviceType::SensorRAM) {
-                    page->addItem(new SubMenuItem(F("Free RAM"), buildSensorStatsPage, d, NavigationManager::instance()));
+                    page->addItem(new SubMenuItem(F("Free RAM"), buildSensorStatsPage, d));
                     
                 } else if (d->type == DeviceType::SensorVCC) {
-                    page->addItem(new SubMenuItem(F("VCC Voltage"), buildSensorStatsPage, d, NavigationManager::instance()));
+                    page->addItem(new SubMenuItem(F("VCC Voltage"), buildSensorStatsPage, d));
                     
                 } else if (d->type == DeviceType::SensorLoopTime) {
-                    page->addItem(new SubMenuItem(F("Loop Time"), buildSensorStatsPage, d, NavigationManager::instance()));
+                    page->addItem(new SubMenuItem(F("Loop Time"), buildSensorStatsPage, d));
                 }
             }
         }
         
-        page->addItem(new BackMenuItem(NavigationManager::instance()));
+        page->addItem(new BackMenuItem());
         return page;
     }
 
@@ -1360,6 +1373,7 @@ public:
      */
     static MenuPage* buildScenesPage(void* context) {
         MenuPage* page = new MenuPage(F("Scenes"), NavigationManager::instance().getCurrentPage());
+        if (!page) return nullptr;
         
         // Aggiungi scene disponibili (create staticamente in main)
         extern NightModeScene nightMode;
@@ -1370,7 +1384,7 @@ public:
         page->addItem(new SceneToggleItem(&partyMode));
         page->addItem(new SceneToggleItem(&alarmMode));
         
-        page->addItem(new BackMenuItem(NavigationManager::instance()));
+        page->addItem(new BackMenuItem());
         return page;
     }
 
@@ -1380,9 +1394,11 @@ public:
      */
     static MenuPage* buildMainMenu() {
         MenuPage* root = new MenuPage(F("Main Menu"));
-        root->addItem(new SubMenuItem(F("Lights"), buildLightsPage, nullptr, NavigationManager::instance()));
-        root->addItem(new SubMenuItem(F("Sensors"), buildSensorsPage, nullptr, NavigationManager::instance()));
-        root->addItem(new SubMenuItem(F("Scenes"), buildScenesPage, nullptr, NavigationManager::instance()));
+        if (!root) return nullptr;
+
+        root->addItem(new SubMenuItem(F("Lights"), buildLightsPage, nullptr));
+        root->addItem(new SubMenuItem(F("Sensors"), buildSensorsPage, nullptr));
+        root->addItem(new SubMenuItem(F("Scenes"), buildScenesPage, nullptr));
         return root;
     }
 };
