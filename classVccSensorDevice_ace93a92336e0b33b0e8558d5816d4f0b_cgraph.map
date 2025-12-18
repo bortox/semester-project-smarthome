@@ -1,0 +1,7 @@
+<map id="VccSensorDevice::VccSensorDevice" name="VccSensorDevice::VccSensorDevice">
+<area shape="rect" id="node1" title="Constructor for VCC sensor device." alt="" coords="5,47,215,87"/>
+<area shape="rect" id="node2" href="$classVccSensor.html#a2406fb365b7b3c400a762c1776a695cd" title="Reads VCC using internal 1.1V reference." alt="" coords="277,5,431,31"/>
+<area shape="rect" id="node3" href="$classDeviceRegistry.html#acea4fa19e872f726874a15dfd6caea98" title=" " alt="" coords="263,55,445,80"/>
+<area shape="rect" id="node4" href="$classDeviceRegistry.html#ad138dc35e86f58166d1cef2decb119b3" title=" " alt="" coords="265,105,443,145"/>
+<area shape="rect" id="node5" href="$classDynamicArray.html#a0597a43587fc9571429924e4ee8c2f07" title="Adds an element to the array." alt="" coords="493,112,640,137"/>
+</map>

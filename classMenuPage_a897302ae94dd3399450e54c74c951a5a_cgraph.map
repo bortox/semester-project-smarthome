@@ -1,0 +1,7 @@
+<map id="MenuPage::handleEvent" name="MenuPage::handleEvent">
+<area shape="rect" id="node1" title="Handles device events for related items." alt="" coords="5,99,184,125"/>
+<area shape="rect" id="node2" href="$classNavigationManager.html#a77baf5c45046cbec5e4c1eb3f852352e" title="Gets current page from top of stack." alt="" coords="232,5,391,45"/>
+<area shape="rect" id="node3" href="$classDynamicArray.html#a521af75e017863b464537d3b6dd1cf14" title=" " alt="" coords="439,42,587,67"/>
+<area shape="rect" id="node4" href="$classNavigationManager.html#a8b77c624d734d2f86336af7843ecee32" title="Gets singleton instance." alt="" coords="232,120,391,160"/>
+<area shape="rect" id="node5" href="$classMenuItem.html#a959779bdfcb70778c70db13d3788d92d" title="Checks if item is related to a specific device." alt="" coords="234,185,389,210"/>
+</map>

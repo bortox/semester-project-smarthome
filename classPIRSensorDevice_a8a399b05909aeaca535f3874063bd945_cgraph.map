@@ -1,0 +1,7 @@
+<map id="PIRSensorDevice::update" name="PIRSensorDevice::update">
+<area shape="rect" id="node1" title="Periodic reading update." alt="" coords="5,55,191,80"/>
+<area shape="rect" id="node2" href="$classEventSystem.html#a7d557111351077f5454f3ef839df55fa" title=" " alt="" coords="266,5,413,31"/>
+<area shape="rect" id="node4" href="$classMovementSensor.html#a010bb44da1d1141a1153c4ca31bd9c81" title=" " alt="" coords="239,55,440,80"/>
+<area shape="rect" id="node5" href="$classEventSystem.html#a962434d9ad5d95c624c62938c1b9c89f" title="Access the singleton instance." alt="" coords="254,104,425,129"/>
+<area shape="rect" id="node3" href="$classDynamicArray.html#a521af75e017863b464537d3b6dd1cf14" title=" " alt="" coords="488,5,636,31"/>
+</map>

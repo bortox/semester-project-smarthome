@@ -1,0 +1,6 @@
+<map id="LightSensor::getValue" name="LightSensor::getValue">
+<area shape="rect" id="node1" title=" " alt="" coords="427,35,589,60"/>
+<area shape="rect" id="node2" href="$classOutsideLight.html#aa078355216f84cf9006a4184fa53b5a3" title="Periodic state update." alt="" coords="221,5,379,31"/>
+<area shape="rect" id="node4" href="$classPhotoresistorSensor.html#a1a7a7c3968a61522dad877422b724a52" title="Periodic reading update." alt="" coords="224,55,376,95"/>
+<area shape="rect" id="node3" href="$classOutsideLight.html#a902b61d3271950e55b2124d521716eb2" title="Sets the operating mode." alt="" coords="5,5,173,31"/>
+</map>

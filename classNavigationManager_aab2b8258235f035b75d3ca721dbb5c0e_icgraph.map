@@ -1,0 +1,6 @@
+<map id="NavigationManager::drawIncrementalCursor" name="NavigationManager::drawIncrementalCursor">
+<area shape="rect" id="node1" title="Incrementally updates cursor position." alt="" coords="660,5,835,45"/>
+<area shape="rect" id="node2" href="$classMenuPage.html#ada90ced5ec47edbd834204789a69e9e6" title="Handles navigation input and delegates to items." alt="" coords="437,13,612,38"/>
+<area shape="rect" id="node3" href="$classNavigationManager.html#a5c219636b8c690954b0a2a21c5a255c0" title="Delegates input to current page." alt="" coords="231,5,389,45"/>
+<area shape="rect" id="node4" href="$classNavButtonInput.html#a32d749745518b3a58aef44e71e3345f1" title=" " alt="" coords="5,13,183,38"/>
+</map>

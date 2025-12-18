@@ -1,0 +1,4 @@
+<map id="PhotoresistorSensor" name="PhotoresistorSensor">
+<area shape="rect" id="node1" title="Light sensor with calibration." alt="" coords="5,79,157,104"/>
+<area shape="rect" id="node2" href="$classIDevice.html" title="Abstract base interface for all hardware devices." alt="" coords="46,5,117,31"/>
+</map>

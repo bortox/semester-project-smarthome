@@ -1,0 +1,5 @@
+<map id="PhotoresistorSensor::calibrateCurrentAsMin" name="PhotoresistorSensor::calibrateCurrentAsMin">
+<area shape="rect" id="node1" title="Calibrates minimum value with current reading." alt="" coords="5,23,180,63"/>
+<area shape="rect" id="node2" href="$classLightSensor.html#ac68507155117cdbe384049194ae23d41" title=" " alt="" coords="240,5,395,31"/>
+<area shape="rect" id="node3" href="$classLightSensor.html#af6957d909e350354ac4dbee7b1971733" title=" " alt="" coords="228,55,407,80"/>
+</map>

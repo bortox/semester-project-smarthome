@@ -1,0 +1,4 @@
+<map id="DeviceToggleItem" name="DeviceToggleItem">
+<area shape="rect" id="node1" title="Toggle control for light devices." alt="" coords="5,79,144,104"/>
+<area shape="rect" id="node2" href="$classMenuItem.html" title="Abstract base class for all menu items." alt="" coords="31,5,119,31"/>
+</map>

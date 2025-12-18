@@ -1,0 +1,9 @@
+<map id="TemperatureSensor::update" name="TemperatureSensor::update">
+<area shape="rect" id="node1" title="Periodic reading update." alt="" coords="5,73,161,113"/>
+<area shape="rect" id="node2" href="$classSensorStats.html#a9e0211345780c3e62cb7be553be00cbf" title="Adds a new sample to the statistics." alt="" coords="209,5,389,31"/>
+<area shape="rect" id="node4" href="$classEventSystem.html#a7d557111351077f5454f3ef839df55fa" title=" " alt="" coords="226,55,373,80"/>
+<area shape="rect" id="node6" href="$classLM75Sensor.html#a3bc5c16131e4142ba9bcdcea78385ef5" title="Gets temperature in decicelsius (tenths of degree)" alt="" coords="216,104,383,129"/>
+<area shape="rect" id="node7" href="$classEventSystem.html#a962434d9ad5d95c624c62938c1b9c89f" title="Access the singleton instance." alt="" coords="214,153,385,179"/>
+<area shape="rect" id="node3" href="$classSensorStats.html#aa82d8bdc63b949d906e1a55677522f9c" title="Gets the average of recorded values." alt="" coords="437,5,619,31"/>
+<area shape="rect" id="node5" href="$classDynamicArray.html#a521af75e017863b464537d3b6dd1cf14" title=" " alt="" coords="454,55,602,80"/>
+</map>

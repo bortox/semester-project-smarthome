@@ -1,0 +1,7 @@
+<map id="include/Devices.h" name="include/Devices.h">
+<area shape="rect" id="node1" title=" " alt="" coords="57,5,195,31"/>
+<area shape="rect" id="node2" href="$FlexibleMenu_8h.html" title="Dynamic menu system with JIT page allocation and scene integration." alt="" coords="77,152,250,177"/>
+<area shape="rect" id="node3" href="$PhysicalInput_8cpp.html" title="Implementation of hardware input handling." alt="" coords="5,225,164,251"/>
+<area shape="rect" id="node5" href="$Scenes_8h.html" title="Scene management and concrete scene implementations." alt="" coords="163,79,294,104"/>
+<area shape="rect" id="node4" href="$main_8cpp.html" title="Main application entry point." alt="" coords="211,225,316,251"/>
+</map>

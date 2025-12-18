@@ -1,0 +1,4 @@
+<map id="LightSensor::getRawMax" name="LightSensor::getRawMax">
+<area shape="rect" id="node1" title=" " alt="" coords="205,13,388,38"/>
+<area shape="rect" id="node2" href="$classPhotoresistorSensor.html#a5a12fece2da9ed3749fd7272d53e2e8f" title="Gets the calibrated raw maximum value." alt="" coords="5,5,157,45"/>
+</map>

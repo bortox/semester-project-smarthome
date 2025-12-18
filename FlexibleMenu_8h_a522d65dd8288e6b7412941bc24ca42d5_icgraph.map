@@ -1,0 +1,13 @@
+<map id="makeSlider" name="makeSlider">
+<area shape="rect" id="node1" title="Helper factory for slider creation with type deduction." alt="" coords="1472,80,1567,105"/>
+<area shape="rect" id="node2" href="$classMenuBuilder.html#a847cd58248706e86c136a4a8015bf7d3" title="Builds RGB blue channel slider page." alt="" coords="1215,5,1419,31"/>
+<area shape="rect" id="node8" href="$classMenuBuilder.html#a18d73ff68acbd838f03f10aa8cb423e6" title="Builds brightness slider page." alt="" coords="917,133,1161,159"/>
+<area shape="rect" id="node10" href="$classMenuBuilder.html#a4391dec8ab2760de0a6d85e43c51207c" title="Builds RGB green channel slider page." alt="" coords="1209,55,1424,80"/>
+<area shape="rect" id="node11" href="$classMenuBuilder.html#a4c69f4f76598091f2fc14d79e264dad7" title="Builds RGB red channel slider page." alt="" coords="1217,104,1417,129"/>
+<area shape="rect" id="node3" href="$classMenuBuilder.html#aaedb1ceaadcbe80e141a2e36e569181b" title="Builds custom RGB color page with channel submenu." alt="" coords="942,58,1137,98"/>
+<area shape="rect" id="node4" href="$classMenuBuilder.html#ac029426e87fda27a930e260bf4b211ef" title="Builds RGB light control page." alt="" coords="635,76,869,101"/>
+<area shape="rect" id="node5" href="$classMenuBuilder.html#a6b11a8ff5c14c601f25dfa550b090c84" title="Builds lights overview page." alt="" coords="372,105,587,131"/>
+<area shape="rect" id="node6" href="$classMenuBuilder.html#a44dccff1d668cb9f591482e7db2aa73d" title="Builds root menu page." alt="" coords="112,105,324,131"/>
+<area shape="rect" id="node7" href="$main_8cpp.html#a4fc01d736fe50cf5b977f755b675f11d" title="System initialization." alt="" coords="5,105,64,131"/>
+<area shape="rect" id="node9" href="$classMenuBuilder.html#a99c9fe7d757f5800b334a6b551af2e82" title="Builds dimmable light control page." alt="" coords="646,126,858,166"/>
+</map>

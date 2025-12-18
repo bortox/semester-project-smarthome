@@ -1,0 +1,4 @@
+<map id="LM75Sensor::getValue" name="LM75Sensor::getValue">
+<area shape="rect" id="node1" title="Gets temperature in decicelsius (tenths of degree)" alt="" coords="209,13,376,38"/>
+<area shape="rect" id="node2" href="$classTemperatureSensor.html#a91754010b0f23056beb3b380ed98fafa" title="Periodic reading update." alt="" coords="5,5,161,45"/>
+</map>

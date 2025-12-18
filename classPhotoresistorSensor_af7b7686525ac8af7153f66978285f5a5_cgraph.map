@@ -1,0 +1,6 @@
+<map id="PhotoresistorSensor::PhotoresistorSensor" name="PhotoresistorSensor::PhotoresistorSensor">
+<area shape="rect" id="node1" title="Constructor for light sensor." alt="" coords="5,27,165,67"/>
+<area shape="rect" id="node2" href="$classDeviceRegistry.html#acea4fa19e872f726874a15dfd6caea98" title=" " alt="" coords="213,5,396,31"/>
+<area shape="rect" id="node3" href="$classDeviceRegistry.html#ad138dc35e86f58166d1cef2decb119b3" title=" " alt="" coords="215,55,394,95"/>
+<area shape="rect" id="node4" href="$classDynamicArray.html#a0597a43587fc9571429924e4ee8c2f07" title="Adds an element to the array." alt="" coords="444,63,591,88"/>
+</map>

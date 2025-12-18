@@ -1,0 +1,39 @@
+<map id="EventSystem::emit" name="EventSystem::emit">
+<area shape="rect" id="node1" title=" " alt="" coords="1740,418,1887,443"/>
+<area shape="rect" id="node2" href="$classLightCalibrationItem.html#a1697698dc734fe5d9007d5f47d414c3e" title="Executes calibration on &#39;E&#39; key." alt="" coords="1507,5,1661,45"/>
+<area shape="rect" id="node3" href="$classButtonInput.html#ab3f257c14cb6024a4b8980db4ab3d9d2" title=" " alt="" coords="1476,70,1692,95"/>
+<area shape="rect" id="node5" href="$classRGBLight.html#a7d3839ef474b965139b9dcf0728eaee6" title=" " alt="" coords="1515,119,1653,145"/>
+<area shape="rect" id="node12" href="$classDimmableLight.html#a1d97f8fac9eea0be061b5cbb6ffab267" title="Sets the light brightness." alt="" coords="1209,267,1428,293"/>
+<area shape="rect" id="node17" href="$classRGBLight.html#a8d207c5659398bf3716c531fb6e35df5" title="Sets the RGB light brightness." alt="" coords="1495,319,1673,345"/>
+<area shape="rect" id="node21" href="$classRGBLight.html#a24ff27f0ddd26cef3b765a2d35b2b20d" title="Sets the RGB color." alt="" coords="1512,369,1656,394"/>
+<area shape="rect" id="node23" href="$classRGBLight.html#af75279b7d55e82833e872b32eb275877" title=" " alt="" coords="1509,169,1659,194"/>
+<area shape="rect" id="node25" href="$classRGBLight.html#a0c2c819ee80e2d6843ee57e5be551c76" title="Channel&#45;specific setters/getters for template compatibility." alt="" coords="1517,218,1651,243"/>
+<area shape="rect" id="node27" href="$classSimpleLight.html#a9a18f48175cee56237b95086cae70d0a" title="Toggles the light state (on/off)" alt="" coords="1510,418,1658,443"/>
+<area shape="rect" id="node29" href="$classRGBLight.html#ae3121c4e5cc968ad2d5bb08fd34a9dd5" title="Toggles the RGB light state." alt="" coords="1519,467,1649,493"/>
+<area shape="rect" id="node30" href="$classOutsideLight.html#aa078355216f84cf9006a4184fa53b5a3" title="Periodic state update." alt="" coords="1505,517,1663,542"/>
+<area shape="rect" id="node32" href="$classTemperatureSensor.html#a91754010b0f23056beb3b380ed98fafa" title="Periodic reading update." alt="" coords="1506,567,1662,607"/>
+<area shape="rect" id="node33" href="$classPhotoresistorSensor.html#a1a7a7c3968a61522dad877422b724a52" title="Periodic reading update." alt="" coords="1508,631,1660,671"/>
+<area shape="rect" id="node34" href="$classPIRSensorDevice.html#a8a399b05909aeaca535f3874063bd945" title="Periodic reading update." alt="" coords="1491,695,1677,721"/>
+<area shape="rect" id="node35" href="$classRamSensorDevice.html#a90a05b48339752bdb02458203fdf4edc" title="Periodic reading update." alt="" coords="1487,745,1681,770"/>
+<area shape="rect" id="node36" href="$classVccSensorDevice.html#a8f3a99c4750f64f7916a334e75dac6e4" title="Periodic reading update." alt="" coords="1491,794,1677,819"/>
+<area shape="rect" id="node37" href="$classLoopTimeSensorDevice.html#a169b53a1152d07b993b2b57750385148" title="Periodic update handles window rotation and stats." alt="" coords="1497,844,1671,884"/>
+<area shape="rect" id="node4" href="$classButtonInput.html#a57c28f555118cd64bba9f3a30de4aa6d" title=" " alt="" coords="1243,70,1394,95"/>
+<area shape="rect" id="node6" href="$classMenuBuilder.html#a847cd58248706e86c136a4a8015bf7d3" title="Builds RGB blue channel slider page." alt="" coords="1217,119,1421,145"/>
+<area shape="rect" id="node7" href="$classMenuBuilder.html#aaedb1ceaadcbe80e141a2e36e569181b" title="Builds custom RGB color page with channel submenu." alt="" coords="942,157,1137,197"/>
+<area shape="rect" id="node8" href="$classMenuBuilder.html#ac029426e87fda27a930e260bf4b211ef" title="Builds RGB light control page." alt="" coords="635,165,869,190"/>
+<area shape="rect" id="node9" href="$classMenuBuilder.html#a6b11a8ff5c14c601f25dfa550b090c84" title="Builds lights overview page." alt="" coords="372,194,587,219"/>
+<area shape="rect" id="node10" href="$classMenuBuilder.html#a44dccff1d668cb9f591482e7db2aa73d" title="Builds root menu page." alt="" coords="112,194,324,219"/>
+<area shape="rect" id="node11" href="$main_8cpp.html#a4fc01d736fe50cf5b977f755b675f11d" title="System initialization." alt="" coords="5,194,64,219"/>
+<area shape="rect" id="node13" href="$classMenuBuilder.html#a18d73ff68acbd838f03f10aa8cb423e6" title="Builds brightness slider page." alt="" coords="917,222,1161,247"/>
+<area shape="rect" id="node15" href="$classDimmableLight.html#ae17bf9a6553f06db80d38d3a4d0790b4" title="Toggles the light state while preserving brightness." alt="" coords="954,271,1125,297"/>
+<area shape="rect" id="node16" href="$classPotentiometerInput.html#a6d90947a387e48abfe88fb74474c7dbd" title=" " alt="" coords="965,321,1113,361"/>
+<area shape="rect" id="node14" href="$classMenuBuilder.html#a99c9fe7d757f5800b334a6b551af2e82" title="Builds dimmable light control page." alt="" coords="646,215,858,255"/>
+<area shape="rect" id="node18" href="$classAlarmScene.html#afd56c3548e8b58bc880eac112e443870" title="Called when scene is deactivated." alt="" coords="1252,317,1385,342"/>
+<area shape="rect" id="node19" href="$classPartyScene.html#a1c9b31d0f63459f9dc58a8fdb9b18c64" title="Periodic update &#45; applies scene effects to devices." alt="" coords="1245,415,1392,441"/>
+<area shape="rect" id="node20" href="$classAlarmScene.html#aa227bd4fc2553362da49dba7d725b8cb" title="Periodic update &#45; applies scene effects to devices." alt="" coords="1242,366,1395,391"/>
+<area shape="rect" id="node22" href="$classRGBLight.html#afaa8e2346c5d940ac1f60bfdee6c5dd1" title="Sets a color from a predefined preset." alt="" coords="1243,465,1394,490"/>
+<area shape="rect" id="node24" href="$classMenuBuilder.html#a4391dec8ab2760de0a6d85e43c51207c" title="Builds RGB green channel slider page." alt="" coords="1211,169,1426,194"/>
+<area shape="rect" id="node26" href="$classMenuBuilder.html#a4c69f4f76598091f2fc14d79e264dad7" title="Builds RGB red channel slider page." alt="" coords="1219,218,1419,243"/>
+<area shape="rect" id="node28" href="$classSimpleLight.html#a8eb27a23067d5622985a6eec3196d368" title="Handles received events." alt="" coords="1225,514,1413,539"/>
+<area shape="rect" id="node31" href="$classOutsideLight.html#a902b61d3271950e55b2124d521716eb2" title="Sets the operating mode." alt="" coords="1235,563,1403,589"/>
+</map>

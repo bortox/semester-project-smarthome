@@ -1,0 +1,5 @@
+<map id="SimpleLight" name="SimpleLight">
+<area shape="rect" id="node1" title="Class for managing a simple on/off light." alt="" coords="50,79,149,104"/>
+<area shape="rect" id="node2" href="$classIDevice.html" title="Abstract base interface for all hardware devices." alt="" coords="5,5,76,31"/>
+<area shape="rect" id="node3" href="$classIEventListener.html" title="Interface for the Observer Pattern." alt="" coords="101,5,215,31"/>
+</map>

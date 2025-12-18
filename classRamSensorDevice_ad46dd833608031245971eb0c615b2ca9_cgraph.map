@@ -1,0 +1,8 @@
+<map id="RamSensorDevice::RamSensorDevice" name="RamSensorDevice::RamSensorDevice">
+<area shape="rect" id="node1" title="Constructor for RAM sensor device." alt="" coords="5,47,228,87"/>
+<area shape="rect" id="node2" href="$classRamUsageSensor.html#a441393f49273984c802d3f9fd3dfaa14" title="Gets current free RAM in bytes." alt="" coords="276,5,479,31"/>
+<area shape="rect" id="node4" href="$classDeviceRegistry.html#acea4fa19e872f726874a15dfd6caea98" title=" " alt="" coords="286,55,469,80"/>
+<area shape="rect" id="node5" href="$classDeviceRegistry.html#ad138dc35e86f58166d1cef2decb119b3" title=" " alt="" coords="288,105,467,145"/>
+<area shape="rect" id="node3" href="$MemoryMonitor_8h.html#a81f9fa68d706b046996e6781bc7574b8" title="Calculates free RAM between stack and heap." alt="" coords="537,5,663,31"/>
+<area shape="rect" id="node6" href="$classDynamicArray.html#a0597a43587fc9571429924e4ee8c2f07" title="Adds an element to the array." alt="" coords="527,112,673,137"/>
+</map>

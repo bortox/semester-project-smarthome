@@ -1,0 +1,7 @@
+<map id="PotentiometerInput::update" name="PotentiometerInput::update">
+<area shape="rect" id="node1" title=" " alt="" coords="5,23,153,63"/>
+<area shape="rect" id="node2" href="$classDimmableLight.html#a1d97f8fac9eea0be061b5cbb6ffab267" title="Sets the light brightness." alt="" coords="201,31,420,56"/>
+<area shape="rect" id="node3" href="$classEventSystem.html#a7d557111351077f5454f3ef839df55fa" title=" " alt="" coords="480,5,627,31"/>
+<area shape="rect" id="node5" href="$classEventSystem.html#a962434d9ad5d95c624c62938c1b9c89f" title="Access the singleton instance." alt="" coords="468,55,639,80"/>
+<area shape="rect" id="node4" href="$classDynamicArray.html#a521af75e017863b464537d3b6dd1cf14" title=" " alt="" coords="687,5,835,31"/>
+</map>

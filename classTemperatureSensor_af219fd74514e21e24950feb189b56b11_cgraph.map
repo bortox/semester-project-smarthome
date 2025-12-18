@@ -1,0 +1,7 @@
+<map id="TemperatureSensor::TemperatureSensor" name="TemperatureSensor::TemperatureSensor">
+<area shape="rect" id="node1" title="Constructor for temperature sensor." alt="" coords="5,47,161,87"/>
+<area shape="rect" id="node2" href="$classLM75Sensor.html#a3a0d1103cfa1c6f5884d7ba7c70f1ca7" title=" " alt="" coords="228,5,373,31"/>
+<area shape="rect" id="node3" href="$classDeviceRegistry.html#acea4fa19e872f726874a15dfd6caea98" title=" " alt="" coords="209,55,392,80"/>
+<area shape="rect" id="node4" href="$classDeviceRegistry.html#ad138dc35e86f58166d1cef2decb119b3" title=" " alt="" coords="211,105,390,145"/>
+<area shape="rect" id="node5" href="$classDynamicArray.html#a0597a43587fc9571429924e4ee8c2f07" title="Adds an element to the array." alt="" coords="440,112,587,137"/>
+</map>

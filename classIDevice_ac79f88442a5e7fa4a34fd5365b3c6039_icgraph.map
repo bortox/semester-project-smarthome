@@ -1,0 +1,5 @@
+<map id="IDevice::isLight" name="IDevice::isLight">
+<area shape="rect" id="node1" title=" " alt="" coords="244,35,367,60"/>
+<area shape="rect" id="node2" href="$classDeviceToggleItem.html#a9c5d623c90ce590aa5e66dfd668bdb3a" title="Draws device name and ON/OFF state." alt="" coords="11,5,190,31"/>
+<area shape="rect" id="node3" href="$classDeviceToggleItem.html#a2e1ea1a124ecab5cf6616b45255cfee2" title="Toggles device on &#39;E&#39; key." alt="" coords="5,55,196,95"/>
+</map>

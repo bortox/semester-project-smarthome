@@ -1,0 +1,13 @@
+<map id="MenuItem" name="MenuItem">
+<area shape="rect" id="node1" title="Abstract base class for all menu items." alt="" coords="5,228,93,253"/>
+<area shape="rect" id="node2" href="$classActionItem.html" title="Action item for scrollable lists." alt="" coords="210,5,303,31"/>
+<area shape="rect" id="node3" href="$classBackMenuItem.html" title=" " alt="" coords="197,55,317,80"/>
+<area shape="rect" id="node4" href="$classDeviceToggleItem.html" title="Toggle control for light devices." alt="" coords="187,104,326,129"/>
+<area shape="rect" id="node5" href="$classLightCalibrationItem.html" title="Light sensor calibration item." alt="" coords="179,153,334,179"/>
+<area shape="rect" id="node6" href="$classLiveItem.html" title="Template&#45;based live value display with automatic updates." alt="" coords="198,203,315,228"/>
+<area shape="rect" id="node7" href="$classLivePIRItem.html" title="Specialized live display for PIR motion sensors." alt="" coords="207,252,307,277"/>
+<area shape="rect" id="node8" href="$classMenuPage.html" title="Menu page container with event&#45;driven updates." alt="" coords="212,301,301,327"/>
+<area shape="rect" id="node9" href="$classSceneToggleItem.html" title="Scene activation/deactivation control." alt="" coords="190,351,323,376"/>
+<area shape="rect" id="node10" href="$classSubMenuItem.html" title="Submenu item with JIT page creation." alt="" coords="201,400,313,425"/>
+<area shape="rect" id="node11" href="$classValueSliderItem.html" title="Template&#45;based value slider with pixel&#45;perfect progress bar." alt="" coords="141,449,372,475"/>
+</map>

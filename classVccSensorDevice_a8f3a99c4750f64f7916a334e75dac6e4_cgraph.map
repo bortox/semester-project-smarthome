@@ -1,0 +1,9 @@
+<map id="VccSensorDevice::update" name="VccSensorDevice::update">
+<area shape="rect" id="node1" title="Periodic reading update." alt="" coords="5,80,192,105"/>
+<area shape="rect" id="node2" href="$classSensorStats.html#a9e0211345780c3e62cb7be553be00cbf" title="Adds a new sample to the statistics." alt="" coords="240,5,420,31"/>
+<area shape="rect" id="node4" href="$classEventSystem.html#a7d557111351077f5454f3ef839df55fa" title=" " alt="" coords="257,55,403,80"/>
+<area shape="rect" id="node6" href="$classVccSensor.html#a2406fb365b7b3c400a762c1776a695cd" title="Reads VCC using internal 1.1V reference." alt="" coords="253,104,407,129"/>
+<area shape="rect" id="node7" href="$classEventSystem.html#a962434d9ad5d95c624c62938c1b9c89f" title="Access the singleton instance." alt="" coords="245,153,415,179"/>
+<area shape="rect" id="node3" href="$classSensorStats.html#aa82d8bdc63b949d906e1a55677522f9c" title="Gets the average of recorded values." alt="" coords="468,5,649,31"/>
+<area shape="rect" id="node5" href="$classDynamicArray.html#a521af75e017863b464537d3b6dd1cf14" title=" " alt="" coords="485,55,633,80"/>
+</map>

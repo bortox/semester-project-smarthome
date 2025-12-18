@@ -1,0 +1,7 @@
+<map id="NavigationManager::drawIncrementalCursor" name="NavigationManager::drawIncrementalCursor">
+<area shape="rect" id="node1" title="Incrementally updates cursor position." alt="" coords="5,55,180,95"/>
+<area shape="rect" id="node2" href="$classMenuItem.html#ab73d6181396cd81d3c12afd332a21faa" title="Renders the item on LCD." alt="" coords="243,5,371,31"/>
+<area shape="rect" id="node3" href="$classNavigationManager.html#a77baf5c45046cbec5e4c1eb3f852352e" title="Gets current page from top of stack." alt="" coords="228,55,387,95"/>
+<area shape="rect" id="node5" href="$classMenuPage.html#aba1aead5d2ab95c38e84b314e7f51920" title="Gets item by index." alt="" coords="233,120,381,145"/>
+<area shape="rect" id="node4" href="$classDynamicArray.html#a521af75e017863b464537d3b6dd1cf14" title=" " alt="" coords="435,63,583,88"/>
+</map>

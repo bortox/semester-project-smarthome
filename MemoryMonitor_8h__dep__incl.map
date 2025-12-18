@@ -1,0 +1,10 @@
+<map id="include/MemoryMonitor.h" name="include/MemoryMonitor.h">
+<area shape="rect" id="node1" title="RAM usage monitoring utilities." alt="" coords="216,5,404,31"/>
+<area shape="rect" id="node2" href="$sensors_8h.html" title=" " alt="" coords="183,79,317,104"/>
+<area shape="rect" id="node6" href="$main_8cpp.html" title="Main application entry point." alt="" coords="244,372,349,397"/>
+<area shape="rect" id="node3" href="$Devices_8h.html" title=" " alt="" coords="5,152,143,177"/>
+<area shape="rect" id="node8" href="$VirtualSensors_8cpp.html" title="Static member definitions for virtual sensors." alt="" coords="167,152,333,177"/>
+<area shape="rect" id="node4" href="$FlexibleMenu_8h.html" title="Dynamic menu system with JIT page allocation and scene integration." alt="" coords="86,299,259,324"/>
+<area shape="rect" id="node5" href="$PhysicalInput_8cpp.html" title="Implementation of hardware input handling." alt="" coords="16,372,175,397"/>
+<area shape="rect" id="node7" href="$Scenes_8h.html" title="Scene management and concrete scene implementations." alt="" coords="137,225,267,251"/>
+</map>

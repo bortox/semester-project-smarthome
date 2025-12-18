@@ -1,0 +1,15 @@
+<map id="AlarmScene::exit" name="AlarmScene::exit">
+<area shape="rect" id="node1" title="Called when scene is deactivated." alt="" coords="5,153,139,179"/>
+<area shape="rect" id="node2" href="$classIScene.html#a4fccf11789e8b421a7f6cb286b5ba56a" title="Called when scene is deactivated." alt="" coords="247,5,345,31"/>
+<area shape="rect" id="node3" href="$classDeviceRegistry.html#ab222f7413c82a27f8c06d55756ded728" title=" " alt="" coords="195,55,397,80"/>
+<area shape="rect" id="node4" href="$classEventSystem.html#a962434d9ad5d95c624c62938c1b9c89f" title="Access the singleton instance." alt="" coords="487,180,658,205"/>
+<area shape="rect" id="node5" href="$classDeviceRegistry.html#acea4fa19e872f726874a15dfd6caea98" title=" " alt="" coords="205,153,387,179"/>
+<area shape="rect" id="node6" href="$classEventSystem.html#abfcec1eb5f41d977b9ac8c2d387f08ad" title=" " alt="" coords="187,104,405,129"/>
+<area shape="rect" id="node9" href="$classDynamicArray.html#a521af75e017863b464537d3b6dd1cf14" title=" " alt="" coords="747,229,895,255"/>
+<area shape="rect" id="node10" href="$classRGBLight.html#a8d207c5659398bf3716c531fb6e35df5" title="Sets the RGB light brightness." alt="" coords="207,255,385,280"/>
+<area shape="rect" id="node7" href="$classDynamicArray.html#a6136d8a8f320429bd61d474f076a85a7" title="Removes an element at specific index." alt="" coords="487,79,659,104"/>
+<area shape="rect" id="node8" href="$classDynamicArray.html#ae3a1749632e283b1ee52ab153b855fa1" title=" " alt="" coords="740,79,903,104"/>
+<area shape="rect" id="node11" href="$classEventSystem.html#a7d557111351077f5454f3ef839df55fa" title=" " alt="" coords="499,229,646,255"/>
+<area shape="rect" id="node12" href="$classDimmableLight.html#a343102812c45ae8078a4b4352939a6ce" title="Protected access to last saved brightness." alt="" coords="461,328,684,353"/>
+<area shape="rect" id="node13" href="$classDimmableLight.html#a27bbdbdd5528ab5d610a3b7c187dadc1" title="Protected access to target brightness." alt="" coords="453,279,692,304"/>
+</map>

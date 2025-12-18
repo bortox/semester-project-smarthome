@@ -1,0 +1,7 @@
+<map id="IScene::exit" name="IScene::exit">
+<area shape="rect" id="node1" title="Called when scene is deactivated." alt="" coords="535,55,633,80"/>
+<area shape="rect" id="node2" href="$classNightModeScene.html#af8b9de2f687e3fb33d4ea62328b77ddd" title="Called when scene is deactivated." alt="" coords="297,5,462,31"/>
+<area shape="rect" id="node3" href="$classAlarmScene.html#afd56c3548e8b58bc880eac112e443870" title="Called when scene is deactivated." alt="" coords="313,55,446,80"/>
+<area shape="rect" id="node4" href="$classSceneManager.html#a27bc18b2952636922064905bc050f58c" title="Deactivates a scene and removes it from the active list." alt="" coords="272,104,487,129"/>
+<area shape="rect" id="node5" href="$classSceneToggleItem.html#a3887147921378d3868419a518dc04777" title="Toggles scene activation on &#39;E&#39; key." alt="" coords="5,104,224,129"/>
+</map>

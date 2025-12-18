@@ -1,0 +1,4 @@
+<map id="DimmableLight::applyHardware" name="DimmableLight::applyHardware">
+<area shape="rect" id="node1" title="Applies current brightness to hardware with gamma correction." alt="" coords="228,5,457,31"/>
+<area shape="rect" id="node2" href="$classDimmableLight.html#a9fb4a392a3f05f05fc989ef0287017d7" title="Periodic update for smooth fading." alt="" coords="5,5,180,31"/>
+</map>

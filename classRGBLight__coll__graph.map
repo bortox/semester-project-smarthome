@@ -1,0 +1,7 @@
+<map id="RGBLight" name="RGBLight">
+<area shape="rect" id="node1" title="RGB light with color and brightness control." alt="" coords="58,225,141,251"/>
+<area shape="rect" id="node2" href="$classDimmableLight.html" title="Light with brightness control (dimmer)" alt="" coords="38,152,161,177"/>
+<area shape="rect" id="node3" href="$classSimpleLight.html" title="Class for managing a simple on/off light." alt="" coords="50,79,149,104"/>
+<area shape="rect" id="node4" href="$classIDevice.html" title="Abstract base interface for all hardware devices." alt="" coords="5,5,76,31"/>
+<area shape="rect" id="node5" href="$classIEventListener.html" title="Interface for the Observer Pattern." alt="" coords="101,5,215,31"/>
+</map>

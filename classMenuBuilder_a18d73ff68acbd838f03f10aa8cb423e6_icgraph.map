@@ -1,0 +1,8 @@
+<map id="MenuBuilder::buildBrightnessPage" name="MenuBuilder::buildBrightnessPage">
+<area shape="rect" id="node1" title="Builds brightness slider page." alt="" coords="917,42,1161,67"/>
+<area shape="rect" id="node2" href="$classMenuBuilder.html#a99c9fe7d757f5800b334a6b551af2e82" title="Builds dimmable light control page." alt="" coords="646,5,858,45"/>
+<area shape="rect" id="node6" href="$classMenuBuilder.html#ac029426e87fda27a930e260bf4b211ef" title="Builds RGB light control page." alt="" coords="635,70,869,95"/>
+<area shape="rect" id="node3" href="$classMenuBuilder.html#a6b11a8ff5c14c601f25dfa550b090c84" title="Builds lights overview page." alt="" coords="372,42,587,67"/>
+<area shape="rect" id="node4" href="$classMenuBuilder.html#a44dccff1d668cb9f591482e7db2aa73d" title="Builds root menu page." alt="" coords="112,42,324,67"/>
+<area shape="rect" id="node5" href="$main_8cpp.html#a4fc01d736fe50cf5b977f755b675f11d" title="System initialization." alt="" coords="5,42,64,67"/>
+</map>

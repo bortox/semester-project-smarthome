@@ -1,0 +1,7 @@
+<map id="RGBLight::setPreset" name="RGBLight::setPreset">
+<area shape="rect" id="node1" title="Sets a color from a predefined preset." alt="" coords="5,31,156,56"/>
+<area shape="rect" id="node2" href="$classRGBLight.html#a24ff27f0ddd26cef3b765a2d35b2b20d" title="Sets the RGB color." alt="" coords="204,31,348,56"/>
+<area shape="rect" id="node3" href="$classEventSystem.html#a7d557111351077f5454f3ef839df55fa" title=" " alt="" coords="408,5,555,31"/>
+<area shape="rect" id="node5" href="$classEventSystem.html#a962434d9ad5d95c624c62938c1b9c89f" title="Access the singleton instance." alt="" coords="396,55,567,80"/>
+<area shape="rect" id="node4" href="$classDynamicArray.html#a521af75e017863b464537d3b6dd1cf14" title=" " alt="" coords="615,5,763,31"/>
+</map>

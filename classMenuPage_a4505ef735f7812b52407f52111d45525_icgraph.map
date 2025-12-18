@@ -1,0 +1,10 @@
+<map id="MenuPage::forceRedraw" name="MenuPage::forceRedraw">
+<area shape="rect" id="node1" title="Forces full page redraw." alt="" coords="691,112,869,137"/>
+<area shape="rect" id="node2" href="$classNavigationManager.html#a5c219636b8c690954b0a2a21c5a255c0" title="Delegates input to current page." alt="" coords="254,105,413,145"/>
+<area shape="rect" id="node4" href="$classNavigationManager.html#af3a95079c6861b0386919b767159f996" title="Navigates back and frees current page (JIT cleanup)" alt="" coords="484,47,643,87"/>
+<area shape="rect" id="node7" href="$classNavigationManager.html#a328215af3d6bb3f1df228412d8246db1" title="Pushes JIT&#45;allocated page onto stack." alt="" coords="484,162,643,202"/>
+<area shape="rect" id="node3" href="$classNavButtonInput.html#a32d749745518b3a58aef44e71e3345f1" title=" " alt="" coords="5,112,183,137"/>
+<area shape="rect" id="node5" href="$classActionItem.html#aca3ff990065c287d43613932f5ae8fe5" title="Executes action and navigates back on &#39;E&#39; key." alt="" coords="244,55,423,80"/>
+<area shape="rect" id="node6" href="$classBackMenuItem.html#a401c56472500dacac04c19ca383e43f9" title="Navigates back on &#39;E&#39; key." alt="" coords="231,5,436,31"/>
+<area shape="rect" id="node8" href="$classSubMenuItem.html#a266fffeb8227864522f282120124246d" title="Creates and pushes page on &#39;E&#39; key." alt="" coords="235,169,432,195"/>
+</map>

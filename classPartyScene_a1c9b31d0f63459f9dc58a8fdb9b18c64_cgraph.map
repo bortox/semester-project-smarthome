@@ -1,0 +1,13 @@
+<map id="PartyScene::update" name="PartyScene::update">
+<area shape="rect" id="node1" title="Periodic update &#45; applies scene effects to devices." alt="" coords="5,129,152,155"/>
+<area shape="rect" id="node2" href="$classDimmableLight.html#aea53981c9a42765dd01fae15534095c0" title="Gets the current brightness level." alt="" coords="200,5,420,31"/>
+<area shape="rect" id="node3" href="$classDeviceRegistry.html#ab222f7413c82a27f8c06d55756ded728" title=" " alt="" coords="209,55,411,80"/>
+<area shape="rect" id="node4" href="$classDeviceRegistry.html#acea4fa19e872f726874a15dfd6caea98" title=" " alt="" coords="219,104,401,129"/>
+<area shape="rect" id="node5" href="$classRGBLight.html#a8d207c5659398bf3716c531fb6e35df5" title="Sets the RGB light brightness." alt="" coords="221,255,399,280"/>
+<area shape="rect" id="node7" href="$classDynamicArray.html#a521af75e017863b464537d3b6dd1cf14" title=" " alt="" coords="755,180,903,205"/>
+<area shape="rect" id="node11" href="$classRGBLight.html#a24ff27f0ddd26cef3b765a2d35b2b20d" title="Sets the RGB color." alt="" coords="238,205,382,231"/>
+<area shape="rect" id="node6" href="$classEventSystem.html#a7d557111351077f5454f3ef839df55fa" title=" " alt="" coords="514,205,661,231"/>
+<area shape="rect" id="node8" href="$classEventSystem.html#a962434d9ad5d95c624c62938c1b9c89f" title="Access the singleton instance." alt="" coords="502,255,673,280"/>
+<area shape="rect" id="node9" href="$classDimmableLight.html#a343102812c45ae8078a4b4352939a6ce" title="Protected access to last saved brightness." alt="" coords="476,353,699,379"/>
+<area shape="rect" id="node10" href="$classDimmableLight.html#a27bbdbdd5528ab5d610a3b7c187dadc1" title="Protected access to target brightness." alt="" coords="468,304,707,329"/>
+</map>

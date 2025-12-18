@@ -1,0 +1,9 @@
+<map id="MenuPage::handleInput" name="MenuPage::handleInput">
+<area shape="rect" id="node1" title="Handles navigation input and delegates to items." alt="" coords="5,171,180,196"/>
+<area shape="rect" id="node2" href="$classNavigationManager.html#aab2b8258235f035b75d3ca721dbb5c0e" title="Incrementally updates cursor position." alt="" coords="228,81,403,121"/>
+<area shape="rect" id="node5" href="$classDynamicArray.html#a521af75e017863b464537d3b6dd1cf14" title=" " alt="" coords="657,117,805,143"/>
+<area shape="rect" id="node7" href="$classNavigationManager.html#a8b77c624d734d2f86336af7843ecee32" title="Gets singleton instance." alt="" coords="236,221,395,261"/>
+<area shape="rect" id="node3" href="$classMenuItem.html#ab73d6181396cd81d3c12afd332a21faa" title="Renders the item on LCD." alt="" coords="466,5,594,31"/>
+<area shape="rect" id="node4" href="$classNavigationManager.html#a77baf5c45046cbec5e4c1eb3f852352e" title="Gets current page from top of stack." alt="" coords="451,55,609,95"/>
+<area shape="rect" id="node6" href="$classMenuPage.html#aba1aead5d2ab95c38e84b314e7f51920" title="Gets item by index." alt="" coords="456,120,604,145"/>
+</map>

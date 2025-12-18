@@ -1,0 +1,11 @@
+<map id="include/DebugConfig.h" name="include/DebugConfig.h">
+<area shape="rect" id="node1" title="Global debug configuration macros." alt="" coords="229,5,397,31"/>
+<area shape="rect" id="node2" href="$MemoryMonitor_8h.html" title="RAM usage monitoring utilities." alt="" coords="219,79,407,104"/>
+<area shape="rect" id="node3" href="$sensors_8h.html" title=" " alt="" coords="159,152,293,177"/>
+<area shape="rect" id="node7" href="$main_8cpp.html" title="Main application entry point." alt="" coords="293,445,399,471"/>
+<area shape="rect" id="node4" href="$Devices_8h.html" title=" " alt="" coords="5,225,143,251"/>
+<area shape="rect" id="node9" href="$VirtualSensors_8cpp.html" title="Static member definitions for virtual sensors." alt="" coords="167,225,333,251"/>
+<area shape="rect" id="node5" href="$FlexibleMenu_8h.html" title="Dynamic menu system with JIT page allocation and scene integration." alt="" coords="110,372,283,397"/>
+<area shape="rect" id="node6" href="$PhysicalInput_8cpp.html" title="Implementation of hardware input handling." alt="" coords="65,445,224,471"/>
+<area shape="rect" id="node8" href="$Scenes_8h.html" title="Scene management and concrete scene implementations." alt="" coords="161,299,291,324"/>
+</map>

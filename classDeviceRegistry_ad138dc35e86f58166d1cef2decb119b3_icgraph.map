@@ -1,0 +1,10 @@
+<map id="DeviceRegistry::registerDevice" name="DeviceRegistry::registerDevice">
+<area shape="rect" id="node1" title=" " alt="" coords="276,197,455,237"/>
+<area shape="rect" id="node2" href="$classLoopTimeSensorDevice.html#a2005957310088dc4c2d972a554d0027a" title="Constructor for loop time sensor device." alt="" coords="25,5,208,45"/>
+<area shape="rect" id="node3" href="$classPhotoresistorSensor.html#af7b7686525ac8af7153f66978285f5a5" title="Constructor for light sensor." alt="" coords="37,69,197,109"/>
+<area shape="rect" id="node4" href="$classPIRSensorDevice.html#a9cc88634f40d9c177aeede7eef27acb8" title="Constructor for PIR sensor." alt="" coords="14,133,219,173"/>
+<area shape="rect" id="node5" href="$classRamSensorDevice.html#ad46dd833608031245971eb0c615b2ca9" title="Constructor for RAM sensor device." alt="" coords="5,197,228,237"/>
+<area shape="rect" id="node6" href="$classSimpleLight.html#aa1c82517b03b5a5e3f4ad7321d27163d" title="Constructor for simple light." alt="" coords="25,262,209,287"/>
+<area shape="rect" id="node7" href="$classTemperatureSensor.html#af219fd74514e21e24950feb189b56b11" title="Constructor for temperature sensor." alt="" coords="39,312,195,352"/>
+<area shape="rect" id="node8" href="$classVccSensorDevice.html#ace93a92336e0b33b0e8558d5816d4f0b" title="Constructor for VCC sensor device." alt="" coords="12,376,221,416"/>
+</map>

@@ -1,0 +1,6 @@
+<map id="RGBLight::update" name="RGBLight::update">
+<area shape="rect" id="node1" title="Periodic update for smooth color and brightness fading." alt="" coords="5,70,140,95"/>
+<area shape="rect" id="node2" href="$classDimmableLight.html#ae0188dafb54dfe5ba3a801bc6e8fbf65" title=" " alt="" coords="211,5,410,45"/>
+<area shape="rect" id="node3" href="$classDimmableLight.html#aa59144a69aa8b4aaa87e50360180e17f" title="Protected access to current brightness." alt="" coords="188,70,433,95"/>
+<area shape="rect" id="node4" href="$classDimmableLight.html#a27bbdbdd5528ab5d610a3b7c187dadc1" title="Protected access to target brightness." alt="" coords="191,119,430,145"/>
+</map>

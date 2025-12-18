@@ -1,0 +1,10 @@
+<map id="PhotoresistorSensor::update" name="PhotoresistorSensor::update">
+<area shape="rect" id="node1" title="Periodic reading update." alt="" coords="5,73,157,113"/>
+<area shape="rect" id="node2" href="$classSensorStats.html#a9e0211345780c3e62cb7be553be00cbf" title="Adds a new sample to the statistics." alt="" coords="205,5,385,31"/>
+<area shape="rect" id="node4" href="$classEventSystem.html#a7d557111351077f5454f3ef839df55fa" title=" " alt="" coords="222,55,369,80"/>
+<area shape="rect" id="node6" href="$classLightSensor.html#a57285d8ed2b27f81cb9bf4a402dd2a0d" title=" " alt="" coords="214,104,377,129"/>
+<area shape="rect" id="node8" href="$classEventSystem.html#a962434d9ad5d95c624c62938c1b9c89f" title="Access the singleton instance." alt="" coords="210,153,381,179"/>
+<area shape="rect" id="node3" href="$classSensorStats.html#aa82d8bdc63b949d906e1a55677522f9c" title="Gets the average of recorded values." alt="" coords="433,5,615,31"/>
+<area shape="rect" id="node5" href="$classDynamicArray.html#a521af75e017863b464537d3b6dd1cf14" title=" " alt="" coords="450,55,598,80"/>
+<area shape="rect" id="node7" href="$classLightSensor.html#ac68507155117cdbe384049194ae23d41" title=" " alt="" coords="447,104,601,129"/>
+</map>

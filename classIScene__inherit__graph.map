@@ -1,0 +1,6 @@
+<map id="IScene" name="IScene">
+<area shape="rect" id="node1" title="Abstract interface for scene implementations." alt="" coords="163,5,228,31"/>
+<area shape="rect" id="node2" href="$classAlarmScene.html" title="Highest priority scene that flashes red on motion detection." alt="" coords="5,79,105,104"/>
+<area shape="rect" id="node3" href="$classNightModeScene.html" title="Low priority scene that limits global brightness." alt="" coords="129,79,261,104"/>
+<area shape="rect" id="node4" href="$classPartyScene.html" title="Medium priority scene that cycles RGB light colors." alt="" coords="285,79,380,104"/>
+</map>

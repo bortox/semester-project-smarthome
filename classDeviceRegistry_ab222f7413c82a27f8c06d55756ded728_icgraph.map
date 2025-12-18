@@ -1,0 +1,13 @@
+<map id="DeviceRegistry::getDevices" name="DeviceRegistry::getDevices">
+<area shape="rect" id="node1" title=" " alt="" coords="1419,208,1620,233"/>
+<area shape="rect" id="node2" href="$classMenuBuilder.html#a6b11a8ff5c14c601f25dfa550b090c84" title="Builds lights overview page." alt="" coords="955,157,1169,183"/>
+<area shape="rect" id="node4" href="$main_8cpp.html#a4fc01d736fe50cf5b977f755b675f11d" title="System initialization." alt="" coords="5,208,64,233"/>
+<area shape="rect" id="node5" href="$classMenuBuilder.html#a5fb86dfd5959b0b3e80679cc777dfc50" title="Builds sensors overview page." alt="" coords="372,81,599,107"/>
+<area shape="rect" id="node6" href="$classAlarmScene.html#afd56c3548e8b58bc880eac112e443870" title="Called when scene is deactivated." alt="" coords="1227,208,1361,233"/>
+<area shape="rect" id="node7" href="$main_8cpp.html#afe461d27b9c48d5921c00d521181f12f" title="Main execution loop." alt="" coords="1269,52,1319,77"/>
+<area shape="rect" id="node10" href="$classPartyScene.html#a1c9b31d0f63459f9dc58a8fdb9b18c64" title="Periodic update &#45; applies scene effects to devices." alt="" coords="1221,309,1367,335"/>
+<area shape="rect" id="node11" href="$classAlarmScene.html#aa227bd4fc2553362da49dba7d725b8cb" title="Periodic update &#45; applies scene effects to devices." alt="" coords="1217,359,1371,384"/>
+<area shape="rect" id="node3" href="$classMenuBuilder.html#a44dccff1d668cb9f591482e7db2aa73d" title="Builds root menu page." alt="" coords="112,157,324,183"/>
+<area shape="rect" id="node8" href="$classMenuBuilder.html#a1fbeed1a43d18c0f6e4ac1bcd22b3185" title="Builds sensor statistics page." alt="" coords="968,42,1156,82"/>
+<area shape="rect" id="node9" href="$classMenuBuilder.html#ac7a33e9b51ec8a93d8d8f2315833be07" title="Builds light sensor settings page." alt="" coords="647,5,907,31"/>
+</map>

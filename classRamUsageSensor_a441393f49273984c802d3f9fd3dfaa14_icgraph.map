@@ -1,0 +1,5 @@
+<map id="RamUsageSensor::getValue" name="RamUsageSensor::getValue">
+<area shape="rect" id="node1" title="Gets current free RAM in bytes." alt="" coords="276,42,479,67"/>
+<area shape="rect" id="node2" href="$classRamSensorDevice.html#ad46dd833608031245971eb0c615b2ca9" title="Constructor for RAM sensor device." alt="" coords="5,5,228,45"/>
+<area shape="rect" id="node3" href="$classRamSensorDevice.html#a90a05b48339752bdb02458203fdf4edc" title="Periodic reading update." alt="" coords="19,70,214,95"/>
+</map>

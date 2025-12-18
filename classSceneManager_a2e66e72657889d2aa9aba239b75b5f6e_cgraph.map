@@ -1,0 +1,6 @@
+<map id="SceneManager::addScene" name="SceneManager::addScene">
+<area shape="rect" id="node1" title="Activates a scene and adds it to the active list." alt="" coords="5,55,195,80"/>
+<area shape="rect" id="node2" href="$classDynamicArray.html#a0597a43587fc9571429924e4ee8c2f07" title="Adds an element to the array." alt="" coords="243,5,390,31"/>
+<area shape="rect" id="node3" href="$classIScene.html#a839c78c04369addce89f59d4dda798bb" title="Called when scene is activated." alt="" coords="263,55,370,80"/>
+<area shape="rect" id="node4" href="$classDynamicArray.html#a521af75e017863b464537d3b6dd1cf14" title=" " alt="" coords="243,104,391,129"/>
+</map>

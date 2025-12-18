@@ -1,0 +1,6 @@
+<map id="MovementSensor::getValue" name="MovementSensor::getValue">
+<area shape="rect" id="node1" title=" " alt="" coords="455,31,656,56"/>
+<area shape="rect" id="node2" href="$classOutsideLight.html#aa078355216f84cf9006a4184fa53b5a3" title="Periodic state update." alt="" coords="235,5,393,31"/>
+<area shape="rect" id="node4" href="$classPIRSensorDevice.html#a8a399b05909aeaca535f3874063bd945" title="Periodic reading update." alt="" coords="221,55,407,80"/>
+<area shape="rect" id="node3" href="$classOutsideLight.html#a902b61d3271950e55b2124d521716eb2" title="Sets the operating mode." alt="" coords="5,5,173,31"/>
+</map>

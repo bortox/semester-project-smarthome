@@ -1,0 +1,11 @@
+<map id="MenuBuilder::buildRedPage" name="MenuBuilder::buildRedPage">
+<area shape="rect" id="node1" title="Builds RGB red channel slider page." alt="" coords="5,80,205,105"/>
+<area shape="rect" id="node2" href="$classMenuPage.html#a612a17be8fea1aa8f8497b474e6df406" title="Adds item to page." alt="" coords="253,5,404,31"/>
+<area shape="rect" id="node4" href="$classRGBLight.html#a77317c178b239b7b46d56a2b0a38106c" title=" " alt="" coords="261,55,397,80"/>
+<area shape="rect" id="node5" href="$FlexibleMenu_8h.html#a522d65dd8288e6b7412941bc24ca42d5" title="Helper factory for slider creation with type deduction." alt="" coords="281,104,376,129"/>
+<area shape="rect" id="node6" href="$classRGBLight.html#a0c2c819ee80e2d6843ee57e5be551c76" title="Channel&#45;specific setters/getters for template compatibility." alt="" coords="261,153,396,179"/>
+<area shape="rect" id="node3" href="$classDynamicArray.html#a0597a43587fc9571429924e4ee8c2f07" title="Adds an element to the array." alt="" coords="464,5,611,31"/>
+<area shape="rect" id="node7" href="$classEventSystem.html#a7d557111351077f5454f3ef839df55fa" title=" " alt="" coords="464,128,611,153"/>
+<area shape="rect" id="node9" href="$classEventSystem.html#a962434d9ad5d95c624c62938c1b9c89f" title="Access the singleton instance." alt="" coords="452,177,623,203"/>
+<area shape="rect" id="node8" href="$classDynamicArray.html#a521af75e017863b464537d3b6dd1cf14" title=" " alt="" coords="671,128,819,153"/>
+</map>

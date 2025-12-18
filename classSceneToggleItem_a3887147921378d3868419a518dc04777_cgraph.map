@@ -1,0 +1,13 @@
+<map id="SceneToggleItem::handleInput" name="SceneToggleItem::handleInput">
+<area shape="rect" id="node1" title="Toggles scene activation on &#39;E&#39; key." alt="" coords="5,123,224,148"/>
+<area shape="rect" id="node2" href="$classSceneManager.html#a2e66e72657889d2aa9aba239b75b5f6e" title="Activates a scene and adds it to the active list." alt="" coords="285,48,474,73"/>
+<area shape="rect" id="node6" href="$classSceneManager.html#a2e22b627ebf090666cd92cb475197660" title="Gets the singleton instance." alt="" coords="289,97,470,123"/>
+<area shape="rect" id="node7" href="$classIScene.html#af625f8e15633cd85e0f8ef60ebf08cd7" title="Checks if scene is currently active." alt="" coords="317,147,442,172"/>
+<area shape="rect" id="node8" href="$classSceneManager.html#a27bc18b2952636922064905bc050f58c" title="Deactivates a scene and removes it from the active list." alt="" coords="272,196,487,221"/>
+<area shape="rect" id="node3" href="$classDynamicArray.html#a0597a43587fc9571429924e4ee8c2f07" title="Adds an element to the array." alt="" coords="547,5,694,31"/>
+<area shape="rect" id="node4" href="$classIScene.html#a839c78c04369addce89f59d4dda798bb" title="Called when scene is activated." alt="" coords="567,55,674,80"/>
+<area shape="rect" id="node5" href="$classDynamicArray.html#a521af75e017863b464537d3b6dd1cf14" title=" " alt="" coords="547,116,695,141"/>
+<area shape="rect" id="node9" href="$classIScene.html#a4fccf11789e8b421a7f6cb286b5ba56a" title="Called when scene is deactivated." alt="" coords="571,171,670,196"/>
+<area shape="rect" id="node10" href="$classDynamicArray.html#a6136d8a8f320429bd61d474f076a85a7" title="Removes an element at specific index." alt="" coords="535,220,707,245"/>
+<area shape="rect" id="node11" href="$classDynamicArray.html#ae3a1749632e283b1ee52ab153b855fa1" title=" " alt="" coords="755,220,917,245"/>
+</map>

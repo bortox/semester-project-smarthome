@@ -1,0 +1,8 @@
+<map id="IScene::enter" name="IScene::enter">
+<area shape="rect" id="node1" title="Called when scene is activated." alt="" coords="509,80,616,105"/>
+<area shape="rect" id="node2" href="$classSceneManager.html#a2e66e72657889d2aa9aba239b75b5f6e" title="Activates a scene and adds it to the active list." alt="" coords="272,5,461,31"/>
+<area shape="rect" id="node4" href="$classNightModeScene.html#a70a78f0c23e5be0813c2e02176c0fe8a" title="Called when scene is activated." alt="" coords="279,55,454,80"/>
+<area shape="rect" id="node5" href="$classPartyScene.html#a4360df99328d75799a913b23faad2659" title="Called when scene is activated." alt="" coords="299,104,435,129"/>
+<area shape="rect" id="node6" href="$classAlarmScene.html#ad1f0004278d2f94131d24c34daeff473" title="Called when scene is activated." alt="" coords="295,153,438,179"/>
+<area shape="rect" id="node3" href="$classSceneToggleItem.html#a3887147921378d3868419a518dc04777" title="Toggles scene activation on &#39;E&#39; key." alt="" coords="5,5,224,31"/>
+</map>

@@ -1,0 +1,12 @@
+<map id="AlarmScene::update" name="AlarmScene::update">
+<area shape="rect" id="node1" title="Periodic update &#45; applies scene effects to devices." alt="" coords="5,105,159,131"/>
+<area shape="rect" id="node2" href="$classDeviceRegistry.html#ab222f7413c82a27f8c06d55756ded728" title=" " alt="" coords="207,5,408,31"/>
+<area shape="rect" id="node3" href="$classDeviceRegistry.html#acea4fa19e872f726874a15dfd6caea98" title=" " alt="" coords="216,55,399,80"/>
+<area shape="rect" id="node4" href="$classRGBLight.html#a8d207c5659398bf3716c531fb6e35df5" title="Sets the RGB light brightness." alt="" coords="218,205,397,231"/>
+<area shape="rect" id="node6" href="$classDynamicArray.html#a521af75e017863b464537d3b6dd1cf14" title=" " alt="" coords="743,131,891,156"/>
+<area shape="rect" id="node10" href="$classRGBLight.html#a24ff27f0ddd26cef3b765a2d35b2b20d" title="Sets the RGB color." alt="" coords="235,156,379,181"/>
+<area shape="rect" id="node5" href="$classEventSystem.html#a7d557111351077f5454f3ef839df55fa" title=" " alt="" coords="502,156,649,181"/>
+<area shape="rect" id="node7" href="$classEventSystem.html#a962434d9ad5d95c624c62938c1b9c89f" title="Access the singleton instance." alt="" coords="490,205,661,231"/>
+<area shape="rect" id="node8" href="$classDimmableLight.html#a343102812c45ae8078a4b4352939a6ce" title="Protected access to last saved brightness." alt="" coords="464,304,687,329"/>
+<area shape="rect" id="node9" href="$classDimmableLight.html#a27bbdbdd5528ab5d610a3b7c187dadc1" title="Protected access to target brightness." alt="" coords="456,255,695,280"/>
+</map>

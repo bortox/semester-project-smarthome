@@ -1,0 +1,5 @@
+<map id="include/FlexibleMenu.h" name="include/FlexibleMenu.h">
+<area shape="rect" id="node1" title="Dynamic menu system with JIT page allocation and scene integration." alt="" coords="75,5,249,31"/>
+<area shape="rect" id="node2" href="$PhysicalInput_8cpp.html" title="Implementation of hardware input handling." alt="" coords="5,79,164,104"/>
+<area shape="rect" id="node3" href="$main_8cpp.html" title="Main application entry point." alt="" coords="188,79,293,104"/>
+</map>

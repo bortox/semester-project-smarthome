@@ -1,0 +1,6 @@
+<map id="RGBLight::setColor" name="RGBLight::setColor">
+<area shape="rect" id="node1" title="Sets the RGB color." alt="" coords="207,55,351,80"/>
+<area shape="rect" id="node2" href="$classRGBLight.html#afaa8e2346c5d940ac1f60bfdee6c5dd1" title="Sets a color from a predefined preset." alt="" coords="7,5,157,31"/>
+<area shape="rect" id="node3" href="$classPartyScene.html#a1c9b31d0f63459f9dc58a8fdb9b18c64" title="Periodic update &#45; applies scene effects to devices." alt="" coords="9,55,155,80"/>
+<area shape="rect" id="node4" href="$classAlarmScene.html#aa227bd4fc2553362da49dba7d725b8cb" title="Periodic update &#45; applies scene effects to devices." alt="" coords="5,104,159,129"/>
+</map>

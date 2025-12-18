@@ -1,0 +1,13 @@
+<map id="IDevice" name="IDevice">
+<area shape="rect" id="node1" title="Abstract base interface for all hardware devices." alt="" coords="5,153,76,179"/>
+<area shape="rect" id="node2" href="$classLoopTimeSensorDevice.html" title="Loop execution time monitoring device with statistics." alt="" coords="124,5,299,31"/>
+<area shape="rect" id="node3" href="$classPIRSensorDevice.html" title="PIR motion sensor." alt="" coords="145,55,277,80"/>
+<area shape="rect" id="node4" href="$classPhotoresistorSensor.html" title="Light sensor with calibration." alt="" coords="135,104,287,129"/>
+<area shape="rect" id="node5" href="$classRamSensorDevice.html" title="RAM usage monitoring device with statistics." alt="" coords="141,153,282,179"/>
+<area shape="rect" id="node6" href="$classSimpleLight.html" title="Class for managing a simple on/off light." alt="" coords="162,203,261,228"/>
+<area shape="rect" id="node10" href="$classTemperatureSensor.html" title="Temperature sensor with statistics (NO FLOATS)" alt="" coords="137,252,285,277"/>
+<area shape="rect" id="node11" href="$classVccSensorDevice.html" title="VCC voltage monitoring device with statistics." alt="" coords="144,301,279,327"/>
+<area shape="rect" id="node7" href="$classDimmableLight.html" title="Light with brightness control (dimmer)" alt="" coords="347,179,469,204"/>
+<area shape="rect" id="node9" href="$classOutsideLight.html" title="Outdoor light with sensors and automation." alt="" coords="356,228,460,253"/>
+<area shape="rect" id="node8" href="$classRGBLight.html" title="RGB light with color and brightness control." alt="" coords="517,179,600,204"/>
+</map>

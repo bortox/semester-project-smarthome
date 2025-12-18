@@ -1,0 +1,16 @@
+<map id="DynamicArray::shrink" name="DynamicArray::shrink">
+<area shape="rect" id="node1" title=" " alt="" coords="984,239,1147,265"/>
+<area shape="rect" id="node2" href="$classDynamicArray.html#a6136d8a8f320429bd61d474f076a85a7" title="Removes an element at specific index." alt="" coords="764,239,936,265"/>
+<area shape="rect" id="node3" href="$classNavigationManager.html#af3a95079c6861b0386919b767159f996" title="Navigates back and frees current page (JIT cleanup)" alt="" coords="527,88,686,128"/>
+<area shape="rect" id="node8" href="$classEventSystem.html#abfcec1eb5f41d977b9ac8c2d387f08ad" title=" " alt="" coords="497,210,716,235"/>
+<area shape="rect" id="node12" href="$classSceneManager.html#a27bc18b2952636922064905bc050f58c" title="Deactivates a scene and removes it from the active list." alt="" coords="499,325,714,350"/>
+<area shape="rect" id="node14" href="$classDeviceRegistry.html#a8c3ea1fae817687fff1705c3eadda5d8" title=" " alt="" coords="509,260,704,300"/>
+<area shape="rect" id="node4" href="$classNavigationManager.html#a5c219636b8c690954b0a2a21c5a255c0" title="Delegates input to current page." alt="" coords="261,5,419,45"/>
+<area shape="rect" id="node6" href="$classActionItem.html#aca3ff990065c287d43613932f5ae8fe5" title="Executes action and navigates back on &#39;E&#39; key." alt="" coords="251,70,429,95"/>
+<area shape="rect" id="node7" href="$classBackMenuItem.html#a401c56472500dacac04c19ca383e43f9" title="Navigates back on &#39;E&#39; key." alt="" coords="237,119,443,145"/>
+<area shape="rect" id="node5" href="$classNavButtonInput.html#a32d749745518b3a58aef44e71e3345f1" title=" " alt="" coords="5,13,183,38"/>
+<area shape="rect" id="node9" href="$classAlarmScene.html#afd56c3548e8b58bc880eac112e443870" title="Called when scene is deactivated." alt="" coords="273,169,407,194"/>
+<area shape="rect" id="node10" href="$classMenuPage.html#adbe087473a7c5fe01edf7d422776da89" title=" " alt="" coords="253,218,427,243"/>
+<area shape="rect" id="node11" href="$classSimpleLight.html#a5af32dc2f0716836aeb5cb31c97734b1" title="Destructor." alt="" coords="243,267,437,293"/>
+<area shape="rect" id="node13" href="$classSceneToggleItem.html#a3887147921378d3868419a518dc04777" title="Toggles scene activation on &#39;E&#39; key." alt="" coords="231,325,449,350"/>
+</map>

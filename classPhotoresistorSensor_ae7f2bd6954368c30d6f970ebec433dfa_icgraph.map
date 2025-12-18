@@ -1,0 +1,9 @@
+<map id="PhotoresistorSensor::getStats" name="PhotoresistorSensor::getStats">
+<area shape="rect" id="node1" title="Gets the sensor statistics." alt="" coords="1191,55,1343,95"/>
+<area shape="rect" id="node2" href="$classMenuBuilder.html#a1fbeed1a43d18c0f6e4ac1bcd22b3185" title="Builds sensor statistics page." alt="" coords="955,23,1143,63"/>
+<area shape="rect" id="node7" href="$classLightCalibrationItem.html#a1697698dc734fe5d9007d5f47d414c3e" title="Executes calibration on &#39;E&#39; key." alt="" coords="971,87,1126,127"/>
+<area shape="rect" id="node3" href="$classMenuBuilder.html#ac7a33e9b51ec8a93d8d8f2315833be07" title="Builds light sensor settings page." alt="" coords="647,5,907,31"/>
+<area shape="rect" id="node4" href="$classMenuBuilder.html#a5fb86dfd5959b0b3e80679cc777dfc50" title="Builds sensors overview page." alt="" coords="372,31,599,56"/>
+<area shape="rect" id="node5" href="$classMenuBuilder.html#a44dccff1d668cb9f591482e7db2aa73d" title="Builds root menu page." alt="" coords="112,31,324,56"/>
+<area shape="rect" id="node6" href="$main_8cpp.html#a4fc01d736fe50cf5b977f755b675f11d" title="System initialization." alt="" coords="5,31,64,56"/>
+</map>

@@ -1,0 +1,5 @@
+<map id="MenuPage" name="MenuPage">
+<area shape="rect" id="node1" title="Menu page container with event&#45;driven updates." alt="" coords="67,79,157,104"/>
+<area shape="rect" id="node2" href="$classMenuItem.html" title="Abstract base class for all menu items." alt="" coords="5,5,93,31"/>
+<area shape="rect" id="node3" href="$classIEventListener.html" title="Interface for the Observer Pattern." alt="" coords="117,5,232,31"/>
+</map>

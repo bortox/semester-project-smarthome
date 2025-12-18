@@ -1,0 +1,5 @@
+<map id="LivePIRItem::draw" name="LivePIRItem::draw">
+<area shape="rect" id="node1" title="Draws sensor name and Yes/No motion status." alt="" coords="5,42,145,67"/>
+<area shape="rect" id="node2" href="$classPIRSensorDevice.html#aab365e357efdda3b058473e40ebb9ffa" title="Checks if motion is detected." alt="" coords="193,5,389,45"/>
+<area shape="rect" id="node3" href="$classMenuItem.html#a24353246e4799be82e73af57f2e15c8b" title=" " alt="" coords="211,70,372,95"/>
+</map>

@@ -1,0 +1,6 @@
+<map id="MenuBuilder::buildScenesPage" name="MenuBuilder::buildScenesPage">
+<area shape="rect" id="node1" title="Builds scenes control page." alt="" coords="5,35,227,60"/>
+<area shape="rect" id="node2" href="$classMenuPage.html#a612a17be8fea1aa8f8497b474e6df406" title="Adds item to page." alt="" coords="279,5,429,31"/>
+<area shape="rect" id="node4" href="$classNavigationManager.html#a8b77c624d734d2f86336af7843ecee32" title="Gets singleton instance." alt="" coords="275,55,433,95"/>
+<area shape="rect" id="node3" href="$classDynamicArray.html#a0597a43587fc9571429924e4ee8c2f07" title="Adds an element to the array." alt="" coords="481,5,628,31"/>
+</map>

@@ -1,0 +1,4 @@
+<map id="VccSensorDevice" name="VccSensorDevice">
+<area shape="rect" id="node1" title="VCC voltage monitoring device with statistics." alt="" coords="5,79,140,104"/>
+<area shape="rect" id="node2" href="$classIDevice.html" title="Abstract base interface for all hardware devices." alt="" coords="37,5,108,31"/>
+</map>

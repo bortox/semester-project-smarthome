@@ -1,0 +1,4 @@
+<map id="ActionItem" name="ActionItem">
+<area shape="rect" id="node1" title="Action item for scrollable lists." alt="" coords="5,79,99,104"/>
+<area shape="rect" id="node2" href="$classMenuItem.html" title="Abstract base class for all menu items." alt="" coords="8,5,96,31"/>
+</map>

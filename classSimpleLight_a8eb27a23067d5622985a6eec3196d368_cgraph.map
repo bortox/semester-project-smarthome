@@ -1,0 +1,7 @@
+<map id="SimpleLight::handleEvent" name="SimpleLight::handleEvent">
+<area shape="rect" id="node1" title="Handles received events." alt="" coords="5,31,193,56"/>
+<area shape="rect" id="node2" href="$classSimpleLight.html#a9a18f48175cee56237b95086cae70d0a" title="Toggles the light state (on/off)" alt="" coords="241,31,389,56"/>
+<area shape="rect" id="node3" href="$classEventSystem.html#a7d557111351077f5454f3ef839df55fa" title=" " alt="" coords="449,5,596,31"/>
+<area shape="rect" id="node5" href="$classEventSystem.html#a962434d9ad5d95c624c62938c1b9c89f" title="Access the singleton instance." alt="" coords="437,55,608,80"/>
+<area shape="rect" id="node4" href="$classDynamicArray.html#a521af75e017863b464537d3b6dd1cf14" title=" " alt="" coords="656,5,804,31"/>
+</map>

@@ -1,0 +1,11 @@
+<map id="MenuItem::printLabel" name="MenuItem::printLabel">
+<area shape="rect" id="node1" title=" " alt="" coords="232,179,393,204"/>
+<area shape="rect" id="node2" href="$classMenuPage.html#a648a34abd5656c6b6da20587d0653ea8" title="Renders the item on LCD." alt="" coords="30,5,159,31"/>
+<area shape="rect" id="node3" href="$classDeviceToggleItem.html#a9c5d623c90ce590aa5e66dfd668bdb3a" title="Draws device name and ON/OFF state." alt="" coords="5,55,184,80"/>
+<area shape="rect" id="node4" href="$classValueSliderItem.html#aec1d4c1f1d3642e5ed59c1097eca2c44" title="Draws label, value, and progress bar." alt="" coords="12,104,177,129"/>
+<area shape="rect" id="node5" href="$classLiveItem.html#a03a1e95e8aea2f0a4265a389e090b0fc" title="Draws sensor name and value with unit." alt="" coords="35,153,154,179"/>
+<area shape="rect" id="node6" href="$classLivePIRItem.html#a1ef2b153afc4c3b4a484cbcaa120ac2f" title="Draws sensor name and Yes/No motion status." alt="" coords="25,203,165,228"/>
+<area shape="rect" id="node7" href="$classLightCalibrationItem.html#ad3436c4e09ac423efa0a60a3eca80b17" title="Draws calibration label." alt="" coords="17,253,172,293"/>
+<area shape="rect" id="node8" href="$classActionItem.html#ab17dad0471aa99696a55c9af70d782f1" title="Draws action label." alt="" coords="28,317,161,343"/>
+<area shape="rect" id="node9" href="$classSubMenuItem.html#aa0388cebe64262508f0f70e78e999b6c" title="Draws label with &#39;&gt;&#39; indicator." alt="" coords="19,367,171,392"/>
+</map>

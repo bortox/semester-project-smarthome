@@ -1,0 +1,52 @@
+<map id="DynamicArray::size" name="DynamicArray::size">
+<area shape="rect" id="node1" title=" " alt="" coords="1031,727,1179,752"/>
+<area shape="rect" id="node2" href="$classEventSystem.html#a42b5bb399cebf2a54de5e55817026996" title=" " alt="" coords="773,5,965,31"/>
+<area shape="rect" id="node3" href="$classSceneManager.html#a2e66e72657889d2aa9aba239b75b5f6e" title="Activates a scene and adds it to the active list." alt="" coords="775,55,964,80"/>
+<area shape="rect" id="node5" href="$classMenuBuilder.html#a6b11a8ff5c14c601f25dfa550b090c84" title="Builds lights overview page." alt="" coords="762,153,977,179"/>
+<area shape="rect" id="node7" href="$classMenuBuilder.html#a5fb86dfd5959b0b3e80679cc777dfc50" title="Builds sensors overview page." alt="" coords="756,203,983,228"/>
+<area shape="rect" id="node8" href="$classSceneManager.html#aa145eb4a484e6cbba3a4e6b72b75c360" title="Deactivates all scenes." alt="" coords="782,252,957,277"/>
+<area shape="rect" id="node9" href="$classEventSystem.html#a7d557111351077f5454f3ef839df55fa" title=" " alt="" coords="796,932,943,957"/>
+<area shape="rect" id="node15" href="$classAlarmScene.html#afd56c3548e8b58bc880eac112e443870" title="Called when scene is deactivated." alt="" coords="283,379,417,404"/>
+<area shape="rect" id="node16" href="$classPartyScene.html#a1c9b31d0f63459f9dc58a8fdb9b18c64" title="Periodic update &#45; applies scene effects to devices." alt="" coords="277,531,423,556"/>
+<area shape="rect" id="node17" href="$classAlarmScene.html#aa227bd4fc2553362da49dba7d725b8cb" title="Periodic update &#45; applies scene effects to devices." alt="" coords="273,956,427,981"/>
+<area shape="rect" id="node30" href="$classSceneManager.html#a30a6755537d874ccf674b94fead840cb" title="Gets the number of active scenes." alt="" coords="756,1432,983,1457"/>
+<area shape="rect" id="node31" href="$classNavigationManager.html#a77baf5c45046cbec5e4c1eb3f852352e" title="Gets current page from top of stack." alt="" coords="790,1691,949,1731"/>
+<area shape="rect" id="node33" href="$classNavigationManager.html#af3a95079c6861b0386919b767159f996" title="Navigates back and frees current page (JIT cleanup)" alt="" coords="271,1698,429,1738"/>
+<area shape="rect" id="node40" href="$classMenuPage.html#ada90ced5ec47edbd834204789a69e9e6" title="Handles navigation input and delegates to items." alt="" coords="263,1591,437,1616"/>
+<area shape="rect" id="node41" href="$classMenuPage.html#a897302ae94dd3399450e54c74c951a5a" title="Handles device events for related items." alt="" coords="509,1849,688,1875"/>
+<area shape="rect" id="node42" href="$classMenuPage.html#ae85cf6f5d972a9ed27567c1c80196028" title="Gets total number of items." alt="" coords="773,1767,966,1792"/>
+<area shape="rect" id="node43" href="$classSceneManager.html#ab796d2fce528634f87e107f8a257ad2f" title="Gets an active scene by index." alt="" coords="776,2001,963,2027"/>
+<area shape="rect" id="node44" href="$classEventSystem.html#abfcec1eb5f41d977b9ac8c2d387f08ad" title=" " alt="" coords="760,404,979,429"/>
+<area shape="rect" id="node45" href="$classMenuPage.html#adbe087473a7c5fe01edf7d422776da89" title=" " alt="" coords="511,328,686,353"/>
+<area shape="rect" id="node47" href="$classSceneManager.html#a27bc18b2952636922064905bc050f58c" title="Deactivates a scene and removes it from the active list." alt="" coords="762,104,977,129"/>
+<area shape="rect" id="node48" href="$classDeviceRegistry.html#a8c3ea1fae817687fff1705c3eadda5d8" title=" " alt="" coords="772,454,967,494"/>
+<area shape="rect" id="node49" href="$classSceneManager.html#aa1aca67532fca8ae38c1ef8b2a6eb637" title="Periodic update &#45; applies all active scenes in priority order." alt="" coords="265,1900,435,1925"/>
+<area shape="rect" id="node50" href="$classInputManager.html#ad6af10800114387d8a1e85a75a51120a" title=" " alt="" coords="259,1949,441,1975"/>
+<area shape="rect" id="node4" href="$classSceneToggleItem.html#a3887147921378d3868419a518dc04777" title="Toggles scene activation on &#39;E&#39; key." alt="" coords="489,79,708,104"/>
+<area shape="rect" id="node6" href="$classMenuBuilder.html#a44dccff1d668cb9f591482e7db2aa73d" title="Builds root menu page." alt="" coords="493,177,705,203"/>
+<area shape="rect" id="node10" href="$classLightCalibrationItem.html#a1697698dc734fe5d9007d5f47d414c3e" title="Executes calibration on &#39;E&#39; key." alt="" coords="521,743,676,783"/>
+<area shape="rect" id="node11" href="$classButtonInput.html#ab3f257c14cb6024a4b8980db4ab3d9d2" title=" " alt="" coords="491,808,707,833"/>
+<area shape="rect" id="node12" href="$classRGBLight.html#a7d3839ef474b965139b9dcf0728eaee6" title=" " alt="" coords="529,857,668,883"/>
+<area shape="rect" id="node13" href="$classDimmableLight.html#a1d97f8fac9eea0be061b5cbb6ffab267" title="Sets the light brightness." alt="" coords="489,907,708,932"/>
+<area shape="rect" id="node14" href="$classRGBLight.html#a8d207c5659398bf3716c531fb6e35df5" title="Sets the RGB light brightness." alt="" coords="509,531,688,556"/>
+<area shape="rect" id="node18" href="$classRGBLight.html#a24ff27f0ddd26cef3b765a2d35b2b20d" title="Sets the RGB color." alt="" coords="527,956,671,981"/>
+<area shape="rect" id="node19" href="$classRGBLight.html#af75279b7d55e82833e872b32eb275877" title=" " alt="" coords="524,1005,673,1031"/>
+<area shape="rect" id="node20" href="$classRGBLight.html#a0c2c819ee80e2d6843ee57e5be551c76" title="Channel&#45;specific setters/getters for template compatibility." alt="" coords="531,1055,666,1080"/>
+<area shape="rect" id="node21" href="$classSimpleLight.html#a9a18f48175cee56237b95086cae70d0a" title="Toggles the light state (on/off)" alt="" coords="525,1104,673,1129"/>
+<area shape="rect" id="node22" href="$classRGBLight.html#ae3121c4e5cc968ad2d5bb08fd34a9dd5" title="Toggles the RGB light state." alt="" coords="533,1153,664,1179"/>
+<area shape="rect" id="node23" href="$classOutsideLight.html#aa078355216f84cf9006a4184fa53b5a3" title="Periodic state update." alt="" coords="520,1203,677,1228"/>
+<area shape="rect" id="node24" href="$classTemperatureSensor.html#a91754010b0f23056beb3b380ed98fafa" title="Periodic reading update." alt="" coords="521,1253,677,1293"/>
+<area shape="rect" id="node25" href="$classPhotoresistorSensor.html#a1a7a7c3968a61522dad877422b724a52" title="Periodic reading update." alt="" coords="523,1317,675,1357"/>
+<area shape="rect" id="node26" href="$classPIRSensorDevice.html#a8a399b05909aeaca535f3874063bd945" title="Periodic reading update." alt="" coords="506,1381,691,1407"/>
+<area shape="rect" id="node27" href="$classRamSensorDevice.html#a90a05b48339752bdb02458203fdf4edc" title="Periodic reading update." alt="" coords="501,580,696,605"/>
+<area shape="rect" id="node28" href="$classVccSensorDevice.html#a8f3a99c4750f64f7916a334e75dac6e4" title="Periodic reading update." alt="" coords="505,629,692,655"/>
+<area shape="rect" id="node29" href="$classLoopTimeSensorDevice.html#a169b53a1152d07b993b2b57750385148" title="Periodic update handles window rotation and stats." alt="" coords="511,679,686,719"/>
+<area shape="rect" id="node32" href="$classNavigationManager.html#a81aec9176f9a3dbe8b4ccb66cbcaa22d" title="Renders full page with scrolling support." alt="" coords="503,1800,694,1825"/>
+<area shape="rect" id="node34" href="$classNavigationManager.html#a5c219636b8c690954b0a2a21c5a255c0" title="Delegates input to current page." alt="" coords="29,1641,187,1681"/>
+<area shape="rect" id="node37" href="$classNavigationManager.html#abbd7e225456cd6f9adaf56b01aa68d4a" title="Updates display if current page needs redraw." alt="" coords="271,1793,429,1833"/>
+<area shape="rect" id="node39" href="$classNavigationManager.html#aab2b8258235f035b75d3ca721dbb5c0e" title="Incrementally updates cursor position." alt="" coords="511,1583,686,1623"/>
+<area shape="rect" id="node35" href="$classActionItem.html#aca3ff990065c287d43613932f5ae8fe5" title="Executes action and navigates back on &#39;E&#39; key." alt="" coords="19,1705,197,1731"/>
+<area shape="rect" id="node36" href="$classBackMenuItem.html#a401c56472500dacac04c19ca383e43f9" title="Navigates back on &#39;E&#39; key." alt="" coords="5,1755,211,1780"/>
+<area shape="rect" id="node38" href="$main_8cpp.html#afe461d27b9c48d5921c00d521181f12f" title="Main execution loop." alt="" coords="83,1900,133,1925"/>
+<area shape="rect" id="node46" href="$classSimpleLight.html#a5af32dc2f0716836aeb5cb31c97734b1" title="Destructor." alt="" coords="501,429,696,455"/>
+</map>

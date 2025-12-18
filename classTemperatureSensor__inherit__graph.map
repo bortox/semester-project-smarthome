@@ -1,0 +1,4 @@
+<map id="TemperatureSensor" name="TemperatureSensor">
+<area shape="rect" id="node1" title="Temperature sensor with statistics (NO FLOATS)" alt="" coords="5,79,153,104"/>
+<area shape="rect" id="node2" href="$classIDevice.html" title="Abstract base interface for all hardware devices." alt="" coords="44,5,115,31"/>
+</map>

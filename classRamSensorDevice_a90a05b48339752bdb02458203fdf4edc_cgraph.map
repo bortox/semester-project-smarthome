@@ -1,0 +1,10 @@
+<map id="RamSensorDevice::update" name="RamSensorDevice::update">
+<area shape="rect" id="node1" title="Periodic reading update." alt="" coords="5,80,200,105"/>
+<area shape="rect" id="node2" href="$classSensorStats.html#a9e0211345780c3e62cb7be553be00cbf" title="Adds a new sample to the statistics." alt="" coords="259,5,439,31"/>
+<area shape="rect" id="node4" href="$classEventSystem.html#a7d557111351077f5454f3ef839df55fa" title=" " alt="" coords="276,55,423,80"/>
+<area shape="rect" id="node6" href="$classRamUsageSensor.html#a441393f49273984c802d3f9fd3dfaa14" title="Gets current free RAM in bytes." alt="" coords="248,104,451,129"/>
+<area shape="rect" id="node8" href="$classEventSystem.html#a962434d9ad5d95c624c62938c1b9c89f" title="Access the singleton instance." alt="" coords="264,153,435,179"/>
+<area shape="rect" id="node3" href="$classSensorStats.html#aa82d8bdc63b949d906e1a55677522f9c" title="Gets the average of recorded values." alt="" coords="499,5,680,31"/>
+<area shape="rect" id="node5" href="$classDynamicArray.html#a521af75e017863b464537d3b6dd1cf14" title=" " alt="" coords="515,55,663,80"/>
+<area shape="rect" id="node7" href="$MemoryMonitor_8h.html#a81f9fa68d706b046996e6781bc7574b8" title="Calculates free RAM between stack and heap." alt="" coords="527,104,652,129"/>
+</map>

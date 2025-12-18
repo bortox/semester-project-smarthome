@@ -1,0 +1,4 @@
+<map id="SensorStats::addSample" name="SensorStats::addSample">
+<area shape="rect" id="node1" title="Adds a new sample to the statistics." alt="" coords="5,5,185,31"/>
+<area shape="rect" id="node2" href="$classSensorStats.html#aa82d8bdc63b949d906e1a55677522f9c" title="Gets the average of recorded values." alt="" coords="233,5,415,31"/>
+</map>

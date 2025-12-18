@@ -1,0 +1,4 @@
+<map id="LoopTimeSensorDevice" name="LoopTimeSensorDevice">
+<area shape="rect" id="node1" title="Loop execution time monitoring device with statistics." alt="" coords="5,79,180,104"/>
+<area shape="rect" id="node2" href="$classIDevice.html" title="Abstract base interface for all hardware devices." alt="" coords="57,5,128,31"/>
+</map>

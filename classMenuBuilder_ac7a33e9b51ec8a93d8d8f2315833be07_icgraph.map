@@ -1,0 +1,6 @@
+<map id="MenuBuilder::buildLightSettingsPage" name="MenuBuilder::buildLightSettingsPage">
+<area shape="rect" id="node1" title="Builds light sensor settings page." alt="" coords="647,5,907,31"/>
+<area shape="rect" id="node2" href="$classMenuBuilder.html#a5fb86dfd5959b0b3e80679cc777dfc50" title="Builds sensors overview page." alt="" coords="372,5,599,31"/>
+<area shape="rect" id="node3" href="$classMenuBuilder.html#a44dccff1d668cb9f591482e7db2aa73d" title="Builds root menu page." alt="" coords="112,5,324,31"/>
+<area shape="rect" id="node4" href="$main_8cpp.html#a4fc01d736fe50cf5b977f755b675f11d" title="System initialization." alt="" coords="5,5,64,31"/>
+</map>

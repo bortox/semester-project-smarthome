@@ -1,0 +1,9 @@
+<map id="include/CoreSystem.h" name="include/CoreSystem.h">
+<area shape="rect" id="node1" title="Core system definitions, interfaces, and memory management." alt="" coords="180,5,344,31"/>
+<area shape="rect" id="node2" href="$Devices_8h.html" title=" " alt="" coords="193,79,331,104"/>
+<area shape="rect" id="node6" href="$Scenes_8h.html" title="Scene management and concrete scene implementations." alt="" coords="303,152,434,177"/>
+<area shape="rect" id="node7" href="$PhysicalInput_8h.html" title="Hardware Abstraction Layer for physical inputs." alt="" coords="5,225,177,251"/>
+<area shape="rect" id="node3" href="$FlexibleMenu_8h.html" title="Dynamic menu system with JIT page allocation and scene integration." alt="" coords="253,225,426,251"/>
+<area shape="rect" id="node4" href="$PhysicalInput_8cpp.html" title="Implementation of hardware input handling." alt="" coords="120,299,279,324"/>
+<area shape="rect" id="node5" href="$main_8cpp.html" title="Main application entry point." alt="" coords="303,299,408,324"/>
+</map>

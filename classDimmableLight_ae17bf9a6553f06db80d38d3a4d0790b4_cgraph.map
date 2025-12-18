@@ -1,0 +1,7 @@
+<map id="DimmableLight::toggle" name="DimmableLight::toggle">
+<area shape="rect" id="node1" title="Toggles the light state while preserving brightness." alt="" coords="5,31,176,56"/>
+<area shape="rect" id="node2" href="$classDimmableLight.html#a1d97f8fac9eea0be061b5cbb6ffab267" title="Sets the light brightness." alt="" coords="224,31,443,56"/>
+<area shape="rect" id="node3" href="$classEventSystem.html#a7d557111351077f5454f3ef839df55fa" title=" " alt="" coords="503,5,649,31"/>
+<area shape="rect" id="node5" href="$classEventSystem.html#a962434d9ad5d95c624c62938c1b9c89f" title="Access the singleton instance." alt="" coords="491,55,661,80"/>
+<area shape="rect" id="node4" href="$classDynamicArray.html#a521af75e017863b464537d3b6dd1cf14" title=" " alt="" coords="709,5,857,31"/>
+</map>

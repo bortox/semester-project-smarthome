@@ -1,0 +1,43 @@
+<map id="DynamicArray::add" name="DynamicArray::add">
+<area shape="rect" id="node1" title="Adds an element to the array." alt="" coords="1807,1048,1953,1073"/>
+<area shape="rect" id="node2" href="$classMenuPage.html#a612a17be8fea1aa8f8497b474e6df406" title="Adds item to page." alt="" coords="1587,454,1738,480"/>
+<area shape="rect" id="node20" href="$classEventSystem.html#af936feabeb4ec33e303963a1f9b6ffd7" title=" " alt="" coords="1567,1148,1759,1173"/>
+<area shape="rect" id="node25" href="$classSceneManager.html#a2e66e72657889d2aa9aba239b75b5f6e" title="Activates a scene and adds it to the active list." alt="" coords="1568,1549,1757,1574"/>
+<area shape="rect" id="node27" href="$classNavigationManager.html#aeb20dc241a17ce19e93210aa9c274169" title="Initializes navigation with root page." alt="" coords="425,872,584,912"/>
+<area shape="rect" id="node28" href="$classNavigationManager.html#a328215af3d6bb3f1df228412d8246db1" title="Pushes JIT&#45;allocated page onto stack." alt="" coords="1583,1723,1742,1763"/>
+<area shape="rect" id="node32" href="$classInputManager.html#a1b07470f1bc00eadefa76c23c915ee96" title=" " alt="" coords="112,937,325,962"/>
+<area shape="rect" id="node33" href="$classDeviceRegistry.html#ad138dc35e86f58166d1cef2decb119b3" title=" " alt="" coords="1573,1392,1752,1432"/>
+<area shape="rect" id="node40" href="$classInputManager.html#a0b67d24005c25623649b19c638bfd762" title=" " alt="" coords="703,987,899,1027"/>
+<area shape="rect" id="node41" href="$classInputManager.html#a3fa47911560aef7672cd6b434af40a7b" title=" " alt="" coords="373,1049,636,1074"/>
+<area shape="rect" id="node3" href="$classMenuBuilder.html#a847cd58248706e86c136a4a8015bf7d3" title="Builds RGB blue channel slider page." alt="" coords="1295,306,1499,332"/>
+<area shape="rect" id="node4" href="$classMenuBuilder.html#aaedb1ceaadcbe80e141a2e36e569181b" title="Builds custom RGB color page with channel submenu." alt="" coords="999,319,1194,359"/>
+<area shape="rect" id="node5" href="$classMenuBuilder.html#ac029426e87fda27a930e260bf4b211ef" title="Builds RGB light control page." alt="" coords="684,326,919,352"/>
+<area shape="rect" id="node6" href="$classMenuBuilder.html#a6b11a8ff5c14c601f25dfa550b090c84" title="Builds lights overview page." alt="" coords="397,536,612,561"/>
+<area shape="rect" id="node7" href="$classMenuBuilder.html#a44dccff1d668cb9f591482e7db2aa73d" title="Builds root menu page." alt="" coords="113,536,325,561"/>
+<area shape="rect" id="node9" href="$classMenuBuilder.html#a18d73ff68acbd838f03f10aa8cb423e6" title="Builds brightness slider page." alt="" coords="1275,454,1519,480"/>
+<area shape="rect" id="node10" href="$classMenuBuilder.html#a99c9fe7d757f5800b334a6b551af2e82" title="Builds dimmable light control page." alt="" coords="991,495,1203,535"/>
+<area shape="rect" id="node11" href="$classMenuBuilder.html#a4391dec8ab2760de0a6d85e43c51207c" title="Builds RGB green channel slider page." alt="" coords="1289,356,1504,381"/>
+<area shape="rect" id="node12" href="$classMenuBuilder.html#ac7a33e9b51ec8a93d8d8f2315833be07" title="Builds light sensor settings page." alt="" coords="967,728,1227,753"/>
+<area shape="rect" id="node13" href="$classMenuBuilder.html#a5fb86dfd5959b0b3e80679cc777dfc50" title="Builds sensors overview page." alt="" coords="688,753,915,778"/>
+<area shape="rect" id="node14" href="$classMenuBuilder.html#a496170a95397e4aa870786bcc4dd6bcf" title="Builds outside light control page." alt="" coords="999,559,1194,599"/>
+<area shape="rect" id="node15" href="$classMenuBuilder.html#acc82398ad95ef18ddf43669af03ac00c" title="Builds outside light mode selection page." alt="" coords="1299,555,1494,595"/>
+<area shape="rect" id="node16" href="$classMenuBuilder.html#a4c69f4f76598091f2fc14d79e264dad7" title="Builds RGB red channel slider page." alt="" coords="1297,405,1497,430"/>
+<area shape="rect" id="node17" href="$classMenuBuilder.html#a16c4b3c7f96b3001518a8433d5be147f" title="Builds RGB color preset selection page." alt="" coords="971,154,1222,180"/>
+<area shape="rect" id="node18" href="$classMenuBuilder.html#a1c8ff4c9850aae0f95ed4838c73a12c3" title="Builds scenes control page." alt="" coords="691,53,912,78"/>
+<area shape="rect" id="node19" href="$classMenuBuilder.html#a1fbeed1a43d18c0f6e4ac1bcd22b3185" title="Builds sensor statistics page." alt="" coords="1303,771,1491,811"/>
+<area shape="rect" id="node8" href="$main_8cpp.html#a4fc01d736fe50cf5b977f755b675f11d" title="System initialization." alt="" coords="5,937,64,962"/>
+<area shape="rect" id="node21" href="$classButtonInput.html#a9fd770100c290159f91e8dab73971d01" title=" " alt="" coords="1305,1098,1488,1124"/>
+<area shape="rect" id="node22" href="$classAlarmScene.html#ad1f0004278d2f94131d24c34daeff473" title="Called when scene is activated." alt="" coords="1325,1148,1468,1173"/>
+<area shape="rect" id="node23" href="$classMenuPage.html#a18b387d211cabb195fcb63e9f858c578" title="Constructs a menu page." alt="" coords="1315,1197,1479,1222"/>
+<area shape="rect" id="node24" href="$classSimpleLight.html#aa1c82517b03b5a5e3f4ad7321d27163d" title="Constructor for simple light." alt="" coords="1305,1246,1489,1272"/>
+<area shape="rect" id="node26" href="$classSceneToggleItem.html#a3887147921378d3868419a518dc04777" title="Toggles scene activation on &#39;E&#39; key." alt="" coords="1287,1681,1506,1706"/>
+<area shape="rect" id="node29" href="$classNavigationManager.html#a5c219636b8c690954b0a2a21c5a255c0" title="Delegates input to current page." alt="" coords="1317,1780,1476,1820"/>
+<area shape="rect" id="node31" href="$classSubMenuItem.html#a266fffeb8227864522f282120124246d" title="Creates and pushes page on &#39;E&#39; key." alt="" coords="1298,1730,1495,1756"/>
+<area shape="rect" id="node30" href="$classNavButtonInput.html#a32d749745518b3a58aef44e71e3345f1" title=" " alt="" coords="1008,1788,1185,1813"/>
+<area shape="rect" id="node34" href="$classLoopTimeSensorDevice.html#a2005957310088dc4c2d972a554d0027a" title="Constructor for loop time sensor device." alt="" coords="1305,1488,1488,1528"/>
+<area shape="rect" id="node35" href="$classPhotoresistorSensor.html#af7b7686525ac8af7153f66978285f5a5" title="Constructor for light sensor." alt="" coords="1317,1552,1477,1592"/>
+<area shape="rect" id="node36" href="$classPIRSensorDevice.html#a9cc88634f40d9c177aeede7eef27acb8" title="Constructor for PIR sensor." alt="" coords="1294,1616,1499,1656"/>
+<area shape="rect" id="node37" href="$classRamSensorDevice.html#ad46dd833608031245971eb0c615b2ca9" title="Constructor for RAM sensor device." alt="" coords="1285,1296,1508,1336"/>
+<area shape="rect" id="node38" href="$classTemperatureSensor.html#af219fd74514e21e24950feb189b56b11" title="Constructor for temperature sensor." alt="" coords="1319,1360,1475,1400"/>
+<area shape="rect" id="node39" href="$classVccSensorDevice.html#ace93a92336e0b33b0e8558d5816d4f0b" title="Constructor for VCC sensor device." alt="" coords="1292,1424,1501,1464"/>
+</map>

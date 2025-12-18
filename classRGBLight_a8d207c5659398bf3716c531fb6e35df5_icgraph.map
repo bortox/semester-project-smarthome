@@ -1,0 +1,6 @@
+<map id="RGBLight::setBrightness" name="RGBLight::setBrightness">
+<area shape="rect" id="node1" title="Sets the RGB light brightness." alt="" coords="207,55,385,80"/>
+<area shape="rect" id="node2" href="$classAlarmScene.html#afd56c3548e8b58bc880eac112e443870" title="Called when scene is deactivated." alt="" coords="15,5,149,31"/>
+<area shape="rect" id="node3" href="$classPartyScene.html#a1c9b31d0f63459f9dc58a8fdb9b18c64" title="Periodic update &#45; applies scene effects to devices." alt="" coords="9,55,155,80"/>
+<area shape="rect" id="node4" href="$classAlarmScene.html#aa227bd4fc2553362da49dba7d725b8cb" title="Periodic update &#45; applies scene effects to devices." alt="" coords="5,104,159,129"/>
+</map>

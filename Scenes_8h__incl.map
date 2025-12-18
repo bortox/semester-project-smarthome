@@ -1,0 +1,11 @@
+<map id="include/Scenes.h" name="include/Scenes.h">
+<area shape="rect" id="node1" title="Scene management and concrete scene implementations." alt="" coords="57,5,187,31"/>
+<area shape="rect" id="node2" href="$CoreSystem_8h.html" title="Core system definitions, interfaces, and memory management." alt="" coords="5,152,119,177"/>
+<area shape="rect" id="node4" href="$Devices_8h.html" title=" " alt="" coords="131,79,217,104"/>
+<area shape="rect" id="node3" title=" " alt="" coords="119,372,203,397"/>
+<area shape="rect" id="node5" href="$sensors_8h.html" title=" " alt="" coords="143,152,227,177"/>
+<area shape="rect" id="node9" title=" " alt="" coords="251,152,377,177"/>
+<area shape="rect" id="node6" href="$DebugConfig_8h.html" title="Global debug configuration macros." alt="" coords="150,299,267,324"/>
+<area shape="rect" id="node7" title=" " alt="" coords="201,225,299,251"/>
+<area shape="rect" id="node8" href="$MemoryMonitor_8h.html" title="RAM usage monitoring utilities." alt="" coords="324,225,461,251"/>
+</map>

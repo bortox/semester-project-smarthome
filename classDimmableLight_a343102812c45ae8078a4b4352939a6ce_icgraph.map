@@ -1,0 +1,8 @@
+<map id="DimmableLight::lastBrightness" name="DimmableLight::lastBrightness">
+<area shape="rect" id="node1" title="Protected access to last saved brightness." alt="" coords="433,80,656,105"/>
+<area shape="rect" id="node2" href="$classRGBLight.html#a8d207c5659398bf3716c531fb6e35df5" title="Sets the RGB light brightness." alt="" coords="207,55,385,80"/>
+<area shape="rect" id="node6" href="$classRGBLight.html#ae3121c4e5cc968ad2d5bb08fd34a9dd5" title="Toggles the RGB light state." alt="" coords="231,104,361,129"/>
+<area shape="rect" id="node3" href="$classAlarmScene.html#afd56c3548e8b58bc880eac112e443870" title="Called when scene is deactivated." alt="" coords="15,5,149,31"/>
+<area shape="rect" id="node4" href="$classPartyScene.html#a1c9b31d0f63459f9dc58a8fdb9b18c64" title="Periodic update &#45; applies scene effects to devices." alt="" coords="9,55,155,80"/>
+<area shape="rect" id="node5" href="$classAlarmScene.html#aa227bd4fc2553362da49dba7d725b8cb" title="Periodic update &#45; applies scene effects to devices." alt="" coords="5,104,159,129"/>
+</map>

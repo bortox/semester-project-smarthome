@@ -1,0 +1,4 @@
+<map id="printMemoryReport" name="printMemoryReport">
+<area shape="rect" id="node1" title="Prints memory usage report to Serial." alt="" coords="5,5,155,31"/>
+<area shape="rect" id="node2" href="$MemoryMonitor_8h.html#a81f9fa68d706b046996e6781bc7574b8" title="Calculates free RAM between stack and heap." alt="" coords="203,5,328,31"/>
+</map>

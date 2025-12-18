@@ -1,0 +1,10 @@
+<map id="NavigationManager::draw" name="NavigationManager::draw">
+<area shape="rect" id="node1" title="Renders full page with scrolling support." alt="" coords="5,145,196,171"/>
+<area shape="rect" id="node2" href="$classMenuItem.html#ab73d6181396cd81d3c12afd332a21faa" title="Renders the item on LCD." alt="" coords="285,5,413,31"/>
+<area shape="rect" id="node3" href="$classNavigationManager.html#a77baf5c45046cbec5e4c1eb3f852352e" title="Gets current page from top of stack." alt="" coords="270,55,429,95"/>
+<area shape="rect" id="node5" href="$classMenuPage.html#aba1aead5d2ab95c38e84b314e7f51920" title="Gets item by index." alt="" coords="275,120,423,145"/>
+<area shape="rect" id="node6" href="$classMenuPage.html#ae85cf6f5d972a9ed27567c1c80196028" title="Gets total number of items." alt="" coords="253,169,446,195"/>
+<area shape="rect" id="node7" href="$classMenuPage.html#ab146e7a26d721e4ea5742caf42c59d8b" title="Gets currently selected item index." alt="" coords="244,219,455,244"/>
+<area shape="rect" id="node8" href="$classNavigationManager.html#a08a5da9652a54c36efc1ec923e754ade" title=" " alt="" coords="270,269,429,309"/>
+<area shape="rect" id="node4" href="$classDynamicArray.html#a521af75e017863b464537d3b6dd1cf14" title=" " alt="" coords="503,116,651,141"/>
+</map>

@@ -1,0 +1,16 @@
+<map id="BackMenuItem::handleInput" name="BackMenuItem::handleInput">
+<area shape="rect" id="node1" title="Navigates back on &#39;E&#39; key." alt="" coords="5,301,211,326"/>
+<area shape="rect" id="node2" href="$classNavigationManager.html#a8b77c624d734d2f86336af7843ecee32" title="Gets singleton instance." alt="" coords="259,261,417,301"/>
+<area shape="rect" id="node3" href="$classNavigationManager.html#af3a95079c6861b0386919b767159f996" title="Navigates back and frees current page (JIT cleanup)" alt="" coords="259,325,417,365"/>
+<area shape="rect" id="node4" href="$classNavigationManager.html#a81aec9176f9a3dbe8b4ccb66cbcaa22d" title="Renders full page with scrolling support." alt="" coords="465,169,656,194"/>
+<area shape="rect" id="node6" href="$classNavigationManager.html#a77baf5c45046cbec5e4c1eb3f852352e" title="Gets current page from top of stack." alt="" coords="730,5,889,45"/>
+<area shape="rect" id="node7" href="$classDynamicArray.html#a521af75e017863b464537d3b6dd1cf14" title=" " alt="" coords="963,169,1111,194"/>
+<area shape="rect" id="node12" href="$classMenuPage.html#a4505ef735f7812b52407f52111d45525" title="Forces full page redraw." alt="" coords="471,383,650,409"/>
+<area shape="rect" id="node13" href="$classDynamicArray.html#a6136d8a8f320429bd61d474f076a85a7" title="Removes an element at specific index." alt="" coords="475,433,647,458"/>
+<area shape="rect" id="node5" href="$classMenuItem.html#ab73d6181396cd81d3c12afd332a21faa" title="Renders the item on LCD." alt="" coords="745,70,873,95"/>
+<area shape="rect" id="node8" href="$classMenuPage.html#aba1aead5d2ab95c38e84b314e7f51920" title="Gets item by index." alt="" coords="735,119,883,145"/>
+<area shape="rect" id="node9" href="$classMenuPage.html#ae85cf6f5d972a9ed27567c1c80196028" title="Gets total number of items." alt="" coords="713,169,906,194"/>
+<area shape="rect" id="node10" href="$classMenuPage.html#ab146e7a26d721e4ea5742caf42c59d8b" title="Gets currently selected item index." alt="" coords="704,218,915,243"/>
+<area shape="rect" id="node11" href="$classNavigationManager.html#a08a5da9652a54c36efc1ec923e754ade" title=" " alt="" coords="730,268,889,308"/>
+<area shape="rect" id="node14" href="$classDynamicArray.html#ae3a1749632e283b1ee52ab153b855fa1" title=" " alt="" coords="728,433,891,458"/>
+</map>

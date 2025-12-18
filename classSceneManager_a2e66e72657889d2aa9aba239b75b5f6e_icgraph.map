@@ -1,0 +1,4 @@
+<map id="SceneManager::addScene" name="SceneManager::addScene">
+<area shape="rect" id="node1" title="Activates a scene and adds it to the active list." alt="" coords="272,5,461,31"/>
+<area shape="rect" id="node2" href="$classSceneToggleItem.html#a3887147921378d3868419a518dc04777" title="Toggles scene activation on &#39;E&#39; key." alt="" coords="5,5,224,31"/>
+</map>

@@ -1,0 +1,4 @@
+<map id="PhotoresistorSensor::calibrateCurrentAsMax" name="PhotoresistorSensor::calibrateCurrentAsMax">
+<area shape="rect" id="node1" title="Calibrates maximum value with current reading." alt="" coords="208,5,387,45"/>
+<area shape="rect" id="node2" href="$classLightCalibrationItem.html#a1697698dc734fe5d9007d5f47d414c3e" title="Executes calibration on &#39;E&#39; key." alt="" coords="5,5,160,45"/>
+</map>

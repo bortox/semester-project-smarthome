@@ -1,0 +1,4 @@
+<map id="PartyScene::enter" name="PartyScene::enter">
+<area shape="rect" id="node1" title="Called when scene is activated." alt="" coords="5,5,141,31"/>
+<area shape="rect" id="node2" href="$classIScene.html#a839c78c04369addce89f59d4dda798bb" title="Called when scene is activated." alt="" coords="189,5,296,31"/>
+</map>

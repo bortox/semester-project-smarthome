@@ -1,0 +1,8 @@
+<map id="RGBLight::toggle" name="RGBLight::toggle">
+<area shape="rect" id="node1" title="Toggles the RGB light state." alt="" coords="5,80,136,105"/>
+<area shape="rect" id="node2" href="$classEventSystem.html#a7d557111351077f5454f3ef839df55fa" title=" " alt="" coords="230,5,377,31"/>
+<area shape="rect" id="node4" href="$classEventSystem.html#a962434d9ad5d95c624c62938c1b9c89f" title="Access the singleton instance." alt="" coords="218,55,389,80"/>
+<area shape="rect" id="node5" href="$classDimmableLight.html#a343102812c45ae8078a4b4352939a6ce" title="Protected access to last saved brightness." alt="" coords="192,104,415,129"/>
+<area shape="rect" id="node6" href="$classDimmableLight.html#a27bbdbdd5528ab5d610a3b7c187dadc1" title="Protected access to target brightness." alt="" coords="184,153,423,179"/>
+<area shape="rect" id="node3" href="$classDynamicArray.html#a521af75e017863b464537d3b6dd1cf14" title=" " alt="" coords="471,5,619,31"/>
+</map>
