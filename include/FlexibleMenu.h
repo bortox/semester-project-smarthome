@@ -835,7 +835,8 @@ public:
             } else {
                 _sensor->calibrateCurrentAsMax();
             }
-            // Force immediate update
+            // Reset stats and force immediate update
+            _sensor->getStats().reset();
             EventSystem::instance().emit(EventType::SensorUpdated, _sensor, _sensor->getValue());
             return true;
         }

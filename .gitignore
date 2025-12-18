@@ -8,3 +8,4 @@
 .cache
 compile_commands.json
 file-list
+docs
