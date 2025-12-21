@@ -595,79 +595,6 @@ private:
 enum class OutsideMode : uint8_t { OFF, ON, AUTO_LIGHT, AUTO_MOTION };
 
 /**
- * @class OutsideLight
- * @brief Outdoor light with sensors and automation
- * 
- * Manages an outdoor light that can operate in manual
- * or automatic mode based on light and motion sensors
- */
-class OutsideLight : public SimpleLight {
-private:
-    OutsideMode _mode;
-    LightSensor* _photo;
-    MovementSensor* _motion;
-    static constexpr int DARKNESS_THRESHOLD = 30;
-
-public:
-    /**
-     * @brief Constructor for outdoor light
-     * @param name Device identifier name
-     * @param pin Arduino pin to which the light is connected
-     * @param photo Pointer to light sensor
-     * @param motion Pointer to motion sensor
-     */
-    OutsideLight(const __FlashStringHelper* name, uint8_t pin, LightSensor* photo, MovementSensor* motion)
-        : SimpleLight(name, pin), _mode(OutsideMode::OFF), _photo(photo), _motion(motion) {
-        const_cast<DeviceType&>(type) = DeviceType::LightOutside;
-    }
-
-    /**
-     * @brief Sets the operating mode
-     * @param mode Desired mode (OFF, ON, AUTO_LIGHT, AUTO_MOTION)
-     */
-    void setMode(OutsideMode mode) {
-        _mode = mode;
-        update();
-    }
-
-    /**
-     * @brief Periodic state update
-     * 
-     * Evaluates sensors and updates state based on current mode
-     */
-    void update() override {
-        bool targetState = false;
-        switch(_mode) {
-            case OutsideMode::OFF: targetState = false; break;
-            case OutsideMode::ON: targetState = true; break;
-            case OutsideMode::AUTO_LIGHT:
-                targetState = (_photo->getValue() < DARKNESS_THRESHOLD);
-                break;
-            case OutsideMode::AUTO_MOTION:
-                targetState = (_photo->getValue() < DARKNESS_THRESHOLD && _motion->getValue());
-                break;
-        }
-        
-        if (targetState != _state) {
-            _state = targetState;
-            digitalWrite(_pin, _state ? HIGH : LOW);
-            EventSystem::instance().emit(EventType::DeviceStateChanged, this, _state);
-        }
-    }
-
-    /**
-     * @brief Toggles between ON and OFF modes
-     */
-    void toggle() override {
-        if (_state) {
-            _mode = OutsideMode::OFF;
-        } else {
-            _mode = OutsideMode::ON;
-        }
-    }
-};
-
-/**
  * @class TemperatureSensor
  * @brief Temperature sensor with statistics (NO FLOATS)
  * 
@@ -688,7 +615,7 @@ public:
      * @param name Device identifier name
      */
     TemperatureSensor(const __FlashStringHelper* name) 
-        : IDevice(name, DeviceType::SensorTemperature), _temperature(0), _lastRead(0), _lm75(name) {
+        : IDevice(name, DeviceType::SensorTemperature), _temperature(0), _lastRead(0), _lm75() {
         _lm75.begin();
         DeviceRegistry::instance().registerDevice(this);
     }
@@ -751,7 +678,7 @@ public:
      * @param pin Arduino analog pin
      */
     PhotoresistorSensor(const __FlashStringHelper* name, uint8_t pin) 
-        : IDevice(name, DeviceType::SensorLight), _lightLevel(0), _lastRead(0), _photoSensor(name, pin) {
+        : IDevice(name, DeviceType::SensorLight), _lightLevel(0), _lastRead(0), _photoSensor(pin) {
         DeviceRegistry::instance().registerDevice(this);
     }
 
@@ -842,7 +769,7 @@ public:
      * @param pin Arduino digital pin
      */
     PIRSensorDevice(const __FlashStringHelper* name, uint8_t pin) 
-        : IDevice(name, DeviceType::SensorPIR), _motionDetected(false), _lastRead(0), _pirSensor(name, pin) {
+        : IDevice(name, DeviceType::SensorPIR), _motionDetected(false), _lastRead(0), _pirSensor(pin) {
         DeviceRegistry::instance().registerDevice(this);
     }
 
@@ -901,7 +828,7 @@ public:
      */
     RamSensorDevice(const __FlashStringHelper* name)
         : IDevice(name, DeviceType::SensorRAM), _freeRam(0), _lastReported(0), 
-          _lastRead(0), _ramSensor(name) {
+          _lastRead(0), _ramSensor() {
         DeviceRegistry::instance().registerDevice(this);
         _freeRam = _ramSensor.getValue();
         _lastReported = _freeRam;
@@ -967,7 +894,7 @@ public:
      * @param name Device identifier name
      */
     VccSensorDevice(const __FlashStringHelper* name)
-        : IDevice(name, DeviceType::SensorVCC), _vcc(0), _lastRead(0), _vccSensor(name) {
+        : IDevice(name, DeviceType::SensorVCC), _vcc(0), _lastRead(0), _vccSensor() {
         DeviceRegistry::instance().registerDevice(this);
         _vcc = _vccSensor.getValue();
     }
@@ -1028,7 +955,7 @@ public:
      * @param name Device identifier name
      */
     LoopTimeSensorDevice(const __FlashStringHelper* name)
-        : IDevice(name, DeviceType::SensorLoopTime), _loopTime(0), _lastRead(0), _loopSensor(name) {
+        : IDevice(name, DeviceType::SensorLoopTime), _loopTime(0), _lastRead(0), _loopSensor() {
         DeviceRegistry::instance().registerDevice(this);
     }
 
@@ -1076,6 +1003,112 @@ public:
      * @return Reference to SensorStats object
      */
     SensorStats& getStats() { return _stats; }
+};
+
+/**
+ * @class OutsideLight
+ * @brief Outdoor light with sensors and automation
+ * 
+ * Manages an outdoor light that can operate in manual
+ * or automatic mode based on light and motion sensors.
+ * Defined here to ensure sensor types are fully defined.
+ */
+class OutsideLight : public SimpleLight {
+private:
+    OutsideMode _mode;
+    PhotoresistorSensor* _photo;
+    PIRSensorDevice* _motion;
+    static constexpr int DARKNESS_THRESHOLD = 30;
+
+    /**
+     * @brief Evaluates automation logic based on sensor state
+     */
+    void evaluateState() {
+        bool targetState = false;
+        switch(_mode) {
+            case OutsideMode::OFF: targetState = false; break;
+            case OutsideMode::ON: targetState = true; break;
+            case OutsideMode::AUTO_LIGHT:
+                if (_photo) {
+                    // Pull-down resistor: Higher value = More light.
+                    // Dark if value < Threshold.
+                    targetState = (_photo->getValue() < DARKNESS_THRESHOLD);
+                }
+                break;
+            case OutsideMode::AUTO_MOTION:
+                if (_photo && _motion) {
+                    // Dark AND Motion detected
+                    targetState = (_photo->getValue() < DARKNESS_THRESHOLD && _motion->isMotionDetected());
+                }
+                break;
+        }
+        
+        if (targetState != _state) {
+            _state = targetState;
+            digitalWrite(_pin, _state ? HIGH : LOW);
+            EventSystem::instance().emit(EventType::DeviceStateChanged, this, _state);
+        }
+    }
+
+public:
+    /**
+     * @brief Constructor for outdoor light
+     * @param name Device identifier name
+     * @param pin Arduino pin to which the light is connected
+     * @param photo Pointer to high-level light sensor
+     * @param motion Pointer to high-level motion sensor
+     */
+    OutsideLight(const __FlashStringHelper* name, uint8_t pin, PhotoresistorSensor* photo, PIRSensorDevice* motion)
+        : SimpleLight(name, pin), _mode(OutsideMode::OFF), _photo(photo), _motion(motion) {
+        const_cast<DeviceType&>(type) = DeviceType::LightOutside;
+        // Register for sensor updates
+        EventSystem::instance().addListener(this, EventType::SensorUpdated);
+    }
+
+    virtual ~OutsideLight() {
+        EventSystem::instance().removeListener(this);
+    }
+
+    /**
+     * @brief Sets the operating mode
+     * @param mode Desired mode (OFF, ON, AUTO_LIGHT, AUTO_MOTION)
+     */
+    void setMode(OutsideMode mode) {
+        _mode = mode;
+        evaluateState();
+    }
+
+    /**
+     * @brief Periodic state update - Empty (Event Driven)
+     */
+    void update() override {}
+
+    /**
+     * @brief Toggles between ON and OFF modes
+     */
+    void toggle() override {
+        if (_state) {
+            _mode = OutsideMode::OFF;
+        } else {
+            _mode = OutsideMode::ON;
+        }
+        evaluateState();
+    }
+
+    /**
+     * @brief Handles events from sensors and buttons
+     */
+    void handleEvent(EventType type, IDevice* source, int value) override {
+        // Handle button presses via base class
+        SimpleLight::handleEvent(type, source, value);
+
+        // Handle sensor updates
+        if (type == EventType::SensorUpdated) {
+            if (source == _photo || source == _motion) {
+                evaluateState();
+            }
+        }
+    }
 };
 
 /**
@@ -1128,26 +1161,28 @@ public:
      * @param p Pointer to light sensor
      * @param m Pointer to motion sensor
      */
-    static void createOutsideLight(const __FlashStringHelper* name, uint8_t pin, LightSensor* p, MovementSensor* m) {
-        new OutsideLight(name, pin, p, m);
+    static OutsideLight* createOutsideLight(const __FlashStringHelper* name, uint8_t pin, PhotoresistorSensor* p, PIRSensorDevice* m) {
+        return new OutsideLight(name, pin, p, m);
     }
     
     /**
      * @brief Creates a light sensor
      * @param name Device name
      * @param pin Arduino analog pin
+     * @return Pointer to created sensor
      */
-    static void createPhotoresistorSensor(const __FlashStringHelper* name, uint8_t pin) {
-        new PhotoresistorSensor(name, pin);
+    static PhotoresistorSensor* createPhotoresistorSensor(const __FlashStringHelper* name, uint8_t pin) {
+        return new PhotoresistorSensor(name, pin);
     }
     
     /**
      * @brief Creates a PIR motion sensor
      * @param name Device name
      * @param pin Arduino digital pin
+     * @return Pointer to created sensor
      */
-    static void createPIRSensor(const __FlashStringHelper* name, uint8_t pin) {
-        new PIRSensorDevice(name, pin);
+    static PIRSensorDevice* createPIRSensor(const __FlashStringHelper* name, uint8_t pin) {
+        return new PIRSensorDevice(name, pin);
     }
     
     /**

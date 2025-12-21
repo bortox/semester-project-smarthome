@@ -177,18 +177,6 @@ public:
     uint8_t getActiveCount() const {
         return _activeScenes.size();
     }
-
-    /**
-     * @brief Gets an active scene by index
-     * @param idx Index in active scenes array
-     * @return Pointer to scene or nullptr if invalid index
-     */
-    IScene* getScene(uint8_t idx) {
-        if (idx < _activeScenes.size()) {
-            return _activeScenes[idx];
-        }
-        return nullptr;
-    }
 };
 
 // ==================== CONCRETE SCENES ====================
@@ -285,9 +273,9 @@ public:
                     }
                     rgb->setColor(color);
                     
-                    // Ensure brightness is on
+                    // Ensure light is on
                     if (rgb->getBrightness() == 0) {
-                        rgb->setBrightness(100);
+                        rgb->toggle();
                     }
                 }
             }

@@ -65,14 +65,16 @@ DeviceFactory::createDimmableLight(F("Bedroom"), 5);
 // Ambient Light
 DeviceFactory::createRGBLight(F("Ambient Light"), 9, 10, 11);
 
-// Outside / Garden
-static LightSensor photo(F("Photo"), A6);
-static MovementSensor pir(F("PIR"), 7);
-DeviceFactory::createOutsideLight(F("Garden"), 6, &photo, &pir);
-
+// Outside / Garden - Create Sensors First
 DeviceFactory::createTemperatureSensor(F("Outside Temp"));
-DeviceFactory::createPhotoresistorSensor(F("Outside Light"), A6);
-DeviceFactory::createPIRSensor(F("Motion PIR"), 7);
+// Capture pointers for linking
+PhotoresistorSensor* outsidePhoto = DeviceFactory::createPhotoresistorSensor(F("Outside Light"), A6);
+PIRSensorDevice* outsidePIR = DeviceFactory::createPIRSensor(F("Motion PIR"), 7);
+
+// Create Outside Light linking to sensors
+if (outsidePhoto && outsidePIR) {
+    DeviceFactory::createOutsideLight(F("Garden"), 6, outsidePhoto, outsidePIR);
+}
 
 // ===== Create Virtual Sensors =====
 DeviceFactory::createRamSensor(F("Free RAM"));

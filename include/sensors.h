@@ -7,10 +7,8 @@
 // BASE SENSOR
 template<typename T>
 class Sensor {
-protected:
-    const __FlashStringHelper* _name;
 public:
-    Sensor(const __FlashStringHelper* name) : _name(name) {}
+    Sensor() {} 
     virtual T getValue() const = 0;
 };
 
@@ -20,9 +18,8 @@ public:
 #endif
 
 class LM75Sensor : public Sensor<int16_t> {
-public:
-    LM75Sensor(const __FlashStringHelper* name) : Sensor<int16_t>(name) {}
-    
+public:   
+    LM75Sensor() : Sensor<int16_t>() {}  
     void begin() {
 #if DEBUG_I2C
         digitalWrite(LED_BUILTIN, HIGH);
@@ -83,14 +80,13 @@ private:
     int _rawMax;  // Calibrated bright value
 
 public:
-    LightSensor(const __FlashStringHelper* name, uint8_t pin) 
-        : Sensor<int>(name), _pin(pin), _rawMin(1023), _rawMax(0) {
-        pinMode(_pin, INPUT_PULLUP);
+    LightSensor(uint8_t pin) 
+        : Sensor<int>(), _pin(pin), _rawMin(0), _rawMax(1023) {
+        pinMode(_pin, INPUT);
     }
     
     int getValue() const override { 
         int raw = getRaw();
-        // Handle inverted range (PULLUP: dark=1023, bright=0)
         return map(raw, _rawMin, _rawMax, 0, 100); 
     }
     
@@ -108,7 +104,7 @@ class MovementSensor : public Sensor<bool> {
 private:
     uint8_t _pin;
 public:
-    MovementSensor(const __FlashStringHelper* name, uint8_t pin) : Sensor<bool>(name), _pin(pin) {
+    MovementSensor(uint8_t pin) : Sensor<bool>(), _pin(pin) {
         pinMode(_pin, INPUT);
     }
     bool getValue() const override { return digitalRead(_pin); }
@@ -124,7 +120,7 @@ public:
  */
 class RamUsageSensor : public Sensor<int16_t> {
 public:
-    RamUsageSensor(const __FlashStringHelper* name) : Sensor<int16_t>(name) {}
+    RamUsageSensor() : Sensor<int16_t>() {}
     
     /**
      * @brief Gets current free RAM in bytes
@@ -144,7 +140,7 @@ public:
  */
 class VccSensor : public Sensor<int16_t> {
 public:
-    VccSensor(const __FlashStringHelper* name) : Sensor<int16_t>(name) {}
+    VccSensor() : Sensor<int16_t>() {}
     
     /**
      * @brief Reads VCC using internal 1.1V reference
@@ -203,7 +199,7 @@ private:
     static constexpr unsigned long WINDOW_MS = 1000;
 
 public:
-    LoopTimeSensor(const __FlashStringHelper* name) : Sensor<int16_t>(name), _currentMax(0), _reportedMax(0), _windowStart(0) {
+    LoopTimeSensor() : Sensor<int16_t>(), _currentMax(0), _reportedMax(0), _windowStart(0) {
         _instance = this;
         _windowStart = millis();
     }

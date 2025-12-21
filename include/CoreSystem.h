@@ -33,7 +33,7 @@ enum class DeviceType : uint8_t {
  * @brief Types of events propagated through the system
  * @ingroup Core
  */
-enum EventType : uint8_t {  // uint8_t instead of int
+enum class EventType : uint8_t {  // Changed to enum class
     EVENT_NONE,             ///< No event
     DeviceStateChanged,     ///< Device turned On/Off
     DeviceValueChanged,     ///< Device value (brightness/color) changed
@@ -261,13 +261,13 @@ public:
         for (uint8_t i = 0; i < _listeners.size(); i++) {
             if (_listeners[i].listener == listener) {
                 // Aggiungi tipo alla mask esistente
-                _listeners[i].eventMask |= (1 << type);
+                _listeners[i].eventMask |= (1 << static_cast<uint8_t>(type));
                 return;
             }
         }
         
         // Nuovo listener, crea entry con solo questo tipo
-        ListenerEntry entry = {listener, (uint8_t)(1 << type)};
+        ListenerEntry entry = {listener, (uint8_t)(1 << static_cast<uint8_t>(type))};
         _listeners.add(entry);
     }
 
@@ -283,7 +283,7 @@ public:
     void emit(EventType type, IDevice* source, int value) {
         // FIX: Filtra listener per tipo evento
         for (uint8_t i = 0; i < _listeners.size(); i++) {
-            if (_listeners[i].eventMask & (1 << type)) {
+            if (_listeners[i].eventMask & (1 << static_cast<uint8_t>(type))) {
                 _listeners[i].listener->handleEvent(type, source, value);
             }
         }
