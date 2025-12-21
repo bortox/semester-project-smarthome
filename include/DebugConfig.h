@@ -1,45 +1,35 @@
 /**
  * @file DebugConfig.h
- * @brief Global debug configuration macros
+ * @brief Debug configuration flags for the smart home system
+ * @author Andrea Bortolotti
+ * @version 2.0
+ * 
+ * @details Centralized debug flag definitions. Enable/disable
+ * debug features by setting flags to 1 or 0.
+ * 
+ * @note This file must remain header-only.
+ * 
  * @ingroup Core
  */
 #ifndef DEBUG_CONFIG_H
 #define DEBUG_CONFIG_H
 
-#include <Arduino.h>
+/**
+ * @brief Enable I2C debug LED indicators
+ * @details When enabled, LED_BUILTIN flashes during I2C operations
+ */
+#define DEBUG_I2C 0
 
 /**
- * @def DEBUG_SERIAL
- * @brief Enable/Disable Serial debug output
- * 
- * Set to 0 for production to save Flash/RAM.
- * Can be overridden via build flags.
+ * @brief Enable memory monitoring debug output
+ * @details When enabled, free RAM is logged periodically
  */
-#ifndef DEBUG_SERIAL
-  #define DEBUG_SERIAL 0
-#endif
+#define DEBUG_MEMORY 0
 
 /**
- * @def DEBUG_I2C
- * @brief Enable/Disable I2C debugging via built-in LED
- * 
- * LED ON = I2C communication active
- * LED Stuck ON = I2C bus hang
+ * @brief Enable event system debug output
+ * @details When enabled, event emissions are logged
  */
-#ifndef DEBUG_I2C
-  #define DEBUG_I2C 1
-#endif
-
-#if DEBUG_SERIAL
-  #define DEBUG_PRINT(x) Serial.print(x)
-  #define DEBUG_PRINTLN(x) Serial.println(x)
-  #define DEBUG_PRINT_F(x) Serial.print(F(x))
-  #define DEBUG_PRINTLN_F(x) Serial.println(F(x))
-#else
-  #define DEBUG_PRINT(x)
-  #define DEBUG_PRINTLN(x)
-  #define DEBUG_PRINT_F(x)
-  #define DEBUG_PRINTLN_F(x)
-#endif
+#define DEBUG_EVENTS 0
 
 #endif

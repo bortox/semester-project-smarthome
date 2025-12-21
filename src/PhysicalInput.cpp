@@ -1,55 +1,128 @@
 /**
  * @file PhysicalInput.cpp
- * @brief Implementation of hardware input handling
+ * @brief Implementation of physical input handlers
+ * @author Andrea Bortolotti
+ * @version 2.0
  * @ingroup HAL
  */
+#include <Arduino.h>
 #include "PhysicalInput.h"
 #include "Devices.h"
-#include "FlexibleMenu.h"  // For NavigationManager
+#include "FlexibleMenu.h"
 
-ButtonInput::ButtonInput(uint8_t pin, uint8_t buttonId, IDevice* linkedDevice, ButtonMode mode) 
+ButtonInput::ButtonInput(uint8_t pin, uint8_t buttonId, IDevice* linkedDevice, ButtonMode mode)
     : _pin(pin), _buttonId(buttonId), _lastState(false), 
       _lastDebounceTime(0), _linkedDevice(linkedDevice), _mode(mode) {
-    
     if (_mode == ButtonMode::ACTIVE_LOW) {
         pinMode(_pin, INPUT_PULLUP);
     } else {
         pinMode(_pin, INPUT);
     }
     
-    // FIX: Register for linked device events (to update local state)
-    EventSystem::instance().addListener(this, EventType::DeviceStateChanged);
+    if (_linkedDevice) {
+        EventSystem::instance().addListener(this, EventType::DeviceStateChanged);
+    }
 }
 
 void ButtonInput::update() {
-    bool currentReading = digitalRead(_pin);
-    
+    bool reading;
     if (_mode == ButtonMode::ACTIVE_LOW) {
-        currentReading = !currentReading;
+        reading = (digitalRead(_pin) == LOW);
+    } else {
+        reading = (digitalRead(_pin) == HIGH);
     }
     
-    if (currentReading && !_lastState) {
-        if ((millis() - _lastDebounceTime) > DEBOUNCE_DELAY) {
-            onButtonPressed();
-        }
+    if (reading != _lastState) {
         _lastDebounceTime = millis();
     }
     
-    _lastState = currentReading;
+    if ((millis() - _lastDebounceTime) > DEBOUNCE_DELAY) {
+        if (reading && !_lastState) {
+            onButtonPressed();
+        }
+        _lastState = reading;
+    }
 }
 
 void ButtonInput::onButtonPressed() {
-    // FIX: Emit event instead of calling toggle() directly
-    // This restores the Observer Pattern and maintains decoupling
     if (_linkedDevice) {
         EventSystem::instance().emit(EventType::ButtonPressed, _linkedDevice, _buttonId);
     }
 }
 
 void ButtonInput::handleEvent(EventType type, IDevice* device, int value) {
-    // FIX: React to linked device events to update UI if necessary
-    if (type == EventType::DeviceStateChanged && device == _linkedDevice) {
-        // Optional: button LED feedback, log, etc.
+    (void)type;
+    (void)device;
+    (void)value;
+}
+
+PotentiometerInput::PotentiometerInput(uint8_t pin, DimmableLight* linkedLight)
+    : _pin(pin), _light(linkedLight), _lastMappedValue(0), _sampleIndex(0) {
+    pinMode(_pin, INPUT);
+    
+    uint16_t initial = analogRead(_pin);
+    for (uint8_t i = 0; i < SAMPLE_COUNT; i++) {
+        _samples[i] = initial;
+    }
+}
+
+void PotentiometerInput::update() {
+    if (!_light) return;
+    
+    _samples[_sampleIndex] = analogRead(_pin);
+    _sampleIndex = (_sampleIndex + 1) % SAMPLE_COUNT;
+    
+    uint32_t sum = 0;
+    for (uint8_t i = 0; i < SAMPLE_COUNT; i++) {
+        sum += _samples[i];
+    }
+    uint16_t avg = sum / SAMPLE_COUNT;
+    
+    uint8_t mappedValue = map(avg, 0, 1023, 0, 100);
+    
+    if (abs((int)mappedValue - (int)_lastMappedValue) >= POT_CHANGE_THRESHOLD) {
+        _lastMappedValue = mappedValue;
+        
+        if (mappedValue < POT_OFF_THRESHOLD) {
+            if (_light->getState()) {
+                _light->toggle();
+            }
+        } else {
+            if (!_light->getState()) {
+                _light->toggle();
+            }
+            _light->setBrightness(mappedValue);
+        }
+    }
+}
+
+NavButtonInput::NavButtonInput(uint8_t pin, InputEvent command, ButtonMode mode)
+    : _pin(pin), _command(command), _lastState(false), 
+      _lastDebounceTime(0), _mode(mode) {
+    if (_mode == ButtonMode::ACTIVE_LOW) {
+        pinMode(_pin, INPUT_PULLUP);
+    } else {
+        pinMode(_pin, INPUT);
+    }
+}
+
+void NavButtonInput::update() {
+    bool reading;
+    if (_mode == ButtonMode::ACTIVE_LOW) {
+        reading = (digitalRead(_pin) == LOW);
+    } else {
+        reading = (digitalRead(_pin) == HIGH);
+    }
+    
+    if (reading != _lastState) {
+        _lastDebounceTime = millis();
+    }
+    
+    if ((millis() - _lastDebounceTime) > DEBOUNCE_DELAY) {
+        if (reading && !_lastState) {
+            NavigationManager::instance().handleInput(_command);
+        }
+        _lastState = reading;
     }
 }
 
@@ -66,94 +139,18 @@ void InputManager::registerPotentiometer(PotentiometerInput* pot) {
     _potentiometers.add(pot);
 }
 
-// ====================== NavButtonInput Implementation ======================
-
-NavButtonInput::NavButtonInput(uint8_t pin, InputEvent command, ButtonMode mode)
-    : _pin(pin), _command(command), _lastState(false), _lastDebounceTime(0), _mode(mode) {
-    
-    if (_mode == ButtonMode::ACTIVE_LOW) {
-        pinMode(_pin, INPUT_PULLUP);
-    } else {
-        pinMode(_pin, INPUT);
-    }
-}
-
-void NavButtonInput::update() {
-    bool currentReading = digitalRead(_pin);
-    
-    if (_mode == ButtonMode::ACTIVE_LOW) {
-        currentReading = !currentReading;
-    }
-    
-    if (currentReading && !_lastState) {
-        if ((millis() - _lastDebounceTime) > DEBOUNCE_DELAY) {
-            // Call NavigationManager directly with strongly typed event
-            NavigationManager::instance().handleInput(_command);
-        }
-        _lastDebounceTime = millis();
-    }
-    
-    _lastState = currentReading;
-}
-
-// ====================== InputManager Updates ======================
-
 void InputManager::registerNavButton(NavButtonInput* navBtn) {
     _navButtons.add(navBtn);
 }
 
-
 void InputManager::updateAll() {
-    // Update regular buttons
     for (uint8_t i = 0; i < _buttons.size(); i++) {
-        if (_buttons[i]) _buttons[i]->update();
+        _buttons[i]->update();
     }
-
-    // Update potentiometers
     for (uint8_t i = 0; i < _potentiometers.size(); i++) {
-        if (_potentiometers[i]) _potentiometers[i]->update();
+        _potentiometers[i]->update();
     }
-
-    // Update navigation buttons
     for (uint8_t i = 0; i < _navButtons.size(); i++) {
-        if (_navButtons[i]) _navButtons[i]->update();
-    }
-
-    // Modulino knob support removed — no additional update call here.
-}
-
-// ====================== PotentiometerInput Implementation ======================
-
-PotentiometerInput::PotentiometerInput(uint8_t pin, DimmableLight* light)
-    : _pin(pin), _light(light), _lastMappedValue(0), _sampleIndex(0) {
-    for (uint8_t i = 0; i < SAMPLE_COUNT; i++) {
-        _samples[i] = 0;
-    }
-}
-
-void PotentiometerInput::update() {
-    if (!_light) return;
-
-    uint16_t rawValue = analogRead(_pin);
-
-    _samples[_sampleIndex] = rawValue;
-    _sampleIndex = (_sampleIndex + 1) % SAMPLE_COUNT;
-
-    uint32_t sum = 0;
-    for (uint8_t i = 0; i < SAMPLE_COUNT; i++) {
-        sum += _samples[i];
-    }
-    uint16_t avgValue = sum / SAMPLE_COUNT;
-
-    uint8_t mappedValue = map(avgValue, 0, 1023, 0, 100);
-
-    if (abs((int16_t)mappedValue - (int16_t)_lastMappedValue) >= POT_CHANGE_THRESHOLD) {
-        if (mappedValue > POT_OFF_THRESHOLD) {
-            _light->setBrightness(mappedValue);
-        } else {
-            _light->setBrightness(0);
-        }
-        
-        _lastMappedValue = mappedValue;
+        _navButtons[i]->update();
     }
 }

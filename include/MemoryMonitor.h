@@ -1,41 +1,46 @@
 /**
  * @file MemoryMonitor.h
- * @brief RAM usage monitoring utilities
+ * @brief Memory monitoring utilities for AVR microcontrollers
+ * @author Andrea Bortolotti
+ * @version 2.0
+ * 
+ * @details Provides functions to measure free RAM between heap and stack.
+ * Essential for debugging memory issues on resource-constrained systems.
+ * 
+ * @note This file must remain header-only.
+ * 
  * @ingroup Core
  */
-#pragma once
-#include <Arduino.h>
-#include "DebugConfig.h" // Assicurati di includere questo
+#ifndef MEMORY_MONITOR_H
+#define MEMORY_MONITOR_H
 
-extern char __heap_start;
-extern char *__brkval;
+#include <Arduino.h>
 
 /**
- * @brief Calculates free RAM between stack and heap
- * @return Bytes of free memory
+ * @brief External reference to heap end marker
+ * @details Provided by avr-libc, marks current end of heap
+ */
+extern int __heap_start;
+
+/**
+ * @brief External reference to break value
+ * @details Provided by avr-libc, marks current heap allocation point
+ */
+extern int* __brkval;
+
+/**
+ * @brief Calculates free RAM between heap and stack
+ * @return Free memory in bytes
+ * 
+ * @details Uses AVR memory layout to calculate space between
+ * heap top (__brkval) and stack pointer (SP). Returns difference
+ * between stack pointer and either __brkval or __heap_start.
+ * 
+ * @note Result may vary during execution as stack grows/shrinks
  */
 inline int getFreeMemory() {
-    char top;
-    return &top - (__brkval == 0 ? &__heap_start : __brkval);
+    int v;
+    return (int)&v - (__brkval == 0 ? (int)&__heap_start : (int)__brkval);
 }
 
-/**
- * @brief Prints memory usage report to Serial
- * 
- * Only active if DEBUG_SERIAL is enabled.
- */
-inline void printMemoryReport() {
-#if DEBUG_SERIAL
-    int free_mem = getFreeMemory();
-    char *heap_end = __brkval;
-    if (heap_end == 0) heap_end = &__heap_start;
-    
-    int static_data = (int)&__heap_start - RAMSTART;
-    int heap_used = heap_end - &__heap_start;
-    int stack_used = RAMEND - (int)&free_mem + 1;
-
-    Serial.println(F("\n--- Memory ---"));
-    Serial.print(F("Total: ")); Serial.print(RAMEND - RAMSTART + 1); Serial.println(F(" B"));
-    Serial.print(F("FREE: ")); Serial.print(free_mem); Serial.println(F(" B"));
 #endif
-}

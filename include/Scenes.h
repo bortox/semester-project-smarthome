@@ -1,393 +1,234 @@
 /**
  * @file Scenes.h
- * @brief Scene management and concrete scene implementations
+ * @brief Scene management system for automated lighting control
+ * @author Andrea Bortolotti
+ * @version 2.0
  * @ingroup Automation
+ * 
+ * Implements a multi-layer scene architecture with priority-based resolution.
+ * Multiple scenes can be active simultaneously, with higher priority scenes
+ * overriding lower priority ones (Painter's Algorithm).
  */
 #ifndef SCENES_H
 #define SCENES_H
 
+#include <Arduino.h>
 #include "CoreSystem.h"
-#include "Devices.h"
+
+class DimmableLight;
+class RGBLight;
+class PIRSensorDevice;
 
 /**
  * @class IScene
- * @brief Abstract interface for scene implementations
+ * @brief Abstract base class for automation scenes
  * @ingroup Automation
  * 
- * Scenes are layers that can modify device states. Multiple scenes can be
- * active simultaneously, with conflicts resolved by priority (Painter's Algorithm).
+ * Scenes modify device states based on conditions or timers.
+ * Each scene has a priority level for conflict resolution.
  * Higher priority scenes are applied last, overwriting lower priority ones.
  */
 class IScene {
 protected:
-    bool _active;
-    const char* _name;
+    bool _active;           ///< Current activation state
+    uint8_t _priority;      ///< Scene priority (0-255, higher = applied later)
 
 public:
-    IScene(const char* name) : _active(false), _name(name) {}
+    /**
+     * @brief Constructs scene with priority
+     * @param priority Scene priority (higher = applied later = overrides)
+     */
+    IScene(uint8_t priority);
+    
+    /**
+     * @brief Virtual destructor for proper cleanup
+     */
     virtual ~IScene() {}
 
     /**
-     * @brief Gets the scene priority (0-255)
-     * @return Priority value (higher = applied later = overrides others)
-     */
-    virtual uint8_t getPriority() const = 0;
-
-    /**
-     * @brief Gets the scene name
-     * @return Pointer to name string
-     */
-    const char* getName() const { return _name; }
-
-    /**
-     * @brief Checks if scene is currently active
-     * @return true if active, false otherwise
-     */
-    bool isActive() const { return _active; }
-
-    /**
-     * @brief Called when scene is activated
-     * 
-     * Override to perform initialization (e.g., register event listeners,
-     * save device states, apply global settings)
-     */
-    virtual void enter() { _active = true; }
-
-    /**
-     * @brief Called when scene is deactivated
-     * 
-     * Override to perform cleanup (e.g., unregister listeners,
-     * restore previous states)
-     */
-    virtual void exit() { _active = false; }
-
-    /**
      * @brief Periodic update - applies scene effects to devices
-     * 
-     * Called every frame by SceneManager. Should be non-blocking.
-     * Higher priority scenes are called last, allowing them to override.
+     * @details Called every frame by SceneManager. Should be non-blocking.
      */
     virtual void update() = 0;
+    
+    /**
+     * @brief Called when scene is activated
+     * @details Override to perform initialization (e.g., register listeners, apply settings)
+     */
+    virtual void onActivate() = 0;
+    
+    /**
+     * @brief Called when scene is deactivated
+     * @details Override to perform cleanup (e.g., unregister listeners, restore states)
+     */
+    virtual void onDeactivate() = 0;
+
+    /**
+     * @brief Gets scene display name
+     * @return Null-terminated string stored in PROGMEM
+     */
+    virtual const char* getName() const = 0;
+
+    /**
+     * @brief Checks if scene is active
+     * @return True if active
+     */
+    bool isActive() const;
+    
+    /**
+     * @brief Gets scene priority
+     * @return Priority value (0-255)
+     */
+    uint8_t getPriority() const;
+    
+    /**
+     * @brief Sets scene active state and calls appropriate callback
+     * @param active New state
+     */
+    void setActive(bool active);
 };
 
 /**
  * @class SceneManager
- * @brief Singleton managing active scenes with priority-based conflict resolution
+ * @brief Singleton manager for scene lifecycle and execution
  * @ingroup Automation
  * 
- * Maintains a list of active scenes sorted by priority. During update(), scenes
- * are applied in ascending priority order (Painter's Algorithm), allowing higher
- * priority scenes to override lower ones. This provides deterministic behavior
- * without complex state merging.
+ * Maintains sorted list of active scenes by priority.
+ * Updates all active scenes each loop iteration using Painter's Algorithm.
  */
 class SceneManager {
 private:
-    DynamicArray<IScene*> _activeScenes;
-    
+    DynamicArray<IScene*> _activeScenes;  ///< Active scenes sorted by priority
+
+    /**
+     * @brief Private constructor for singleton pattern
+     */
     SceneManager() {}
 
 public:
     /**
-     * @brief Gets the singleton instance
-     * @return Reference to SceneManager instance
+     * @brief Gets singleton instance
+     * @return Reference to SceneManager
      */
-    static SceneManager& instance() {
-        static SceneManager inst;
-        return inst;
-    }
+    static SceneManager& instance();
 
     /**
      * @brief Activates a scene and adds it to the active list
-     * @param scene Scene to activate
-     * @return true if added successfully, false if already active or array full
+     * @param scene Scene to add (inserted by priority)
+     * @return True if added successfully
      */
-    bool addScene(IScene* scene) {
-        if (!scene) return false;
-        
-        // Check if already active
-        for (uint8_t i = 0; i < _activeScenes.size(); i++) {
-            if (_activeScenes[i] == scene) return false;
-        }
-        
-        scene->enter();
-        return _activeScenes.add(scene);
-    }
-
+    bool addScene(IScene* scene);
+    
     /**
      * @brief Deactivates a scene and removes it from the active list
-     * @param scene Scene to deactivate
+     * @param scene Scene to remove
      */
-    void removeScene(IScene* scene) {
-        if (!scene) return;
-        
-        for (uint8_t i = 0; i < _activeScenes.size(); i++) {
-            if (_activeScenes[i] == scene) {
-                scene->exit();
-                _activeScenes.remove(i);
-                return;
-            }
-        }
-    }
-
+    void removeScene(IScene* scene);
+    
     /**
-     * @brief Deactivates all scenes
+     * @brief Deactivates all active scenes
      */
-    void clearAll() {
-        for (uint8_t i = 0; i < _activeScenes.size(); i++) {
-            _activeScenes[i]->exit();
-        }
-        _activeScenes.clear();
-    }
-
+    void clearAll();
+    
     /**
-     * @brief Periodic update - applies all active scenes in priority order
-     * 
-     * Implements Painter's Algorithm: sorts scenes by priority (low to high)
-     * and calls update() sequentially. This allows high-priority scenes to
-     * overwrite low-priority ones deterministically.
-     * 
-     * Uses bubble sort (acceptable for small arrays, ~5 scenes max).
+     * @brief Updates all active scenes in priority order
+     * @details Implements Painter's Algorithm - low priority first
      */
-    void update() {
-        uint8_t count = _activeScenes.size();
-        if (count == 0) return;
-        
-        // Bubble sort by priority (ascending)
-        for (uint8_t i = 0; i < count - 1; i++) {
-            for (uint8_t j = 0; j < count - i - 1; j++) {
-                if (_activeScenes[j]->getPriority() > _activeScenes[j + 1]->getPriority()) {
-                    // Swap
-                    IScene* temp = _activeScenes[j];
-                    _activeScenes[j] = _activeScenes[j + 1];
-                    _activeScenes[j + 1] = temp;
-                }
-            }
-        }
-        
-        // Apply scenes in order (lowest priority first)
-        for (uint8_t i = 0; i < count; i++) {
-            _activeScenes[i]->update();
-        }
-    }
-
+    void update();
+    
     /**
-     * @brief Gets the number of active scenes
-     * @return Count of active scenes
+     * @brief Gets count of active scenes
+     * @return Number of active scenes
      */
-    uint8_t getActiveCount() const {
-        return _activeScenes.size();
-    }
+    uint8_t getActiveCount() const;
 };
-
-// ==================== CONCRETE SCENES ====================
 
 /**
  * @class NightModeScene
- * @brief Low priority scene that limits global brightness
+ * @brief Night mode scene - reduces all light brightness
  * @ingroup Automation
  * 
- * Priority: 10 (Low - applied first, can be overridden by others)
- * 
- * Reduces all light brightness to 20% by modifying the global multiplier.
- * This is a passive effect applied via DimmableLight::setBrightnessMultiplier(),
- * so update() is empty.
+ * Priority: 10 (low - base layer)
+ * Effect: Sets global brightness multiplier to 20%
  */
 class NightModeScene : public IScene {
 private:
-    uint8_t _savedMultiplier;
+    uint8_t _savedMultiplier;  ///< Saved multiplier for restoration
 
 public:
-    NightModeScene() : IScene("Night Mode"), _savedMultiplier(100) {}
-
-    uint8_t getPriority() const override { return 10; }
-
-    void enter() override {
-        IScene::enter();
-        // Save current multiplier and apply night mode
-        _savedMultiplier = 100; // Assume default is 100
-        DimmableLight::setBrightnessMultiplier(20);
-    }
-
-    void exit() override {
-        // Restore previous brightness multiplier
-        DimmableLight::setBrightnessMultiplier(_savedMultiplier);
-        IScene::exit();
-    }
-
-    void update() override {
-        // Passive effect via multiplier - no per-frame logic needed
-    }
+    /**
+     * @brief Constructs night mode scene
+     */
+    NightModeScene();
+    
+    void update() override;
+    void onActivate() override;
+    void onDeactivate() override;
+    const char* getName() const override;
 };
 
 /**
  * @class PartyScene
- * @brief Medium priority scene that cycles RGB light colors
+ * @brief Party mode scene - RGB color cycling
  * @ingroup Automation
  * 
- * Priority: 50 (Medium - can be overridden by Alarm, overrides Night Mode)
- * 
- * Cycles all RGBLight devices through Red -> Green -> Blue -> repeat
- * every 500ms using non-blocking timing.
+ * Priority: 50 (medium)
+ * Effect: Cycles RGB lights through Red -> Green -> Blue every 500ms
  */
 class PartyScene : public IScene {
 private:
-    unsigned long _lastChange;
-    uint8_t _colorIndex; // 0=Red, 1=Green, 2=Blue
-    static constexpr unsigned long CHANGE_INTERVAL_MS = 500;
+    unsigned long _lastChange;  ///< Timestamp of last color change
+    uint8_t _colorIndex;        ///< Current color index (0=R, 1=G, 2=B)
+    static constexpr unsigned long CHANGE_INTERVAL_MS = 500;  ///< Color change interval
 
 public:
-    PartyScene() : IScene("Party Mode"), _lastChange(0), _colorIndex(0) {}
-
-    uint8_t getPriority() const override { return 50; }
-
-    void enter() override {
-        IScene::enter();
-        _lastChange = millis();
-        _colorIndex = 0;
-    }
-
-    void update() override {
-        if (!_active) return;
-        
-        unsigned long now = millis();
-        if (now - _lastChange >= CHANGE_INTERVAL_MS) {
-            _lastChange = now;
-            
-            // Cycle color
-            _colorIndex = (_colorIndex + 1) % 3;
-            
-            // Apply to all RGB lights
-            DeviceRegistry& registry = DeviceRegistry::instance();
-            DynamicArray<IDevice*>& devices = registry.getDevices();
-            
-            for (uint8_t i = 0; i < devices.size(); i++) {
-                if (devices[i]->type == DeviceType::LightRGB) {
-                    RGBLight* rgb = static_cast<RGBLight*>(devices[i]);
-                    
-                    // Set color based on index
-                    RGBColor color;
-                    switch (_colorIndex) {
-                        case 0: color = {255, 0, 0}; break;   // Red
-                        case 1: color = {0, 255, 0}; break;   // Green
-                        case 2: color = {0, 0, 255}; break;   // Blue
-                    }
-                    rgb->setColor(color);
-                    
-                    // Ensure light is on
-                    if (rgb->getBrightness() == 0) {
-                        rgb->toggle();
-                    }
-                }
-            }
-        }
-    }
+    /**
+     * @brief Constructs party mode scene
+     */
+    PartyScene();
+    
+    void update() override;
+    void onActivate() override;
+    void onDeactivate() override;
+    const char* getName() const override;
 };
 
 /**
  * @class AlarmScene
- * @brief Highest priority scene that flashes red on motion detection
+ * @brief Alarm mode scene - motion-triggered red flash
  * @ingroup Automation
  * 
- * Priority: 255 (Maximum - overrides all other scenes)
- * 
- * Listens to PIR motion sensor events. When motion is detected, flashes
- * all RGBLight devices red (ON/OFF) every 200ms. If no motion for 10 seconds,
- * stops flashing and becomes transparent (allows underlying scenes to show).
+ * Priority: 255 (highest - emergency override)
+ * Effect: Flashes all RGB lights red when PIR detects motion.
+ * Auto-deactivates flash after 10 seconds of no motion.
  */
 class AlarmScene : public IScene, public IEventListener {
 private:
-    bool _triggered;
-    bool _flashState;
-    unsigned long _lastFlash;
-    unsigned long _lastMotion;
-    static constexpr unsigned long FLASH_INTERVAL_MS = 200;
-    static constexpr unsigned long TIMEOUT_MS = 10000; // 10 seconds
+    bool _triggered;            ///< Motion detection triggered flag
+    bool _flashState;           ///< Current flash on/off state
+    unsigned long _lastFlash;   ///< Timestamp of last flash toggle
+    unsigned long _lastMotion;  ///< Timestamp of last motion detection
+    static constexpr unsigned long FLASH_INTERVAL_MS = 200;   ///< Flash toggle interval
+    static constexpr unsigned long TIMEOUT_MS = 10000;        ///< Motion timeout (10s)
 
 public:
-    AlarmScene() : IScene("Alarm Mode"), _triggered(false), 
-                   _flashState(false), _lastFlash(0), _lastMotion(0) {}
-
-    uint8_t getPriority() const override { return 255; }
-
-    void enter() override {
-        IScene::enter();
-        _triggered = false;
-        _flashState = false;
-        _lastFlash = millis();
-        _lastMotion = millis();
-        
-        // Subscribe to sensor events
-        EventSystem::instance().addListener(this, EventType::SensorUpdated);
-    }
-
-    void exit() override {
-        EventSystem::instance().removeListener(this);
-        
-        // Restore lights to OFF state
-        DeviceRegistry& registry = DeviceRegistry::instance();
-        DynamicArray<IDevice*>& devices = registry.getDevices();
-        
-        for (uint8_t i = 0; i < devices.size(); i++) {
-            if (devices[i]->type == DeviceType::LightRGB) {
-                RGBLight* rgb = static_cast<RGBLight*>(devices[i]);
-                rgb->setBrightness(0);
-            }
-        }
-        
-        IScene::exit();
-    }
-
-    void handleEvent(EventType type, IDevice* source, int value) override {
-        if (type == EventType::SensorUpdated && source->type == DeviceType::SensorPIR) {
-            if (value == 1) { // Motion detected
-                _triggered = true;
-                _lastMotion = millis();
-            }
-        }
-    }
-
-    void update() override {
-        if (!_active) return;
-        
-        unsigned long now = millis();
-        
-        // Check timeout
-        if (_triggered && (now - _lastMotion > TIMEOUT_MS)) {
-            _triggered = false;
-            _flashState = false;
-            
-            // Turn off all RGB lights
-            DeviceRegistry& registry = DeviceRegistry::instance();
-            DynamicArray<IDevice*>& devices = registry.getDevices();
-            
-            for (uint8_t i = 0; i < devices.size(); i++) {
-                if (devices[i]->type == DeviceType::LightRGB) {
-                    RGBLight* rgb = static_cast<RGBLight*>(devices[i]);
-                    rgb->setBrightness(0);
-                }
-            }
-        }
-        
-        // Flash logic
-        if (_triggered && (now - _lastFlash >= FLASH_INTERVAL_MS)) {
-            _lastFlash = now;
-            _flashState = !_flashState;
-            
-            // Apply flash to all RGB lights
-            DeviceRegistry& registry = DeviceRegistry::instance();
-            DynamicArray<IDevice*>& devices = registry.getDevices();
-            
-            RGBColor red = {255, 0, 0};
-            
-            for (uint8_t i = 0; i < devices.size(); i++) {
-                if (devices[i]->type == DeviceType::LightRGB) {
-                    RGBLight* rgb = static_cast<RGBLight*>(devices[i]);
-                    rgb->setColor(red);
-                    rgb->setBrightness(_flashState ? 100 : 0);
-                }
-            }
-        }
-    }
+    /**
+     * @brief Constructs alarm mode scene
+     */
+    AlarmScene();
+    
+    void update() override;
+    void onActivate() override;
+    void onDeactivate() override;
+    const char* getName() const override;
+    
+    /**
+     * @brief Handles sensor events for motion detection
+     * @param type Event type
+     * @param device Source device
+     * @param value Event value (1 = motion detected)
+     */
+    void handleEvent(EventType type, IDevice* device, int value) override;
 };
 
 #endif

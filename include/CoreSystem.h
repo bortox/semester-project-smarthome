@@ -1,6 +1,17 @@
 /**
  * @file CoreSystem.h
- * @brief Core system definitions, interfaces, and memory management
+ * @brief Core system infrastructure for event-driven embedded architecture
+ * @author Andrea Bortolotti
+ * @version 2.0
+ * 
+ * @details Provides the foundational components for the smart home system:
+ * - Dynamic array container (template-based, header-only)
+ * - Event system for decoupled communication
+ * - Device registry for centralized device management
+ * - Base device interface
+ * 
+ * @note This file must remain header-only due to template classes.
+ * 
  * @ingroup Core
  */
 #ifndef CORE_SYSTEM_H
@@ -8,128 +19,115 @@
 
 #include <Arduino.h>
 
-// --- Enums ---
 /**
- * @enum DeviceType
- * @brief Enumeration of supported device types
+ * @brief Device type discriminator for polymorphic dispatch
  * @ingroup Core
  */
 enum class DeviceType : uint8_t {
-    LightSimple,        ///< Basic On/Off light
+    Unknown,            ///< Default/uninitialized device type
+    LightSimple,        ///< Simple on/off light
     LightDimmable,      ///< Light with brightness control
-    LightRGB,           ///< RGB Light with color control
-    LightOutside,       ///< Outdoor light with automation logic
+    LightRGB,           ///< RGB color-controllable light
+    LightOutside,       ///< Outdoor light with automation
     SensorTemperature,  ///< Temperature sensor (LM75)
     SensorLight,        ///< Photoresistor light sensor
-    SensorPIR,          ///< Passive Infrared motion sensor
-    SensorRAM,          ///< Virtual sensor for RAM usage
-    SensorVCC,          ///< Virtual sensor for supply voltage
-    SensorLoopTime,     ///< Virtual sensor for main loop latency
-    Unknown             ///< Undefined device type
+    SensorPIR,          ///< Passive infrared motion sensor
+    SensorRAM,          ///< Free RAM monitor
+    SensorVCC,          ///< Supply voltage monitor
+    SensorLoopTime      ///< Loop execution time monitor
 };
 
 /**
- * @enum EventType
- * @brief Types of events propagated through the system
+ * @brief Event types for inter-component communication
  * @ingroup Core
+ * 
+ * @details Strongly-typed enum for type safety. Used with EventSystem
+ * to enable decoupled Observer pattern communication between components.
  */
-enum class EventType : uint8_t {  // Changed to enum class
-    EVENT_NONE,             ///< No event
-    DeviceStateChanged,     ///< Device turned On/Off
-    DeviceValueChanged,     ///< Device value (brightness/color) changed
-    SensorUpdated,          ///< Sensor reading updated
-    ButtonPressed,          ///< Physical button pressed
-    EVENT_ALARM             ///< Alarm system triggered
+enum class EventType : uint8_t {
+    ButtonPressed,        ///< Physical button press detected
+    DeviceStateChanged,   ///< Device on/off state changed
+    DeviceValueChanged,   ///< Device value (brightness, color) changed
+    SensorUpdated         ///< Sensor reading updated
 };
 
 /**
- * @enum InputEvent
- * @brief Navigation events for the menu system
+ * @brief Input event types for menu navigation
  * @ingroup Core
  */
 enum class InputEvent : uint8_t {
-    NONE,
-    UP,
-    DOWN,
-    ENTER,
-    BACK
+    NONE,   ///< No input detected
+    UP,     ///< Navigate up in menu
+    DOWN,   ///< Navigate down in menu
+    ENTER,  ///< Select/confirm action
+    BACK    ///< Return to previous menu
 };
 
-// --- DynamicArray ottimizzato ---
+class MenuPage;
+
+/**
+ * @brief Function pointer type for JIT menu page creation
+ * @param context User-defined context data (typically device pointer)
+ * @return Heap-allocated MenuPage instance
+ * @ingroup UI
+ */
+typedef MenuPage* (*PageBuilder)(void* context);
+
 /**
  * @class DynamicArray
- * @brief Memory-optimized dynamic array implementation
- * @tparam T Type of elements stored in the array
+ * @brief Memory-efficient dynamic array for embedded systems
+ * @tparam T Element type (typically pointers)
  * @ingroup Core
  * 
- * A lightweight vector-like container optimized for embedded systems.
+ * @details Template-based container optimized for AVR microcontrollers.
+ * Grows dynamically as needed with configurable growth factor.
+ * Must remain header-only due to template instantiation requirements.
  * 
- * @warning Not interrupt-safe.
- * @warning Uses manual memory management (new/delete). Ensure heap space is sufficient.
- * 
- * Growth Strategy:
- * - Initial capacity: 0
- * - Growth step: 4 elements
- * - Max capacity: 64 elements
- * - Shrink threshold: 8 unused slots
+ * @note Memory is allocated from heap. Monitor free RAM when using.
  */
-template <typename T>
+template<typename T>
 class DynamicArray {
 private:
-    T* _data;
-    uint8_t _size;
-    uint8_t _capacity;
-    
-    static constexpr uint8_t GROW_STEP = 2; 
-    static constexpr uint8_t MAX_CAPACITY = 64;
-    static constexpr uint8_t SHRINK_THRESHOLD = 4; // Shrink when unused space > 4
+    T* _data;           ///< Pointer to element storage
+    uint8_t _size;      ///< Current number of elements
+    uint8_t _capacity;  ///< Allocated storage capacity
 
 public:
+    /**
+     * @brief Default constructor
+     * @details Initializes empty array with no allocation
+     */
     DynamicArray() : _data(nullptr), _size(0), _capacity(0) {}
     
-    ~DynamicArray() {
-        delete[] _data;
+    /**
+     * @brief Destructor
+     * @details Frees allocated memory. Does NOT delete pointed-to objects.
+     */
+    ~DynamicArray() { 
+        if (_data) free(_data); 
     }
 
-    // Memory Safety: Prevent accidental copies (saves RAM, prevents double-free)
-    DynamicArray(const DynamicArray&) = delete;
-    DynamicArray& operator=(const DynamicArray&) = delete;
-
     /**
-     * @brief Adds an element to the array
+     * @brief Adds element to end of array
      * @param item Element to add
-     * @return true if successful, false if capacity limit reached or allocation failed
+     * @return true if successful, false if memory allocation failed
      */
-    bool add(const T& item) {
+    bool add(T item) {
         if (_size >= _capacity) {
-            uint8_t newCapacity = _capacity + GROW_STEP;
-            
-            if (newCapacity > MAX_CAPACITY) {
-                if (_capacity < MAX_CAPACITY) newCapacity = MAX_CAPACITY;
-                else return false; 
-            }
-
-            T* newData = new T[newCapacity];
-            if (!newData) return false; 
-
-            for (uint8_t i = 0; i < _size; i++) {
-                newData[i] = _data[i];
-            }
-
-            delete[] _data;
+            uint8_t newCap = _capacity == 0 ? 4 : _capacity + 4;
+            T* newData = (T*)realloc(_data, newCap * sizeof(T));
+            if (!newData) return false;
             _data = newData;
-            _capacity = newCapacity;
+            _capacity = newCap;
         }
-
         _data[_size++] = item;
         return true;
     }
 
     /**
-     * @brief Removes an element at specific index
-     * @param index Index of element to remove
-     * 
-     * Shifts subsequent elements left. Triggers shrink if waste exceeds threshold.
+     * @brief Removes element at specified index
+     * @param index Position of element to remove
+     * @details Shifts subsequent elements left to fill gap
      */
     void remove(uint8_t index) {
         if (index < _size) {
@@ -137,182 +135,224 @@ public:
                 _data[i] = _data[i + 1];
             }
             _size--;
-            
-            // NEW: Auto-shrink to save RAM when waste is significant
-            if (_capacity > SHRINK_THRESHOLD && (_capacity - _size) >= SHRINK_THRESHOLD) {
-                shrink();
-            }
         }
     }
 
-    // NEW: Manual memory reclamation
-    void shrink() {
-        if (_size == 0) {
-            delete[] _data;
-            _data = nullptr;
-            _capacity = 0;
-            return;
-        }
-        
-        uint8_t newCapacity = ((_size / GROW_STEP) + 1) * GROW_STEP;
-        if (newCapacity >= _capacity) return;
-        
-        T* newData = new T[newCapacity];
-        if (!newData) return;
-        
-        for (uint8_t i = 0; i < _size; i++) {
-            newData[i] = _data[i];
-        }
-        
-        delete[] _data;
-        _data = newData;
-        _capacity = newCapacity;
-    }
+    /**
+     * @brief Clears all elements
+     * @details Resets size to zero but does not free memory
+     */
+    void clear() { _size = 0; }
 
+    /**
+     * @brief Array subscript operator
+     * @param index Element index
+     * @return Reference to element at index
+     * @warning No bounds checking performed
+     */
     T& operator[](uint8_t index) { return _data[index]; }
-    const T& operator[](uint8_t index) const { return _data[index]; }
-    uint8_t size() const { return _size; }
-    void clear() { _size = 0; } // Nota: non libera memoria, resetta solo counter
-};
-
-// --- Interfaces ---
-/**
- * @class IDevice
- * @brief Abstract base interface for all hardware devices
- * @ingroup Devices
- */
-class IDevice {
-public:
-    // CHANGED: Use FlashStringHelper to save RAM
-    const __FlashStringHelper* const name;
-    const DeviceType type;
     
-    IDevice(const __FlashStringHelper* n, DeviceType t) : name(n), type(t) {}
-    virtual ~IDevice() {}
-    virtual void update() = 0;
-    virtual bool isLight() const { return false; }
-    virtual bool isSensor() const { return false; }
+    /**
+     * @brief Const array subscript operator
+     * @param index Element index
+     * @return Const reference to element at index
+     * @warning No bounds checking performed
+     */
+    const T& operator[](uint8_t index) const { return _data[index]; }
+
+    /**
+     * @brief Gets current element count
+     * @return Number of elements in array
+     */
+    uint8_t size() const { return _size; }
 };
 
-// Forward declaration
-class MenuPage;
-
-// Tipi per JIT Menu e Slider
-typedef MenuPage* (*PageBuilder)(void* context);
-typedef int (*ValueGetter)(IDevice*);
-typedef void (*ValueSetter)(IDevice*, int);
+class IDevice;
 
 /**
  * @class IEventListener
- * @brief Interface for the Observer Pattern
+ * @brief Interface for event-driven components
  * @ingroup Core
  * 
- * Classes implementing this interface can subscribe to system events.
+ * @details Implements Observer pattern. Classes inheriting this interface
+ * can subscribe to specific event types and receive notifications.
  */
 class IEventListener {
 public:
-    virtual ~IEventListener() {}
     /**
-     * @brief Callback triggered when an event occurs
-     * @param type Type of event
-     * @param source Pointer to the device that originated the event
-     * @param value Optional data value associated with the event
+     * @brief Virtual destructor for proper cleanup
      */
-    virtual void handleEvent(EventType type, IDevice* source, int value) = 0;
+    virtual ~IEventListener() {}
+    
+    /**
+     * @brief Event handler callback
+     * @param type Type of event received
+     * @param device Source device that triggered the event
+     * @param value Event-specific value (interpretation depends on event type)
+     */
+    virtual void handleEvent(EventType type, IDevice* device, int value) = 0;
 };
 
-// --- Event System ---
 /**
  * @class EventSystem
- * @brief Singleton managing event propagation (Observer Pattern)
+ * @brief Singleton event bus for decoupled communication
  * @ingroup Core
  * 
- * Central hub for dispatching events from producers (Inputs/Sensors) 
- * to consumers (UI/Logic).
+ * @details Implements publish-subscribe pattern. Components register
+ * as listeners for specific event types and receive callbacks when
+ * those events are emitted.
+ * 
+ * @note Maximum 8 event types supported (size of EventType enum)
  */
 class EventSystem {
 private:
+    /**
+     * @brief Internal listener registration structure
+     */
     struct ListenerEntry {
-        IEventListener* listener;
-        uint8_t eventMask;  // Bitmask per eventi (max 8 tipi)
+        IEventListener* listener;  ///< Pointer to listener object
+        EventType type;            ///< Event type filter
     };
     
-    DynamicArray<ListenerEntry> _listeners;
+    DynamicArray<ListenerEntry> _listeners;  ///< Registered listeners
+
+    /**
+     * @brief Private constructor for singleton pattern
+     */
     EventSystem() {}
 
 public:
     /**
-     * @brief Access the singleton instance
-     * @return Reference to EventSystem
+     * @brief Gets singleton instance
+     * @return Reference to EventSystem instance
      */
     static EventSystem& instance() {
         static EventSystem inst;
         return inst;
     }
 
-    void addListener(IEventListener* listener) {
-        // Ascolta tutti gli eventi (mask = 0xFF)
-        ListenerEntry entry = {listener, 0xFF};
-        _listeners.add(entry);
-    }
-
+    /**
+     * @brief Registers listener for specific event type
+     * @param listener Pointer to listener object
+     * @param type Event type to listen for
+     */
     void addListener(IEventListener* listener, EventType type) {
-        // FIX: Cerca se listener già registrato, altrimenti crea nuovo
-        for (uint8_t i = 0; i < _listeners.size(); i++) {
-            if (_listeners[i].listener == listener) {
-                // Aggiungi tipo alla mask esistente
-                _listeners[i].eventMask |= (1 << static_cast<uint8_t>(type));
-                return;
-            }
-        }
-        
-        // Nuovo listener, crea entry con solo questo tipo
-        ListenerEntry entry = {listener, (uint8_t)(1 << static_cast<uint8_t>(type))};
-        _listeners.add(entry);
+        _listeners.add({listener, type});
     }
 
+    /**
+     * @brief Unregisters listener from all event types
+     * @param listener Pointer to listener object to remove
+     */
     void removeListener(IEventListener* listener) {
-        for (uint8_t i = 0; i < _listeners.size(); i++) {
+        for (uint8_t i = 0; i < _listeners.size(); ) {
             if (_listeners[i].listener == listener) {
                 _listeners.remove(i);
-                return;
+            } else {
+                i++;
             }
         }
     }
 
+    /**
+     * @brief Emits event to all registered listeners
+     * @param type Event type
+     * @param source Device that triggered the event
+     * @param value Event-specific value
+     */
     void emit(EventType type, IDevice* source, int value) {
-        // FIX: Filtra listener per tipo evento
         for (uint8_t i = 0; i < _listeners.size(); i++) {
-            if (_listeners[i].eventMask & (1 << static_cast<uint8_t>(type))) {
+            if (_listeners[i].type == type) {
                 _listeners[i].listener->handleEvent(type, source, value);
             }
         }
     }
 };
 
-// --- Device Registry ---
+/**
+ * @class IDevice
+ * @brief Abstract base class for all controllable devices
+ * @ingroup Core
+ * 
+ * @details Provides common interface for device identification,
+ * type checking, and periodic updates. All concrete device classes
+ * must inherit from this interface.
+ */
+class IDevice {
+public:
+    const __FlashStringHelper* name;  ///< Device name stored in Flash memory
+    const DeviceType type;            ///< Device type discriminator
+
+    /**
+     * @brief Constructor
+     * @param n Device name (Flash string)
+     * @param t Device type
+     */
+    IDevice(const __FlashStringHelper* n, DeviceType t) : name(n), type(t) {}
+    
+    /**
+     * @brief Virtual destructor
+     */
+    virtual ~IDevice() {}
+
+    /**
+     * @brief Periodic update callback
+     * @details Called from main loop. Implementations should be non-blocking.
+     */
+    virtual void update() = 0;
+
+    /**
+     * @brief Checks if device is a light
+     * @return true if device is any light type
+     */
+    virtual bool isLight() const { return false; }
+    
+    /**
+     * @brief Checks if device is a sensor
+     * @return true if device is any sensor type
+     */
+    virtual bool isSensor() const { return false; }
+};
+
 /**
  * @class DeviceRegistry
  * @brief Singleton registry for all system devices
  * @ingroup Core
  * 
- * Acts as a central repository for accessing devices by index or type.
+ * @details Maintains central list of all registered devices.
+ * Provides access for iteration (menu building) and lookup.
  */
 class DeviceRegistry {
 private:
-    DynamicArray<IDevice*> _devices;
+    DynamicArray<IDevice*> _devices;  ///< Registered device pointers
+
+    /**
+     * @brief Private constructor for singleton pattern
+     */
     DeviceRegistry() {}
 
 public:
+    /**
+     * @brief Gets singleton instance
+     * @return Reference to DeviceRegistry instance
+     */
     static DeviceRegistry& instance() {
         static DeviceRegistry inst;
         return inst;
     }
 
-    void registerDevice(IDevice* device) {
-        _devices.add(device);
+    /**
+     * @brief Registers device with registry
+     * @param device Pointer to device to register
+     */
+    void registerDevice(IDevice* device) { 
+        _devices.add(device); 
     }
 
+    /**
+     * @brief Unregisters device from registry
+     * @param device Pointer to device to unregister
+     */
     void unregisterDevice(IDevice* device) {
         for (uint8_t i = 0; i < _devices.size(); i++) {
             if (_devices[i] == device) {
@@ -322,8 +362,20 @@ public:
         }
     }
 
-    DynamicArray<IDevice*>& getDevices() {
-        return _devices;
+    /**
+     * @brief Gets all registered devices
+     * @return Reference to device array
+     */
+    DynamicArray<IDevice*>& getDevices() { return _devices; }
+
+    /**
+     * @brief Updates all registered devices
+     * @details Calls update() on each device. Should be called from main loop.
+     */
+    void updateAll() {
+        for (uint8_t i = 0; i < _devices.size(); i++) {
+            _devices[i]->update();
+        }
     }
 };
 

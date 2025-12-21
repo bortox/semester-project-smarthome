@@ -1,3 +1,16 @@
+/**
+ * @file Devices.h
+ * @brief Device class declarations for lights, sensors, and automation
+ * @author Andrea Bortolotti
+ * @version 2.0
+ * 
+ * @details Provides all device abstractions for the smart home system:
+ * - Light devices (Simple, Dimmable, RGB, Outside)
+ * - Sensor devices (Temperature, Light, PIR, RAM, VCC, LoopTime)
+ * - Device factory for convenient instantiation
+ * 
+ * @ingroup Devices
+ */
 #ifndef DEVICES_H
 #define DEVICES_H
 
@@ -5,137 +18,94 @@
 #include "sensors.h"
 #include <avr/pgmspace.h>
 
-#define PWM_MIN 0
-#define PWM_MAX 255
+#define PWM_MIN 0   ///< Minimum PWM output value
+#define PWM_MAX 255 ///< Maximum PWM output value
 
 /**
  * @brief Gamma correction lookup table (256 entries)
- * 
- * Safe low-end curve: input 1 maps to output 1 (not 0) to avoid black crush.
+ * @details Safe low-end curve: input 1 maps to output 1 (not 0) to avoid black crush.
  * Generated using gamma = 2.2
+ * @ingroup Devices
  */
-const uint8_t GAMMA_LUT[256] PROGMEM = {
-    0,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,
-    2,   2,   2,   2,   2,   2,   2,   2,   3,   3,   3,   3,   3,   3,   4,   4,
-    4,   4,   4,   5,   5,   5,   5,   6,   6,   6,   6,   7,   7,   7,   8,   8,
-    8,   9,   9,   9,   10,  10,  11,  11,  11,  12,  12,  13,  13,  14,  14,  15,
-    15,  16,  16,  17,  17,  18,  18,  19,  19,  20,  20,  21,  22,  22,  23,  23,
-    24,  25,  25,  26,  26,  27,  28,  28,  29,  30,  30,  31,  32,  33,  33,  34,
-    35,  35,  36,  37,  38,  39,  39,  40,  41,  42,  43,  43,  44,  45,  46,  47,
-    48,  49,  49,  50,  51,  52,  53,  54,  55,  56,  57,  58,  59,  60,  61,  62,
-    63,  64,  65,  66,  67,  68,  69,  70,  71,  73,  74,  75,  76,  77,  78,  79,
-    81,  82,  83,  84,  85,  87,  88,  89,  90,  91,  93,  94,  95,  97,  98,  99,
-    100, 102, 103, 105, 106, 107, 109, 110, 111, 113, 114, 116, 117, 119, 120, 121,
-    123, 124, 126, 127, 129, 130, 132, 133, 135, 137, 138, 140, 141, 143, 145, 146,
-    148, 149, 151, 153, 154, 156, 158, 159, 161, 163, 165, 166, 168, 170, 172, 173,
-    175, 177, 179, 181, 182, 184, 186, 188, 190, 192, 194, 196, 197, 199, 201, 203,
-    205, 207, 209, 211, 213, 215, 217, 219, 221, 223, 225, 227, 229, 231, 234, 236,
-    238, 240, 242, 244, 246, 248, 251, 253, 255, 255, 255, 255, 255, 255, 255, 255
-};
+extern const uint8_t GAMMA_LUT[256] PROGMEM;
 
 /**
  * @class SensorStats
  * @brief Optimized sensor statistics tracker
+ * @ingroup Devices
  * 
- * Tracks min, max, and average values for sensor readings
- * with automatic overflow protection
+ * @details Tracks min, max, and average values for sensor readings
+ * with automatic overflow protection. Resets after MAX_SAMPLES to
+ * prevent integer overflow in sum accumulator.
  */
 class SensorStats {
 private:
-    int16_t _min;
-    int16_t _max;
-    int32_t _sum;
-    uint16_t _count;
-    static constexpr uint16_t MAX_SAMPLES = 1000;
-    static constexpr int16_t MIN_INITIAL = 32767;
-    static constexpr int16_t MAX_INITIAL = -32768;
+    int16_t _min;                                  ///< Minimum recorded value
+    int16_t _max;                                  ///< Maximum recorded value
+    int32_t _sum;                                  ///< Running sum for average calculation
+    uint16_t _count;                               ///< Number of samples recorded
+    static constexpr uint16_t MAX_SAMPLES = 1000;  ///< Reset threshold
+    static constexpr int16_t MIN_INITIAL = 32767;  ///< Initial minimum value
+    static constexpr int16_t MAX_INITIAL = -32768; ///< Initial maximum value
 
 public:
-    SensorStats() : _min(MIN_INITIAL), _max(MAX_INITIAL), _sum(0), _count(0) {}
+    /**
+     * @brief Default constructor
+     */
+    SensorStats();
     
     /**
      * @brief Adds a new sample to the statistics
      * @param value Sample value to add
      */
-    void addSample(int16_t value) {
-        if (value < _min) _min = value;
-        if (value > _max) _max = value;
-        
-        _sum += value;
-        _count++;
-
-        if (_count >= MAX_SAMPLES) {
-            int16_t avg = getAverage();
-            _sum = avg;
-            _count = 1;
-        }
-    }
+    void addSample(int16_t value);
     
     /**
      * @brief Gets the minimum recorded value
      * @return Minimum value or 0 if no samples
      */
-    int16_t getMin() const { return _count > 0 ? _min : 0; }
+    int16_t getMin() const;
     
     /**
      * @brief Gets the maximum recorded value
      * @return Maximum value or 0 if no samples
      */
-    int16_t getMax() const { return _count > 0 ? _max : 0; }
+    int16_t getMax() const;
     
     /**
      * @brief Gets the average of recorded values
      * @return Average value or 0 if no samples
      */
-    int16_t getAverage() const { return _count > 0 ? (int16_t)(_sum / _count) : 0; }
+    int16_t getAverage() const;
     
     /**
      * @brief Resets all statistics to initial state
      */
-    void reset() {
-        _min = MIN_INITIAL;
-        _max = MAX_INITIAL;
-        _sum = 0;
-        _count = 0;
-    }
+    void reset();
 };
 
 /**
  * @class SimpleLight
  * @brief Class for managing a simple on/off light
- * 
- * Manages a light connected to a digital pin with on/off
- * functionality and event response
+ * @ingroup Devices
  */
 class SimpleLight : public IDevice, public IEventListener {
 protected:
-    uint8_t _pin;
-    bool _state;
+    uint8_t _pin;   ///< Arduino pin number
+    bool _state;    ///< Current on/off state
 
 public:
     /**
      * @brief Constructor for simple light
-     * @param name Device identifier name
+     * @param name Device identifier name (Flash string)
      * @param pin Arduino pin to which the light is connected
      */
-    SimpleLight(const __FlashStringHelper* name, uint8_t pin) 
-        : IDevice(name, DeviceType::LightSimple), _pin(pin), _state(false) {
-        pinMode(_pin, OUTPUT);
-        digitalWrite(_pin, LOW);
-        DeviceRegistry::instance().registerDevice(this);
-        
-        EventSystem::instance().addListener(this, EventType::ButtonPressed);
-    }
+    SimpleLight(const __FlashStringHelper* name, uint8_t pin);
 
     /**
      * @brief Destructor
-     * 
-     * Removes the device from registry and events
      */
-    virtual ~SimpleLight() { 
-        DeviceRegistry::instance().unregisterDevice(this);
-        EventSystem::instance().removeListener(this);
-    }
+    virtual ~SimpleLight();
 
     /**
      * @brief Checks if the device is a light
@@ -150,14 +120,8 @@ public:
 
     /**
      * @brief Toggles the light state (on/off)
-     * 
-     * Emits a DeviceStateChanged event
      */
-    virtual void toggle() {
-        _state = !_state;
-        digitalWrite(_pin, _state ? HIGH : LOW);
-        EventSystem::instance().emit(EventType::DeviceStateChanged, this, _state);
-    }
+    virtual void toggle();
 
     /**
      * @brief Gets the current light state
@@ -171,66 +135,42 @@ public:
      * @param source Event source device
      * @param value Value associated with the event
      */
-    void handleEvent(EventType type, IDevice* source, int value) {
-        if (type == EventType::ButtonPressed && source == this) {
-            toggle();
-        }
-    }
+    void handleEvent(EventType type, IDevice* source, int value) override;
 };
 
 /**
  * @class DimmableLight
  * @brief Light with brightness control (dimmer)
- * 
- * Extends SimpleLight adding the ability to adjust
- * brightness via PWM with smooth, non-blocking fading
+ * @ingroup Devices
  */
 class DimmableLight : public SimpleLight {
 protected:
-    uint8_t _targetBrightness;
-    uint8_t _currentBrightness;
-    uint8_t _lastBrightness;
-    unsigned long _lastUpdate;
-    uint8_t _lastMultiplier;
-    static constexpr uint8_t MS_PER_STEP = 4;
+    uint8_t _targetBrightness;    ///< Target brightness level (0-100)
+    uint8_t _currentBrightness;   ///< Current fading brightness (0-100)
+    uint8_t _lastBrightness;      ///< Saved brightness for toggle restore
+    unsigned long _lastUpdate;    ///< Timestamp of last fade step
+    uint8_t _lastMultiplier;      ///< Cached multiplier for change detection
+    static constexpr uint8_t MS_PER_STEP = 4;  ///< Fade step interval in ms
     
-    // Integer-based brightness multiplier (0-100)
-    static uint8_t& brightness_multiplier() {
-        static uint8_t multiplier = 100;
-        return multiplier;
-    }
+    /**
+     * @brief Gets reference to global brightness multiplier
+     * @return Reference to static multiplier value
+     */
+    static uint8_t& brightness_multiplier();
 
 public:
     /**
      * @brief Constructor for dimmable light
-     * @param name Device identifier name
+     * @param name Device identifier name (Flash string)
      * @param pin Arduino PWM pin to which the light is connected
      */
-    DimmableLight(const __FlashStringHelper* name, uint8_t pin) 
-        : SimpleLight(name, pin), _targetBrightness(0), _currentBrightness(0), 
-          _lastBrightness(100), _lastUpdate(0), _lastMultiplier(100) {
-        const_cast<DeviceType&>(type) = DeviceType::LightDimmable;
-    }
+    DimmableLight(const __FlashStringHelper* name, uint8_t pin);
 
     /**
      * @brief Sets the light brightness
      * @param level Brightness level (0-100)
-     * 
-     * The value is multiplied by brightness_multiplier
-     * and converted to PWM. Emits a DeviceValueChanged event
      */
-    virtual void setBrightness(uint8_t level) {
-        _targetBrightness = constrain(level, 0, 100);
-        if (_currentBrightness != _targetBrightness) {
-            _lastUpdate = millis();
-        }
-        if (_targetBrightness > 0) {
-            _lastBrightness = _targetBrightness;
-        }
-        
-        _state = (_targetBrightness > 0);
-        EventSystem::instance().emit(EventType::DeviceValueChanged, this, _targetBrightness);
-    }
+    virtual void setBrightness(uint8_t level);
 
     /**
      * @brief Gets the current brightness level
@@ -240,95 +180,41 @@ public:
     
     /**
      * @brief Periodic update for smooth fading
-     * 
-     * Implements time-based fading with frame-skip support
      */
-    void update() override {
-        unsigned long now = millis();
-        
-        // Check if multiplier changed (e.g., Night Mode toggled)
-        if (_lastMultiplier != brightness_multiplier()) {
-            _lastMultiplier = brightness_multiplier();
-            applyHardware(); // Immediately apply new multiplier
-        }
-        
-        unsigned long diffTime = now - _lastUpdate;
-        
-        if (diffTime >= MS_PER_STEP && _currentBrightness != _targetBrightness) {
-            uint8_t stepsToTake = diffTime / MS_PER_STEP;
-            
-            if (_currentBrightness < _targetBrightness) {
-                uint8_t diff = _targetBrightness - _currentBrightness;
-                _currentBrightness += min(stepsToTake, diff);
-            } else {
-                uint8_t diff = _currentBrightness - _targetBrightness;
-                _currentBrightness -= min(stepsToTake, diff);
-            }
-            
-            applyHardware();
-            _lastUpdate = now - (diffTime % MS_PER_STEP);
-        }
-    }
+    void update() override;
     
     /**
      * @brief Toggles the light state while preserving brightness
-     * 
-     * If on, turns off saving the brightness.
-     * If off, turns on restoring the previous brightness
      */
-    void toggle() override {
-        if (_state) {
-            _lastBrightness = _targetBrightness;
-            setBrightness(0);
-        } else {
-            setBrightness(_lastBrightness > 0 ? _lastBrightness : 100);
-        }
-    }
+    void toggle() override;
     
     /**
      * @brief Sets the global brightness multiplier
      * @param multiplier Value between 0 and 100
-     * 
-     * Useful for implementing night mode (e.g., 20 for 20%)
      */
-    static void setBrightnessMultiplier(uint8_t multiplier) {
-        brightness_multiplier() = constrain(multiplier, 0, 100);
-    }
+    static void setBrightnessMultiplier(uint8_t multiplier);
     
 protected:
     /**
      * @brief Applies current brightness to hardware with gamma correction
      */
-    void applyHardware() {
-        if (_currentBrightness == 0) {
-            analogWrite(_pin, PWM_MIN);
-            return;
-        }
-        
-        // Apply brightness multiplier: (value * multiplier) / 100
-        uint16_t scaled = ((uint16_t)_currentBrightness * brightness_multiplier()) / 100;
-        uint8_t linear = map(scaled, 0, 100, PWM_MIN, PWM_MAX);
-        
-        // Apply gamma correction
-        uint8_t gamma_corrected = pgm_read_byte(&GAMMA_LUT[linear]);
-        analogWrite(_pin, gamma_corrected);
-    }
+    void applyHardware();
     
     /**
-     * @brief Protected access to target brightness
-     * @return Reference to target brightness value
+     * @brief Gets reference to target brightness
+     * @return Reference to target brightness member
      */
     uint8_t& targetBrightness() { return _targetBrightness; }
     
     /**
-     * @brief Protected access to current brightness
-     * @return Reference to current brightness value
+     * @brief Gets reference to current brightness
+     * @return Reference to current brightness member
      */
     uint8_t& currentBrightness() { return _currentBrightness; }
     
     /**
-     * @brief Protected access to last saved brightness
-     * @return Reference to last brightness value
+     * @brief Gets reference to last brightness
+     * @return Reference to last brightness member
      */
     uint8_t& lastBrightness() { return _lastBrightness; }
 };
@@ -336,68 +222,62 @@ protected:
 /**
  * @struct RGBColor
  * @brief Structure to represent an RGB color
+ * @ingroup Devices
  */
-struct RGBColor { uint8_t r, g, b; };
+struct RGBColor { 
+    uint8_t r;  ///< Red channel (0-255)
+    uint8_t g;  ///< Green channel (0-255)
+    uint8_t b;  ///< Blue channel (0-255)
+};
 
 /**
- * @enum RGBPreset
  * @brief Predefined color presets for RGB lights
+ * @ingroup Devices
  */
 enum class RGBPreset : uint8_t {
-    WARM_WHITE, COOL_WHITE, RED, GREEN, BLUE, OCEAN
+    WARM_WHITE,  ///< Warm white (2700K approximation)
+    COOL_WHITE,  ///< Cool white (6500K approximation)
+    RED,         ///< Pure red
+    GREEN,       ///< Pure green
+    BLUE,        ///< Pure blue
+    OCEAN        ///< Ocean blue-green
 };
 
-const RGBColor PRESET_COLORS[] PROGMEM = {
-    {255, 200, 100},
-    {255, 255, 255},
-    {255, 0, 0},
-    {0, 255, 0},
-    {0, 0, 255},
-    {0, 150, 255}
-};
+/**
+ * @brief Preset color values stored in PROGMEM
+ * @ingroup Devices
+ */
+extern const RGBColor PRESET_COLORS[] PROGMEM;
 
 /**
  * @class RGBLight
  * @brief RGB light with color and brightness control
- * 
- * Manages an RGB light with three separate PWM pins
- * and support for color presets with smooth fading
+ * @ingroup Devices
  */
 class RGBLight : public DimmableLight {
 private:
-    uint8_t _pin_g, _pin_b;
-    RGBColor _targetColor;
-    RGBColor _currentColor;
-    unsigned long _lastColorUpdate;
-    static constexpr uint8_t MS_PER_STEP = 2;
+    uint8_t _pin_g;                  ///< Green channel PWM pin
+    uint8_t _pin_b;                  ///< Blue channel PWM pin
+    RGBColor _targetColor;           ///< Target color for fading
+    RGBColor _currentColor;          ///< Current fading color
+    unsigned long _lastColorUpdate;  ///< Timestamp of last color fade step
+    static constexpr uint8_t MS_PER_STEP = 2;  ///< Color fade step interval
 
 public:
     /**
      * @brief Constructor for RGB light
-     * @param name Device identifier name
-     * @param pin_r PWM pin for red
-     * @param pin_g PWM pin for green
-     * @param pin_b PWM pin for blue
+     * @param name Device identifier name (Flash string)
+     * @param pin_r PWM pin for red channel
+     * @param pin_g PWM pin for green channel
+     * @param pin_b PWM pin for blue channel
      */
-    RGBLight(const __FlashStringHelper* name, uint8_t pin_r, uint8_t pin_g, uint8_t pin_b) 
-        : DimmableLight(name, pin_r), _pin_g(pin_g), _pin_b(pin_b), 
-          _targetColor({PWM_MAX, PWM_MAX, PWM_MAX}), _currentColor({0, 0, 0}), 
-          _lastColorUpdate(0) {
-        const_cast<DeviceType&>(type) = DeviceType::LightRGB;
-        pinMode(_pin_g, OUTPUT);
-        pinMode(_pin_b, OUTPUT);
-    }
+    RGBLight(const __FlashStringHelper* name, uint8_t pin_r, uint8_t pin_g, uint8_t pin_b);
 
     /**
      * @brief Sets the RGB color
      * @param c RGBColor structure with R, G, B values
-     * 
-     * Emits a DeviceValueChanged event
      */
-    void setColor(RGBColor c) {
-        _targetColor = c;
-        EventSystem::instance().emit(EventType::DeviceValueChanged, this, 0);
-    }
+    void setColor(RGBColor c);
 
     /**
      * @brief Gets the current target color
@@ -406,249 +286,120 @@ public:
     RGBColor getColor() const { return _targetColor; }
 
     /**
-     * @brief Channel-specific setters/getters for template compatibility
+     * @brief Sets red channel value
+     * @param value Red intensity (0-255)
      */
-    inline void setRed(uint8_t value) {
-        _targetColor.r = value;
-        EventSystem::instance().emit(EventType::DeviceValueChanged, this, 0);
-    }
+    void setRed(uint8_t value);
     
-    inline uint8_t getRed() const { return _targetColor.r; }
+    /**
+     * @brief Gets red channel value
+     * @return Red intensity (0-255)
+     */
+    uint8_t getRed() const { return _targetColor.r; }
     
-    inline void setGreen(uint8_t value) {
-        _targetColor.g = value;
-        EventSystem::instance().emit(EventType::DeviceValueChanged, this, 0);
-    }
+    /**
+     * @brief Sets green channel value
+     * @param value Green intensity (0-255)
+     */
+    void setGreen(uint8_t value);
     
-    inline uint8_t getGreen() const { return _targetColor.g; }
+    /**
+     * @brief Gets green channel value
+     * @return Green intensity (0-255)
+     */
+    uint8_t getGreen() const { return _targetColor.g; }
     
-    inline void setBlue(uint8_t value) {
-        _targetColor.b = value;
-        EventSystem::instance().emit(EventType::DeviceValueChanged, this, 0);
-    }
+    /**
+     * @brief Sets blue channel value
+     * @param value Blue intensity (0-255)
+     */
+    void setBlue(uint8_t value);
     
-    inline uint8_t getBlue() const { return _targetColor.b; }
+    /**
+     * @brief Gets blue channel value
+     * @return Blue intensity (0-255)
+     */
+    uint8_t getBlue() const { return _targetColor.b; }
 
     /**
      * @brief Sets a color from a predefined preset
      * @param preset RGBPreset enum value
      */
-    void setPreset(RGBPreset preset) {
-        RGBColor c;
-        memcpy_P(&c, &PRESET_COLORS[(int)preset], sizeof(RGBColor));
-        setColor(c);
-    }
+    void setPreset(RGBPreset preset);
 
     /**
-     * @brief Sets the RGB light brightness
+     * @brief Sets overall brightness
      * @param level Brightness level (0-100)
-     * 
-     * Applies the brightness_multiplier and updates all three channels
      */
-    void setBrightness(uint8_t level) override {
-        if (_currentBrightness != _targetBrightness) {
-            _lastUpdate = millis();
-        }
-        targetBrightness() = constrain(level, 0, 100);
-        
-        if (targetBrightness() > 0) {
-            lastBrightness() = targetBrightness();
-        }
-        
-        _state = (targetBrightness() > 0);
-        EventSystem::instance().emit(EventType::DeviceValueChanged, this, targetBrightness());
-    }
-
+    void setBrightness(uint8_t level) override;
+    
     /**
-     * @brief Periodic update for smooth color and brightness fading
-     * 
-     * Implements time-based fading with frame-skip support for all channels
+     * @brief Periodic update for smooth color fading
      */
-    void update() override {
-        unsigned long now = millis();
-        
-        // Check if multiplier changed (e.g., Night Mode toggled)
-        if (_lastMultiplier != brightness_multiplier()) {
-            _lastMultiplier = brightness_multiplier();
-            applyColor(); // Immediately apply new multiplier
-        }
-        
-        // Update brightness
-        unsigned long diffTime = now - _lastUpdate;
-        if (diffTime >= MS_PER_STEP && currentBrightness() != targetBrightness()) {
-            uint8_t stepsToTake = diffTime / MS_PER_STEP;
-            
-            if (currentBrightness() < targetBrightness()) {
-                uint8_t diff = targetBrightness() - currentBrightness();
-                currentBrightness() += min(stepsToTake, diff);
-            } else {
-                uint8_t diff = currentBrightness() - targetBrightness();
-                currentBrightness() -= min(stepsToTake, diff);
-            }
-            
-            _lastUpdate = now - (diffTime % MS_PER_STEP);
-        }
-        
-        // Update colors
-        unsigned long colorDiffTime = now - _lastColorUpdate;
-        if (colorDiffTime >= MS_PER_STEP) {
-            uint8_t stepsToTake = colorDiffTime / MS_PER_STEP;
-            bool colorChanged = false;
-            
-            // Fade red channel
-            if (_currentColor.r != _targetColor.r) {
-                if (_currentColor.r < _targetColor.r) {
-                    uint8_t diff = _targetColor.r - _currentColor.r;
-                    _currentColor.r += min(stepsToTake, diff);
-                } else {
-                    uint8_t diff = _currentColor.r - _targetColor.r;
-                    _currentColor.r -= min(stepsToTake, diff);
-                }
-                colorChanged = true;
-            }
-            
-            // Fade green channel
-            if (_currentColor.g != _targetColor.g) {
-                if (_currentColor.g < _targetColor.g) {
-                    uint8_t diff = _targetColor.g - _currentColor.g;
-                    _currentColor.g += min(stepsToTake, diff);
-                } else {
-                    uint8_t diff = _currentColor.g - _targetColor.g;
-                    _currentColor.g -= min(stepsToTake, diff);
-                }
-                colorChanged = true;
-            }
-            
-            // Fade blue channel
-            if (_currentColor.b != _targetColor.b) {
-                if (_currentColor.b < _targetColor.b) {
-                    uint8_t diff = _targetColor.b - _currentColor.b;
-                    _currentColor.b += min(stepsToTake, diff);
-                } else {
-                    uint8_t diff = _currentColor.b - _targetColor.b;
-                    _currentColor.b -= min(stepsToTake, diff);
-                }
-                colorChanged = true;
-            }
-            
-            if (colorChanged) {
-                _lastColorUpdate = now - (colorDiffTime % MS_PER_STEP);
-            }
-        }
-        
-        // Apply to hardware if anything changed
-        if (diffTime >= MS_PER_STEP || colorDiffTime >= MS_PER_STEP) {
-            applyColor();
-        }
-    }
-
+    void update() override;
+    
     /**
-     * @brief Toggles the RGB light state
-     * 
-     * Preserves color and previous brightness
+     * @brief Toggles the light state while preserving color
      */
-    void toggle() override {
-        if (_state) {
-            lastBrightness() = targetBrightness();
-            targetBrightness() = 0;
-            _state = false;
-        } else {
-            targetBrightness() = lastBrightness() > 0 ? lastBrightness() : 100;
-            _state = true;
-        }
-        EventSystem::instance().emit(EventType::DeviceStateChanged, this, _state);
-    }
+    void toggle() override;
 
 private:
     /**
-     * @brief Applies the current color to PWM pins with gamma correction
-     * 
-     * Takes into account brightness and brightness_multiplier
+     * @brief Applies current color to hardware PWM outputs
      */
-    void applyColor() {
-        if (!_state || currentBrightness() == 0) {
-            analogWrite(_pin, PWM_MIN);
-            analogWrite(_pin_g, PWM_MIN);
-            analogWrite(_pin_b, PWM_MIN);
-            return;
-        }
-        
-        // Apply brightness multiplier: (brightness * multiplier) / 100
-        uint16_t factor = ((uint16_t)currentBrightness() * brightness_multiplier()) / 100;
-        
-        // Scale each channel by brightness factor
-        uint8_t r_scaled = ((uint16_t)_currentColor.r * factor) / 100;
-        uint8_t g_scaled = ((uint16_t)_currentColor.g * factor) / 100;
-        uint8_t b_scaled = ((uint16_t)_currentColor.b * factor) / 100;
-        
-        // Apply gamma correction
-        analogWrite(_pin, pgm_read_byte(&GAMMA_LUT[r_scaled]));
-        analogWrite(_pin_g, pgm_read_byte(&GAMMA_LUT[g_scaled]));
-        analogWrite(_pin_b, pgm_read_byte(&GAMMA_LUT[b_scaled]));
-    }
+    void applyColor();
 };
 
 /**
- * @enum OutsideMode
  * @brief Operating modes for outdoor light
+ * @ingroup Devices
  */
-enum class OutsideMode : uint8_t { OFF, ON, AUTO_LIGHT, AUTO_MOTION };
+enum class OutsideMode : uint8_t { 
+    OFF,         ///< Light always off
+    ON,          ///< Light always on
+    AUTO_LIGHT,  ///< Automatic based on ambient light
+    AUTO_MOTION  ///< Automatic based on light + motion
+};
 
 /**
  * @class TemperatureSensor
- * @brief Temperature sensor with statistics (NO FLOATS)
- * 
- * Uses an LM75 sensor to detect temperature in decicelsius
- * and maintains min/max/average statistics
+ * @brief Temperature sensor device with statistics (NO FLOATS)
+ * @ingroup Devices
  */
 class TemperatureSensor : public IDevice {
 private:
-    int16_t _temperature;  // Decicelsius (tenths of degree)
-    unsigned long _lastRead;
-    SensorStats _stats;
-    LM75Sensor _lm75;
+    int16_t _temperature;         ///< Current temperature in decicelsius
+    unsigned long _lastRead;      ///< Timestamp of last reading
+    SensorStats _stats;           ///< Statistics tracker
+    LM75Sensor _lm75;             ///< Low-level sensor driver
     static constexpr unsigned long UPDATE_INTERVAL_MS = 2000;
 
 public:
     /**
      * @brief Constructor for temperature sensor
-     * @param name Device identifier name
+     * @param name Device identifier name (Flash string)
      */
-    TemperatureSensor(const __FlashStringHelper* name) 
-        : IDevice(name, DeviceType::SensorTemperature), _temperature(0), _lastRead(0), _lm75() {
-        _lm75.begin();
-        DeviceRegistry::instance().registerDevice(this);
-    }
+    TemperatureSensor(const __FlashStringHelper* name);
 
     /**
-     * @brief Checks if the device is a sensor
+     * @brief Checks if device is a sensor
      * @return true always
      */
     bool isSensor() const override { return true; }
-
+    
     /**
-     * @brief Periodic reading update
-     * 
-     * Reads temperature and updates statistics.
-     * Emits a SensorUpdated event
+     * @brief Periodic update - reads sensor at defined interval
      */
-    void update() override {
-        if (millis() - _lastRead > UPDATE_INTERVAL_MS) {
-            _lastRead = millis();
-            _temperature = _lm75.getValue();  // Already in decicelsius
-            _stats.addSample(_temperature);
-            EventSystem::instance().emit(EventType::SensorUpdated, this, _temperature);
-        }
-    }
-
+    void update() override;
+    
     /**
-     * @brief Gets the current temperature in decicelsius
-     * @return Temperature * 10 (e.g., 205 = 20.5°C)
+     * @brief Gets current temperature
+     * @return Temperature in decicelsius
      */
     int16_t getTemperature() const { return _temperature; }
     
     /**
-     * @brief Gets the sensor statistics
+     * @brief Gets statistics tracker
      * @return Reference to SensorStats object
      */
     SensorStats& getStats() { return _stats; }
@@ -656,150 +407,106 @@ public:
 
 /**
  * @class PhotoresistorSensor
- * @brief Light sensor with calibration
- * 
- * Uses a photoresistor to measure light level
- * with min/max calibration capability
+ * @brief Light sensor device with calibration and statistics
+ * @ingroup Devices
  */
 class PhotoresistorSensor : public IDevice {
 private:
-    int _lightLevel;
-    unsigned long _lastRead;
-    LightSensor _photoSensor;
-    SensorStats _stats;
-    // Increased interval to prevent event flooding and LCD flickering
+    int _lightLevel;               ///< Current light level (0-100)
+    unsigned long _lastRead;       ///< Timestamp of last reading
+    LightSensor _photoSensor;      ///< Low-level sensor driver
+    SensorStats _stats;            ///< Statistics tracker
     static constexpr unsigned long UPDATE_INTERVAL_MS = 250;
     static constexpr int CHANGE_THRESHOLD = 2;
 
 public:
     /**
      * @brief Constructor for light sensor
-     * @param name Device identifier name
+     * @param name Device identifier name (Flash string)
      * @param pin Arduino analog pin
      */
-    PhotoresistorSensor(const __FlashStringHelper* name, uint8_t pin) 
-        : IDevice(name, DeviceType::SensorLight), _lightLevel(0), _lastRead(0), _photoSensor(pin) {
-        DeviceRegistry::instance().registerDevice(this);
-    }
+    PhotoresistorSensor(const __FlashStringHelper* name, uint8_t pin);
 
     /**
-     * @brief Checks if the device is a sensor
+     * @brief Checks if device is a sensor
      * @return true always
      */
     bool isSensor() const override { return true; }
-
+    
     /**
-     * @brief Periodic reading update
-     * 
-     * Reads light level and updates statistics if the change
-     * exceeds threshold. Emits a SensorUpdated event
+     * @brief Periodic update - reads sensor at defined interval
      */
-    void update() override {
-        if (millis() - _lastRead > UPDATE_INTERVAL_MS) {
-            _lastRead = millis();
-            int newValue = _photoSensor.getValue();
-            
-            if (abs(newValue - _lightLevel) > CHANGE_THRESHOLD) {
-                _lightLevel = newValue;
-                _stats.addSample((int16_t)_lightLevel);
-                EventSystem::instance().emit(EventType::SensorUpdated, this, _lightLevel);
-            }
-        }
-    }
-
+    void update() override;
+    
     /**
-     * @brief Gets the current light level
-     * @return Light value (0-100)
+     * @brief Gets current light level
+     * @return Light level 0-100%
      */
     int getValue() const { return _lightLevel; }
     
     /**
-     * @brief Gets the sensor statistics
+     * @brief Gets statistics tracker
      * @return Reference to SensorStats object
      */
     SensorStats& getStats() { return _stats; }
     
     /**
-     * @brief Calibrates minimum value with current reading
+     * @brief Calibrates current reading as minimum (dark)
      */
-    void calibrateCurrentAsMin() {
-        int raw = _photoSensor.getRaw();
-        _photoSensor.setRawMin(raw);
-    }
+    void calibrateCurrentAsMin();
     
     /**
-     * @brief Calibrates maximum value with current reading
+     * @brief Calibrates current reading as maximum (bright)
      */
-    void calibrateCurrentAsMax() {
-        int raw = _photoSensor.getRaw();
-        _photoSensor.setRawMax(raw);
-    }
+    void calibrateCurrentAsMax();
     
     /**
-     * @brief Gets the calibrated raw minimum value
-     * @return Raw minimum value
+     * @brief Gets calibrated minimum value
+     * @return Raw ADC minimum
      */
     int getRawMin() const { return _photoSensor.getRawMin(); }
     
     /**
-     * @brief Gets the calibrated raw maximum value
-     * @return Raw maximum value
+     * @brief Gets calibrated maximum value
+     * @return Raw ADC maximum
      */
     int getRawMax() const { return _photoSensor.getRawMax(); }
 };
 
 /**
  * @class PIRSensorDevice
- * @brief PIR motion sensor
- * 
- * Detects motion using a PIR sensor and emits
- * events when state changes
+ * @brief PIR motion sensor device
+ * @ingroup Devices
  */
 class PIRSensorDevice : public IDevice {
 private:
-    bool _motionDetected;
-    unsigned long _lastRead;
-    MovementSensor _pirSensor;
+    bool _motionDetected;          ///< Current motion state
+    unsigned long _lastRead;       ///< Timestamp of last reading
+    MovementSensor _pirSensor;     ///< Low-level sensor driver
     static constexpr unsigned long UPDATE_INTERVAL_MS = 500;
 
 public:
     /**
      * @brief Constructor for PIR sensor
-     * @param name Device identifier name
+     * @param name Device identifier name (Flash string)
      * @param pin Arduino digital pin
      */
-    PIRSensorDevice(const __FlashStringHelper* name, uint8_t pin) 
-        : IDevice(name, DeviceType::SensorPIR), _motionDetected(false), _lastRead(0), _pirSensor(pin) {
-        DeviceRegistry::instance().registerDevice(this);
-    }
+    PIRSensorDevice(const __FlashStringHelper* name, uint8_t pin);
 
     /**
-     * @brief Checks if the device is a sensor
+     * @brief Checks if device is a sensor
      * @return true always
      */
     bool isSensor() const override { return true; }
-
+    
     /**
-     * @brief Periodic reading update
-     * 
-     * Checks PIR sensor state and emits
-     * SensorUpdated event only when state changes
+     * @brief Periodic update - reads sensor at defined interval
      */
-    void update() override {
-        if (millis() - _lastRead > UPDATE_INTERVAL_MS) {
-            _lastRead = millis();
-            bool newValue = _pirSensor.getValue();
-            
-            if (newValue != _motionDetected) {
-                _motionDetected = newValue;
-                EventSystem::instance().emit(EventType::SensorUpdated, this, _motionDetected ? 1 : 0);
-            }
-        }
-    }
-
+    void update() override;
+    
     /**
-     * @brief Checks if motion is detected
-     * @return true if motion detected, false otherwise
+     * @brief Gets motion detection state
+     * @return true if motion detected
      */
     bool isMotionDetected() const { return _motionDetected; }
 };
@@ -807,67 +514,44 @@ public:
 /**
  * @class RamSensorDevice
  * @brief RAM usage monitoring device with statistics
- * 
- * Wraps low-level RamUsageSensor with event system integration
- * and min/max/average tracking.
+ * @ingroup Devices
  */
 class RamSensorDevice : public IDevice {
 private:
-    int16_t _freeRam;
-    int16_t _lastReported;
-    unsigned long _lastRead;
-    SensorStats _stats;
-    RamUsageSensor _ramSensor;
+    int16_t _freeRam;              ///< Current free RAM in bytes
+    int16_t _lastReported;         ///< Last reported value (for threshold)
+    unsigned long _lastRead;       ///< Timestamp of last reading
+    SensorStats _stats;            ///< Statistics tracker
+    RamUsageSensor _ramSensor;     ///< Low-level sensor driver
     static constexpr unsigned long UPDATE_INTERVAL_MS = 10000;
     static constexpr int16_t CHANGE_THRESHOLD = 16;
 
 public:
     /**
      * @brief Constructor for RAM sensor device
-     * @param name Device identifier name
+     * @param name Device identifier name (Flash string)
      */
-    RamSensorDevice(const __FlashStringHelper* name)
-        : IDevice(name, DeviceType::SensorRAM), _freeRam(0), _lastReported(0), 
-          _lastRead(0), _ramSensor() {
-        DeviceRegistry::instance().registerDevice(this);
-        _freeRam = _ramSensor.getValue();
-        _lastReported = _freeRam;
-    }
+    RamSensorDevice(const __FlashStringHelper* name);
 
     /**
-     * @brief Checks if the device is a sensor
+     * @brief Checks if device is a sensor
      * @return true always
      */
     bool isSensor() const override { return true; }
-
+    
     /**
-     * @brief Periodic reading update
-     * 
-     * Reads free RAM every 10 seconds.
-     * Emits SensorUpdated event only if change exceeds threshold.
+     * @brief Periodic update - reads sensor at defined interval
      */
-    void update() override {
-        unsigned long now = millis();
-        if (now - _lastRead >= UPDATE_INTERVAL_MS) {
-            _lastRead = now;
-            _freeRam = _ramSensor.getValue();
-            _stats.addSample(_freeRam);
-            
-            if (abs(_freeRam - _lastReported) > CHANGE_THRESHOLD) {
-                _lastReported = _freeRam;
-                EventSystem::instance().emit(EventType::SensorUpdated, this, _freeRam);
-            }
-        }
-    }
-
+    void update() override;
+    
     /**
-     * @brief Gets the current free RAM in bytes
-     * @return Free RAM bytes
+     * @brief Gets current free RAM
+     * @return Free RAM in bytes
      */
     int16_t getValue() const { return _freeRam; }
     
     /**
-     * @brief Gets the sensor statistics
+     * @brief Gets statistics tracker
      * @return Reference to SensorStats object
      */
     SensorStats& getStats() { return _stats; }
@@ -876,59 +560,42 @@ public:
 /**
  * @class VccSensorDevice
  * @brief VCC voltage monitoring device with statistics
- * 
- * Wraps low-level VccSensor with event system integration
- * and min/max/average tracking.
+ * @ingroup Devices
  */
 class VccSensorDevice : public IDevice {
 private:
-    int16_t _vcc;
-    unsigned long _lastRead;
-    SensorStats _stats;
-    VccSensor _vccSensor;
+    int16_t _vcc;                  ///< Current VCC in millivolts
+    unsigned long _lastRead;       ///< Timestamp of last reading
+    SensorStats _stats;            ///< Statistics tracker
+    VccSensor _vccSensor;          ///< Low-level sensor driver
     static constexpr unsigned long UPDATE_INTERVAL_MS = 10000;
 
 public:
     /**
      * @brief Constructor for VCC sensor device
-     * @param name Device identifier name
+     * @param name Device identifier name (Flash string)
      */
-    VccSensorDevice(const __FlashStringHelper* name)
-        : IDevice(name, DeviceType::SensorVCC), _vcc(0), _lastRead(0), _vccSensor() {
-        DeviceRegistry::instance().registerDevice(this);
-        _vcc = _vccSensor.getValue();
-    }
+    VccSensorDevice(const __FlashStringHelper* name);
 
     /**
-     * @brief Checks if the device is a sensor
+     * @brief Checks if device is a sensor
      * @return true always
      */
     bool isSensor() const override { return true; }
-
+    
     /**
-     * @brief Periodic reading update
-     * 
-     * Reads VCC every 10 seconds and updates statistics.
-     * Emits SensorUpdated event.
+     * @brief Periodic update - reads sensor at defined interval
      */
-    void update() override {
-        unsigned long now = millis();
-        if (now - _lastRead >= UPDATE_INTERVAL_MS) {
-            _lastRead = now;
-            _vcc = _vccSensor.getValue();
-            _stats.addSample(_vcc);
-            EventSystem::instance().emit(EventType::SensorUpdated, this, _vcc);
-        }
-    }
-
+    void update() override;
+    
     /**
-     * @brief Gets the current VCC in millivolts
-     * @return VCC in mV (e.g., 5000 for 5.0V)
+     * @brief Gets current VCC voltage
+     * @return VCC in millivolts
      */
     int16_t getValue() const { return _vcc; }
     
     /**
-     * @brief Gets the sensor statistics
+     * @brief Gets statistics tracker
      * @return Reference to SensorStats object
      */
     SensorStats& getStats() { return _stats; }
@@ -937,69 +604,48 @@ public:
 /**
  * @class LoopTimeSensorDevice
  * @brief Loop execution time monitoring device with statistics
- * 
- * Wraps low-level LoopTimeSensor with event system integration
- * and min/max/average tracking.
+ * @ingroup Devices
  */
 class LoopTimeSensorDevice : public IDevice {
 private:
-    int16_t _loopTime;
-    unsigned long _lastRead;
-    SensorStats _stats;
-    LoopTimeSensor _loopSensor;
+    int16_t _loopTime;             ///< Current loop time in microseconds
+    unsigned long _lastRead;       ///< Timestamp of last reading
+    SensorStats _stats;            ///< Statistics tracker
+    LoopTimeSensor _loopSensor;    ///< Low-level sensor driver
     static constexpr unsigned long UPDATE_INTERVAL_MS = 1000;
 
 public:
     /**
      * @brief Constructor for loop time sensor device
-     * @param name Device identifier name
+     * @param name Device identifier name (Flash string)
      */
-    LoopTimeSensorDevice(const __FlashStringHelper* name)
-        : IDevice(name, DeviceType::SensorLoopTime), _loopTime(0), _lastRead(0), _loopSensor() {
-        DeviceRegistry::instance().registerDevice(this);
-    }
+    LoopTimeSensorDevice(const __FlashStringHelper* name);
 
     /**
-     * @brief Checks if the device is a sensor
+     * @brief Checks if device is a sensor
      * @return true always
      */
     bool isSensor() const override { return true; }
-
+    
     /**
-     * @brief Registers a loop iteration time
-     * @param microseconds Duration of the loop iteration in microseconds
-     * 
-     * Call this from main.cpp at the end of each loop().
+     * @brief Registers loop iteration time (static accessor)
+     * @param microseconds Duration of the loop iteration
      */
-    static void registerLoopTime(uint16_t microseconds) {
-        LoopTimeSensor::registerTime(microseconds);
-    }
-
+    static void registerLoopTime(uint16_t microseconds);
+    
     /**
-     * @brief Periodic update handles window rotation and stats
-     * 
-     * Updates measurement window and emits SensorUpdated event.
+     * @brief Periodic update - reads sensor at defined interval
      */
-    void update() override {
-        _loopSensor.updateWindow();
-        
-        unsigned long now = millis();
-        if (now - _lastRead >= UPDATE_INTERVAL_MS) {
-            _lastRead = now;
-            _loopTime = _loopSensor.getValue();
-            _stats.addSample(_loopTime);
-            EventSystem::instance().emit(EventType::SensorUpdated, this, _loopTime);
-        }
-    }
-
+    void update() override;
+    
     /**
-     * @brief Gets the maximum loop time from last window
+     * @brief Gets current loop time
      * @return Loop time in microseconds
      */
     int16_t getValue() const { return _loopTime; }
     
     /**
-     * @brief Gets the sensor statistics
+     * @brief Gets statistics tracker
      * @return Reference to SensorStats object
      */
     SensorStats& getStats() { return _stats; }
@@ -1008,206 +654,144 @@ public:
 /**
  * @class OutsideLight
  * @brief Outdoor light with sensors and automation
- * 
- * Manages an outdoor light that can operate in manual
- * or automatic mode based on light and motion sensors.
- * Defined here to ensure sensor types are fully defined.
+ * @ingroup Devices
  */
 class OutsideLight : public SimpleLight {
 private:
-    OutsideMode _mode;
-    PhotoresistorSensor* _photo;
-    PIRSensorDevice* _motion;
+    OutsideMode _mode;              ///< Current operating mode
+    PhotoresistorSensor* _photo;    ///< Linked light sensor
+    PIRSensorDevice* _motion;       ///< Linked motion sensor
     static constexpr int DARKNESS_THRESHOLD = 30;
 
     /**
-     * @brief Evaluates automation logic based on sensor state
+     * @brief Evaluates light state based on mode and sensors
      */
-    void evaluateState() {
-        bool targetState = false;
-        switch(_mode) {
-            case OutsideMode::OFF: targetState = false; break;
-            case OutsideMode::ON: targetState = true; break;
-            case OutsideMode::AUTO_LIGHT:
-                if (_photo) {
-                    // Pull-down resistor: Higher value = More light.
-                    // Dark if value < Threshold.
-                    targetState = (_photo->getValue() < DARKNESS_THRESHOLD);
-                }
-                break;
-            case OutsideMode::AUTO_MOTION:
-                if (_photo && _motion) {
-                    // Dark AND Motion detected
-                    targetState = (_photo->getValue() < DARKNESS_THRESHOLD && _motion->isMotionDetected());
-                }
-                break;
-        }
-        
-        if (targetState != _state) {
-            _state = targetState;
-            digitalWrite(_pin, _state ? HIGH : LOW);
-            EventSystem::instance().emit(EventType::DeviceStateChanged, this, _state);
-        }
-    }
+    void evaluateState();
 
 public:
     /**
      * @brief Constructor for outdoor light
-     * @param name Device identifier name
+     * @param name Device identifier name (Flash string)
      * @param pin Arduino pin to which the light is connected
-     * @param photo Pointer to high-level light sensor
-     * @param motion Pointer to high-level motion sensor
+     * @param photo Pointer to light sensor
+     * @param motion Pointer to motion sensor
      */
-    OutsideLight(const __FlashStringHelper* name, uint8_t pin, PhotoresistorSensor* photo, PIRSensorDevice* motion)
-        : SimpleLight(name, pin), _mode(OutsideMode::OFF), _photo(photo), _motion(motion) {
-        const_cast<DeviceType&>(type) = DeviceType::LightOutside;
-        // Register for sensor updates
-        EventSystem::instance().addListener(this, EventType::SensorUpdated);
-    }
+    OutsideLight(const __FlashStringHelper* name, uint8_t pin, 
+                 PhotoresistorSensor* photo, PIRSensorDevice* motion);
 
-    virtual ~OutsideLight() {
-        EventSystem::instance().removeListener(this);
-    }
+    /**
+     * @brief Destructor
+     */
+    virtual ~OutsideLight();
 
     /**
      * @brief Sets the operating mode
-     * @param mode Desired mode (OFF, ON, AUTO_LIGHT, AUTO_MOTION)
+     * @param mode OutsideMode enum value
      */
-    void setMode(OutsideMode mode) {
-        _mode = mode;
-        evaluateState();
-    }
-
+    void setMode(OutsideMode mode);
+    
     /**
-     * @brief Periodic state update - Empty (Event Driven)
+     * @brief Periodic update (handled via events)
      */
     void update() override {}
-
+    
     /**
      * @brief Toggles between ON and OFF modes
      */
-    void toggle() override {
-        if (_state) {
-            _mode = OutsideMode::OFF;
-        } else {
-            _mode = OutsideMode::ON;
-        }
-        evaluateState();
-    }
-
+    void toggle() override;
+    
     /**
-     * @brief Handles events from sensors and buttons
+     * @brief Handles sensor events for automation
+     * @param type Event type
+     * @param source Event source device
+     * @param value Value associated with the event
      */
-    void handleEvent(EventType type, IDevice* source, int value) override {
-        // Handle button presses via base class
-        SimpleLight::handleEvent(type, source, value);
-
-        // Handle sensor updates
-        if (type == EventType::SensorUpdated) {
-            if (source == _photo || source == _motion) {
-                evaluateState();
-            }
-        }
-    }
+    void handleEvent(EventType type, IDevice* source, int value) override;
 };
 
 /**
  * @class DeviceFactory
- * @brief Factory for creating devices
+ * @brief Factory for creating and registering devices
+ * @ingroup Devices
+ * 
+ * @details Provides static methods to create devices and automatically
+ * register them with the DeviceRegistry. Simplifies device initialization.
  */
 class DeviceFactory {
 public:
     /**
      * @brief Creates a simple on/off light
-     * @param name Device name
-     * @param pin Arduino pin
+     * @param name Device name (Flash string)
+     * @param pin Arduino digital pin
      */
-    static void createSimpleLight(const __FlashStringHelper* name, uint8_t pin) {
-        new SimpleLight(name, pin);
-    }
-
+    static void createSimpleLight(const __FlashStringHelper* name, uint8_t pin);
+    
     /**
      * @brief Creates a dimmable light
-     * @param name Device name
+     * @param name Device name (Flash string)
      * @param pin Arduino PWM pin
      */
-    static void createDimmableLight(const __FlashStringHelper* name, uint8_t pin) {
-        new DimmableLight(name, pin);
-    }
-
+    static void createDimmableLight(const __FlashStringHelper* name, uint8_t pin);
+    
     /**
      * @brief Creates a temperature sensor
-     * @param name Device name
+     * @param name Device name (Flash string)
      */
-    static void createTemperatureSensor(const __FlashStringHelper* name) {
-        new TemperatureSensor(name);
-    }
+    static void createTemperatureSensor(const __FlashStringHelper* name);
     
     /**
      * @brief Creates an RGB light
-     * @param name Device name
-     * @param r PWM pin for red
-     * @param g PWM pin for green
-     * @param b PWM pin for blue
+     * @param name Device name (Flash string)
+     * @param r Red channel PWM pin
+     * @param g Green channel PWM pin
+     * @param b Blue channel PWM pin
      */
-    static void createRGBLight(const __FlashStringHelper* name, uint8_t r, uint8_t g, uint8_t b) {
-        new RGBLight(name, r, g, b);
-    }
+    static void createRGBLight(const __FlashStringHelper* name, uint8_t r, uint8_t g, uint8_t b);
     
     /**
-     * @brief Creates an automatic outdoor light
-     * @param name Device name
-     * @param pin Arduino pin
+     * @brief Creates an outdoor light with sensors
+     * @param name Device name (Flash string)
+     * @param pin Arduino digital pin
      * @param p Pointer to light sensor
      * @param m Pointer to motion sensor
+     * @return Pointer to created OutsideLight
      */
-    static OutsideLight* createOutsideLight(const __FlashStringHelper* name, uint8_t pin, PhotoresistorSensor* p, PIRSensorDevice* m) {
-        return new OutsideLight(name, pin, p, m);
-    }
+    static OutsideLight* createOutsideLight(const __FlashStringHelper* name, uint8_t pin, 
+                                            PhotoresistorSensor* p, PIRSensorDevice* m);
     
     /**
-     * @brief Creates a light sensor
-     * @param name Device name
+     * @brief Creates a photoresistor sensor
+     * @param name Device name (Flash string)
      * @param pin Arduino analog pin
-     * @return Pointer to created sensor
+     * @return Pointer to created PhotoresistorSensor
      */
-    static PhotoresistorSensor* createPhotoresistorSensor(const __FlashStringHelper* name, uint8_t pin) {
-        return new PhotoresistorSensor(name, pin);
-    }
+    static PhotoresistorSensor* createPhotoresistorSensor(const __FlashStringHelper* name, uint8_t pin);
     
     /**
      * @brief Creates a PIR motion sensor
-     * @param name Device name
+     * @param name Device name (Flash string)
      * @param pin Arduino digital pin
-     * @return Pointer to created sensor
+     * @return Pointer to created PIRSensorDevice
      */
-    static PIRSensorDevice* createPIRSensor(const __FlashStringHelper* name, uint8_t pin) {
-        return new PIRSensorDevice(name, pin);
-    }
+    static PIRSensorDevice* createPIRSensor(const __FlashStringHelper* name, uint8_t pin);
     
     /**
      * @brief Creates a RAM usage sensor
-     * @param name Device name
+     * @param name Device name (Flash string)
      */
-    static void createRamSensor(const __FlashStringHelper* name) {
-        new RamSensorDevice(name);
-    }
+    static void createRamSensor(const __FlashStringHelper* name);
     
     /**
      * @brief Creates a VCC voltage sensor
-     * @param name Device name
+     * @param name Device name (Flash string)
      */
-    static void createVoltageSensor(const __FlashStringHelper* name) {
-        new VccSensorDevice(name);
-    }
+    static void createVoltageSensor(const __FlashStringHelper* name);
     
     /**
      * @brief Creates a loop time sensor
-     * @param name Device name
+     * @param name Device name (Flash string)
      */
-    static void createLoopTimeSensor(const __FlashStringHelper* name) {
-        new LoopTimeSensorDevice(name);
-    }
+    static void createLoopTimeSensor(const __FlashStringHelper* name);
 };
 
 #endif
