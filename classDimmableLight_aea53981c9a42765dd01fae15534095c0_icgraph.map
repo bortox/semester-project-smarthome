@@ -1,10 +1,18 @@
 <map id="DimmableLight::getBrightness" name="DimmableLight::getBrightness">
-<area shape="rect" id="node1" title="Gets the current brightness level." alt="" coords="1209,67,1429,93"/>
-<area shape="rect" id="node2" href="$classMenuBuilder.html#a18d73ff68acbd838f03f10aa8cb423e6" title="Builds brightness slider page." alt="" coords="917,42,1161,67"/>
-<area shape="rect" id="node8" href="$classPartyScene.html#a1c9b31d0f63459f9dc58a8fdb9b18c64" title="Periodic update &#45; applies scene effects to devices." alt="" coords="966,91,1113,117"/>
-<area shape="rect" id="node3" href="$classMenuBuilder.html#a99c9fe7d757f5800b334a6b551af2e82" title="Builds dimmable light control page." alt="" coords="646,5,858,45"/>
-<area shape="rect" id="node7" href="$classMenuBuilder.html#ac029426e87fda27a930e260bf4b211ef" title="Builds RGB light control page." alt="" coords="635,70,869,95"/>
-<area shape="rect" id="node4" href="$classMenuBuilder.html#a6b11a8ff5c14c601f25dfa550b090c84" title="Builds lights overview page." alt="" coords="372,42,587,67"/>
-<area shape="rect" id="node5" href="$classMenuBuilder.html#a44dccff1d668cb9f591482e7db2aa73d" title="Builds root menu page." alt="" coords="112,42,324,67"/>
-<area shape="rect" id="node6" href="$main_8cpp.html#a4fc01d736fe50cf5b977f755b675f11d" title="System initialization." alt="" coords="5,42,64,67"/>
+<area shape="rect" id="Node000001" title="Gets the current brightness level." alt="" coords="1209,67,1429,93"/>
+<area shape="rect" id="Node000002" href="$classMenuBuilder.html#a9274103722fda89aaac8f0be48bb0c6c" title="Builds brightness adjustment page." alt="" coords="917,42,1161,67"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1196,72,1161,68,1162,63,1196,66"/>
+<area shape="rect" id="Node000008" href="$classPartyScene.html#a1c9b31d0f63459f9dc58a8fdb9b18c64" title="Periodic update &#45; applies scene effects to devices." alt="" coords="966,91,1113,117"/>
+<area shape="poly" id="edge8_Node000001_Node000008" title=" " alt="" coords="1196,93,1113,100,1113,95,1196,88"/>
+<area shape="rect" id="Node000003" href="$classMenuBuilder.html#a8d7d05bad9df7f58e5cfda65fd2e33ff" title="Builds dimmable light control page." alt="" coords="646,5,858,45"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="904,43,858,39,858,33,904,38"/>
+<area shape="rect" id="Node000007" href="$classMenuBuilder.html#a55f678cfd453567ac15f33d55d21ad46" title="Builds RGB light control page." alt="" coords="635,70,869,95"/>
+<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="904,71,870,74,869,69,904,65"/>
+<area shape="rect" id="Node000004" href="$classMenuBuilder.html#a328fd58e3a936663a7bb71913e1dc216" title="Builds lights listing page with all light devices." alt="" coords="372,42,587,67"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="633,41,587,46,586,40,632,36"/>
+<area shape="rect" id="Node000005" href="$classMenuBuilder.html#a817eae2da07a2f797df3b6aad343a7eb" title="Builds root menu page." alt="" coords="112,42,324,67"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="358,57,324,57,324,52,358,52"/>
+<area shape="rect" id="Node000006" href="$main_8cpp.html#a4fc01d736fe50cf5b977f755b675f11d" title="System initialization." alt="" coords="5,42,64,67"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="98,57,64,57,64,52,98,52"/>
+<area shape="poly" id="edge7_Node000007_Node000004" title=" " alt="" coords="621,72,587,68,587,63,621,67"/>
 </map>

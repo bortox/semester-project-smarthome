@@ -1,5 +1,7 @@
 <map id="AlarmScene" name="AlarmScene">
-<area shape="rect" id="node1" title="Highest priority scene that flashes red on motion detection." alt="" coords="45,79,145,104"/>
-<area shape="rect" id="node2" href="$classIScene.html" title="Abstract interface for scene implementations." alt="" coords="5,5,71,31"/>
-<area shape="rect" id="node3" href="$classIEventListener.html" title="Interface for the Observer Pattern." alt="" coords="95,5,210,31"/>
+<area shape="rect" id="Node000001" title="Alarm mode scene &#45; motion&#45;triggered red flash." alt="" coords="45,79,145,104"/>
+<area shape="rect" id="Node000002" href="$classIScene.html" title="Abstract base class for automation scenes." alt="" coords="5,5,71,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="58,40,88,77,84,80,54,43"/>
+<area shape="rect" id="Node000003" href="$classIEventListener.html" title="Interface for event&#45;driven components." alt="" coords="95,5,210,31"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="137,43,107,80,103,77,133,40"/>
 </map>

@@ -1,7 +1,9 @@
 <map id="RGBLight::setPreset" name="RGBLight::setPreset">
-<area shape="rect" id="node1" title="Sets a color from a predefined preset." alt="" coords="5,31,156,56"/>
-<area shape="rect" id="node2" href="$classRGBLight.html#a24ff27f0ddd26cef3b765a2d35b2b20d" title="Sets the RGB color." alt="" coords="204,31,348,56"/>
-<area shape="rect" id="node3" href="$classEventSystem.html#a7d557111351077f5454f3ef839df55fa" title=" " alt="" coords="408,5,555,31"/>
-<area shape="rect" id="node5" href="$classEventSystem.html#a962434d9ad5d95c624c62938c1b9c89f" title="Access the singleton instance." alt="" coords="396,55,567,80"/>
-<area shape="rect" id="node4" href="$classDynamicArray.html#a521af75e017863b464537d3b6dd1cf14" title=" " alt="" coords="615,5,763,31"/>
+<area shape="rect" id="Node000001" title="Sets a color from a predefined preset." alt="" coords="5,31,156,56"/>
+<area shape="rect" id="Node000002" href="$classRGBLight.html#a24ff27f0ddd26cef3b765a2d35b2b20d" title="Sets the RGB color." alt="" coords="204,31,348,56"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="156,41,190,41,190,46,156,46"/>
+<area shape="rect" id="Node000003" href="$classEventSystem.html#a7d557111351077f5454f3ef839df55fa" title="Emits event to all registered listeners." alt="" coords="408,5,555,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="348,32,394,26,395,31,349,37"/>
+<area shape="rect" id="Node000004" href="$classEventSystem.html#a962434d9ad5d95c624c62938c1b9c89f" title="Gets singleton instance." alt="" coords="396,55,567,80"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="349,49,383,53,382,58,348,54"/>
 </map>

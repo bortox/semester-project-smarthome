@@ -1,4 +1,5 @@
 <map id="SubMenuItem" name="SubMenuItem">
-<area shape="rect" id="node1" title="Submenu item with JIT page creation." alt="" coords="5,79,117,104"/>
-<area shape="rect" id="node2" href="$classMenuItem.html" title="Abstract base class for all menu items." alt="" coords="17,5,105,31"/>
+<area shape="rect" id="Node000001" title="Submenu item with JIT page creation." alt="" coords="5,79,117,104"/>
+<area shape="rect" id="Node000002" href="$classMenuItem.html" title="Abstract base class for all menu items." alt="" coords="17,5,105,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="64,44,64,79,59,79,59,44"/>
 </map>

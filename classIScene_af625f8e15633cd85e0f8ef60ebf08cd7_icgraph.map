@@ -1,5 +1,0 @@
-<map id="IScene::isActive" name="IScene::isActive">
-<area shape="rect" id="node1" title="Checks if scene is currently active." alt="" coords="272,31,397,56"/>
-<area shape="rect" id="node2" href="$classSceneToggleItem.html#a0b17886584fb5c75c383b4a340c7e552" title="Draws scene name and ON/OFF status." alt="" coords="28,5,201,31"/>
-<area shape="rect" id="node3" href="$classSceneToggleItem.html#a3887147921378d3868419a518dc04777" title="Toggles scene activation on &#39;E&#39; key." alt="" coords="5,55,224,80"/>
-</map>

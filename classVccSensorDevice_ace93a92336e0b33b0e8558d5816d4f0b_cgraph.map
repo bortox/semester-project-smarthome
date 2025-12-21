@@ -1,7 +1,9 @@
 <map id="VccSensorDevice::VccSensorDevice" name="VccSensorDevice::VccSensorDevice">
-<area shape="rect" id="node1" title="Constructor for VCC sensor device." alt="" coords="5,47,215,87"/>
-<area shape="rect" id="node2" href="$classVccSensor.html#a2406fb365b7b3c400a762c1776a695cd" title="Reads VCC using internal 1.1V reference." alt="" coords="277,5,431,31"/>
-<area shape="rect" id="node3" href="$classDeviceRegistry.html#acea4fa19e872f726874a15dfd6caea98" title=" " alt="" coords="263,55,445,80"/>
-<area shape="rect" id="node4" href="$classDeviceRegistry.html#ad138dc35e86f58166d1cef2decb119b3" title=" " alt="" coords="265,105,443,145"/>
-<area shape="rect" id="node5" href="$classDynamicArray.html#a0597a43587fc9571429924e4ee8c2f07" title="Adds an element to the array." alt="" coords="493,112,640,137"/>
+<area shape="rect" id="Node000001" title="Constructor for VCC sensor device." alt="" coords="5,47,215,87"/>
+<area shape="rect" id="Node000002" href="$classIDevice.html#a6694cdba3e1cd93a6d8d683f433b80e6" title="Constructor." alt="" coords="290,5,418,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="209,45,277,31,278,36,210,50"/>
+<area shape="rect" id="Node000003" href="$classDeviceRegistry.html#acea4fa19e872f726874a15dfd6caea98" title="Gets singleton instance." alt="" coords="263,55,445,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="215,65,249,65,249,70,215,70"/>
+<area shape="rect" id="Node000004" href="$classDeviceRegistry.html#ad138dc35e86f58166d1cef2decb119b3" title="Registers device with registry." alt="" coords="265,105,443,145"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="196,85,256,99,254,104,195,90"/>
 </map>

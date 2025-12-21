@@ -1,8 +1,9 @@
 <map id="RGBLight::toggle" name="RGBLight::toggle">
-<area shape="rect" id="node1" title="Toggles the RGB light state." alt="" coords="5,80,136,105"/>
-<area shape="rect" id="node2" href="$classEventSystem.html#a7d557111351077f5454f3ef839df55fa" title=" " alt="" coords="230,5,377,31"/>
-<area shape="rect" id="node4" href="$classEventSystem.html#a962434d9ad5d95c624c62938c1b9c89f" title="Access the singleton instance." alt="" coords="218,55,389,80"/>
-<area shape="rect" id="node5" href="$classDimmableLight.html#a343102812c45ae8078a4b4352939a6ce" title="Protected access to last saved brightness." alt="" coords="192,104,415,129"/>
-<area shape="rect" id="node6" href="$classDimmableLight.html#a27bbdbdd5528ab5d610a3b7c187dadc1" title="Protected access to target brightness." alt="" coords="184,153,423,179"/>
-<area shape="rect" id="node3" href="$classDynamicArray.html#a521af75e017863b464537d3b6dd1cf14" title=" " alt="" coords="471,5,619,31"/>
+<area shape="rect" id="Node000001" title="Toggles the light state while preserving color." alt="" coords="5,31,136,56"/>
+<area shape="rect" id="Node000002" href="$classDimmableLight.html#ae17bf9a6553f06db80d38d3a4d0790b4" title="Toggles the light state while preserving brightness." alt="" coords="184,31,355,56"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="136,41,170,41,170,46,136,46"/>
+<area shape="rect" id="Node000003" href="$classEventSystem.html#a7d557111351077f5454f3ef839df55fa" title="Emits event to all registered listeners." alt="" coords="415,5,561,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="354,31,400,25,401,31,355,36"/>
+<area shape="rect" id="Node000004" href="$classEventSystem.html#a962434d9ad5d95c624c62938c1b9c89f" title="Gets singleton instance." alt="" coords="403,55,573,80"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="355,50,389,54,389,59,355,55"/>
 </map>

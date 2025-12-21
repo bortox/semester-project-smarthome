@@ -1,0 +1,5 @@
+<map id="OutsideLight::handleEvent" name="OutsideLight::handleEvent">
+<area shape="rect" id="Node000001" title="Handles sensor events for automation." alt="" coords="5,5,199,31"/>
+<area shape="rect" id="Node000002" href="$classIDevice.html#a6694cdba3e1cd93a6d8d683f433b80e6" title="Constructor." alt="" coords="247,5,375,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="199,15,233,15,233,21,199,21"/>
+</map>

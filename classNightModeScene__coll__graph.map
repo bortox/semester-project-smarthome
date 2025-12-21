@@ -1,4 +1,5 @@
 <map id="NightModeScene" name="NightModeScene">
-<area shape="rect" id="node1" title="Low priority scene that limits global brightness." alt="" coords="5,79,137,104"/>
-<area shape="rect" id="node2" href="$classIScene.html" title="Abstract interface for scene implementations." alt="" coords="39,5,104,31"/>
+<area shape="rect" id="Node000001" title="Night mode scene &#45; reduces all light brightness." alt="" coords="5,79,137,104"/>
+<area shape="rect" id="Node000002" href="$classIScene.html" title="Abstract base class for automation scenes." alt="" coords="39,5,104,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="74,44,74,79,69,79,69,44"/>
 </map>

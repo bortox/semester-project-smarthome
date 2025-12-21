@@ -1,9 +1,0 @@
-<map id="OutsideLight::update" name="OutsideLight::update">
-<area shape="rect" id="node1" title="Periodic state update." alt="" coords="5,80,163,105"/>
-<area shape="rect" id="node2" href="$classEventSystem.html#a7d557111351077f5454f3ef839df55fa" title=" " alt="" coords="238,5,385,31"/>
-<area shape="rect" id="node4" href="$classLightSensor.html#a57285d8ed2b27f81cb9bf4a402dd2a0d" title=" " alt="" coords="230,55,393,80"/>
-<area shape="rect" id="node6" href="$classMovementSensor.html#a010bb44da1d1141a1153c4ca31bd9c81" title=" " alt="" coords="211,104,412,129"/>
-<area shape="rect" id="node7" href="$classEventSystem.html#a962434d9ad5d95c624c62938c1b9c89f" title="Access the singleton instance." alt="" coords="226,153,397,179"/>
-<area shape="rect" id="node3" href="$classDynamicArray.html#a521af75e017863b464537d3b6dd1cf14" title=" " alt="" coords="463,5,611,31"/>
-<area shape="rect" id="node5" href="$classLightSensor.html#ac68507155117cdbe384049194ae23d41" title=" " alt="" coords="460,55,615,80"/>
-</map>

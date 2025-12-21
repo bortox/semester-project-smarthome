@@ -1,14 +1,14 @@
 <map id="SensorStats::getAverage" name="SensorStats::getAverage">
-<area shape="rect" id="node1" title="Gets the average of recorded values." alt="" coords="1191,241,1372,266"/>
-<area shape="rect" id="node2" href="$classSensorStats.html#a9e0211345780c3e62cb7be553be00cbf" title="Adds a new sample to the statistics." alt="" coords="959,159,1139,185"/>
-<area shape="rect" id="node8" href="$classMenuBuilder.html#a1fbeed1a43d18c0f6e4ac1bcd22b3185" title="Builds sensor statistics page." alt="" coords="955,291,1143,331"/>
-<area shape="rect" id="node3" href="$classTemperatureSensor.html#a91754010b0f23056beb3b380ed98fafa" title="Periodic reading update." alt="" coords="699,5,855,45"/>
-<area shape="rect" id="node4" href="$classPhotoresistorSensor.html#a1a7a7c3968a61522dad877422b724a52" title="Periodic reading update." alt="" coords="701,69,853,109"/>
-<area shape="rect" id="node5" href="$classRamSensorDevice.html#a90a05b48339752bdb02458203fdf4edc" title="Periodic reading update." alt="" coords="679,134,874,159"/>
-<area shape="rect" id="node6" href="$classVccSensorDevice.html#a8f3a99c4750f64f7916a334e75dac6e4" title="Periodic reading update." alt="" coords="683,183,870,209"/>
-<area shape="rect" id="node7" href="$classLoopTimeSensorDevice.html#a169b53a1152d07b993b2b57750385148" title="Periodic update handles window rotation and stats." alt="" coords="689,233,864,273"/>
-<area shape="rect" id="node9" href="$classMenuBuilder.html#ac7a33e9b51ec8a93d8d8f2315833be07" title="Builds light sensor settings page." alt="" coords="647,298,907,323"/>
-<area shape="rect" id="node10" href="$classMenuBuilder.html#a5fb86dfd5959b0b3e80679cc777dfc50" title="Builds sensors overview page." alt="" coords="372,323,599,349"/>
-<area shape="rect" id="node11" href="$classMenuBuilder.html#a44dccff1d668cb9f591482e7db2aa73d" title="Builds root menu page." alt="" coords="112,323,324,349"/>
-<area shape="rect" id="node12" href="$main_8cpp.html#a4fc01d736fe50cf5b977f755b675f11d" title="System initialization." alt="" coords="5,323,64,349"/>
+<area shape="rect" id="Node000001" title="Gets the average of recorded values." alt="" coords="1191,31,1372,56"/>
+<area shape="rect" id="Node000002" href="$classMenuBuilder.html#a2f96fce8ad239583f40a79fca95c0a42" title="Builds sensor statistics page." alt="" coords="955,23,1143,63"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1177,46,1143,46,1143,41,1177,41"/>
+<area shape="rect" id="Node000003" href="$classMenuBuilder.html#afc4c63c87f32e98b928c1d1c8fdce975" title="Builds light sensor settings page with calibration." alt="" coords="647,5,907,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="941,36,907,33,907,27,941,31"/>
+<area shape="rect" id="Node000004" href="$classMenuBuilder.html#a25f90f5a7cc6a6901ba1c7d4b51ecaa7" title="Builds sensors listing page with all sensor devices." alt="" coords="372,31,599,56"/>
+<area shape="poly" id="edge6_Node000002_Node000004" title=" " alt="" coords="941,46,599,46,599,41,941,41"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="633,33,599,36,599,31,633,28"/>
+<area shape="rect" id="Node000005" href="$classMenuBuilder.html#a817eae2da07a2f797df3b6aad343a7eb" title="Builds root menu page." alt="" coords="112,31,324,56"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="358,46,324,46,324,41,358,41"/>
+<area shape="rect" id="Node000006" href="$main_8cpp.html#a4fc01d736fe50cf5b977f755b675f11d" title="System initialization." alt="" coords="5,31,64,56"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="98,46,64,46,64,41,98,41"/>
 </map>

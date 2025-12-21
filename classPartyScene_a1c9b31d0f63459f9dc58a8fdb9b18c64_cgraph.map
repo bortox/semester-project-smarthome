@@ -1,13 +1,23 @@
 <map id="PartyScene::update" name="PartyScene::update">
-<area shape="rect" id="node1" title="Periodic update &#45; applies scene effects to devices." alt="" coords="5,129,152,155"/>
-<area shape="rect" id="node2" href="$classDimmableLight.html#aea53981c9a42765dd01fae15534095c0" title="Gets the current brightness level." alt="" coords="200,5,420,31"/>
-<area shape="rect" id="node3" href="$classDeviceRegistry.html#ab222f7413c82a27f8c06d55756ded728" title=" " alt="" coords="209,55,411,80"/>
-<area shape="rect" id="node4" href="$classDeviceRegistry.html#acea4fa19e872f726874a15dfd6caea98" title=" " alt="" coords="219,104,401,129"/>
-<area shape="rect" id="node5" href="$classRGBLight.html#a8d207c5659398bf3716c531fb6e35df5" title="Sets the RGB light brightness." alt="" coords="221,255,399,280"/>
-<area shape="rect" id="node7" href="$classDynamicArray.html#a521af75e017863b464537d3b6dd1cf14" title=" " alt="" coords="755,180,903,205"/>
-<area shape="rect" id="node11" href="$classRGBLight.html#a24ff27f0ddd26cef3b765a2d35b2b20d" title="Sets the RGB color." alt="" coords="238,205,382,231"/>
-<area shape="rect" id="node6" href="$classEventSystem.html#a7d557111351077f5454f3ef839df55fa" title=" " alt="" coords="514,205,661,231"/>
-<area shape="rect" id="node8" href="$classEventSystem.html#a962434d9ad5d95c624c62938c1b9c89f" title="Access the singleton instance." alt="" coords="502,255,673,280"/>
-<area shape="rect" id="node9" href="$classDimmableLight.html#a343102812c45ae8078a4b4352939a6ce" title="Protected access to last saved brightness." alt="" coords="476,353,699,379"/>
-<area shape="rect" id="node10" href="$classDimmableLight.html#a27bbdbdd5528ab5d610a3b7c187dadc1" title="Protected access to target brightness." alt="" coords="468,304,707,329"/>
+<area shape="rect" id="Node000001" title="Periodic update &#45; applies scene effects to devices." alt="" coords="5,129,152,155"/>
+<area shape="rect" id="Node000002" href="$classDimmableLight.html#aea53981c9a42765dd01fae15534095c0" title="Gets the current brightness level." alt="" coords="200,5,420,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="90,127,134,84,165,60,199,40,216,33,218,37,201,44,168,64,138,88,93,131"/>
+<area shape="rect" id="Node000003" href="$classDeviceRegistry.html#ab222f7413c82a27f8c06d55756ded728" title="Gets all registered devices." alt="" coords="209,55,411,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="105,127,199,89,228,81,230,86,201,94,107,132"/>
+<area shape="rect" id="Node000004" href="$classDeviceRegistry.html#acea4fa19e872f726874a15dfd6caea98" title="Gets singleton instance." alt="" coords="219,104,401,129"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="152,131,205,126,205,131,153,137"/>
+<area shape="rect" id="Node000005" href="$classRGBLight.html#a8d207c5659398bf3716c531fb6e35df5" title="Sets overall brightness." alt="" coords="221,153,399,179"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="153,147,207,153,207,158,152,152"/>
+<area shape="rect" id="Node000009" href="$classRGBLight.html#a24ff27f0ddd26cef3b765a2d35b2b20d" title="Sets the RGB color." alt="" coords="505,204,649,229"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="106,152,149,172,201,189,277,203,354,211,492,216,491,221,354,216,276,208,199,194,147,177,103,157"/>
+<area shape="rect" id="Node000010" href="$classDynamicArray.html#a521af75e017863b464537d3b6dd1cf14" title="Gets current element count." alt="" coords="236,255,384,280"/>
+<area shape="poly" id="edge11_Node000001_Node000010" title=" " alt="" coords="95,153,140,192,169,214,201,233,239,248,237,253,199,238,166,218,136,196,91,157"/>
+<area shape="rect" id="Node000006" href="$classDimmableLight.html#a24268c4542c8419e6ddad8c85c2b738f" title="Sets the light brightness." alt="" coords="468,155,687,180"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="399,164,455,164,455,169,399,169"/>
+<area shape="rect" id="Node000007" href="$classEventSystem.html#a7d557111351077f5454f3ef839df55fa" title="Emits event to all registered listeners." alt="" coords="747,155,893,180"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="687,165,733,165,733,170,687,170"/>
+<area shape="rect" id="Node000008" href="$classEventSystem.html#a962434d9ad5d95c624c62938c1b9c89f" title="Gets singleton instance." alt="" coords="735,204,905,229"/>
+<area shape="poly" id="edge7_Node000006_Node000008" title=" " alt="" coords="641,177,744,199,743,204,640,183"/>
+<area shape="poly" id="edge9_Node000009_Node000007" title=" " alt="" coords="640,201,743,180,744,185,641,207"/>
+<area shape="poly" id="edge10_Node000009_Node000008" title=" " alt="" coords="649,214,721,214,721,219,649,219"/>
 </map>

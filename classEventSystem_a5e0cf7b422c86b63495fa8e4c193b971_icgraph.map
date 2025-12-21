@@ -1,0 +1,11 @@
+<map id="EventSystem::removeListener" name="EventSystem::removeListener">
+<area shape="rect" id="Node000001" title="Unregisters listener from all event types." alt="" coords="259,80,477,105"/>
+<area shape="rect" id="Node000002" href="$classAlarmScene.html#a01c969d79ed63fa2e6be01f9f171d2ee" title="Called when scene is deactivated." alt="" coords="11,5,205,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="317,78,210,45,166,33,168,28,211,39,318,73"/>
+<area shape="rect" id="Node000003" href="$classMenuPage.html#a8376cadea38246a90fcf5a7112e8dfc6" title="Destructor &#45; cleans up event listeners and child items." alt="" coords="21,55,195,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="245,83,195,78,196,73,246,78"/>
+<area shape="rect" id="Node000004" href="$classOutsideLight.html#a177e64b737d4878f8eedbc1165d462b9" title="Destructor." alt="" coords="5,104,211,129"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="245,107,211,110,211,105,245,101"/>
+<area shape="rect" id="Node000005" href="$classSimpleLight.html#a193e9a53d78d6211aaa3316bca46d763" title="Destructor." alt="" coords="11,153,205,179"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="315,112,211,143,163,156,162,151,210,138,314,107"/>
+</map>

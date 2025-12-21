@@ -1,13 +1,21 @@
 <map id="DeviceRegistry::getDevices" name="DeviceRegistry::getDevices">
-<area shape="rect" id="node1" title=" " alt="" coords="1419,208,1620,233"/>
-<area shape="rect" id="node2" href="$classMenuBuilder.html#a6b11a8ff5c14c601f25dfa550b090c84" title="Builds lights overview page." alt="" coords="955,157,1169,183"/>
-<area shape="rect" id="node4" href="$main_8cpp.html#a4fc01d736fe50cf5b977f755b675f11d" title="System initialization." alt="" coords="5,208,64,233"/>
-<area shape="rect" id="node5" href="$classMenuBuilder.html#a5fb86dfd5959b0b3e80679cc777dfc50" title="Builds sensors overview page." alt="" coords="372,81,599,107"/>
-<area shape="rect" id="node6" href="$classAlarmScene.html#afd56c3548e8b58bc880eac112e443870" title="Called when scene is deactivated." alt="" coords="1227,208,1361,233"/>
-<area shape="rect" id="node7" href="$main_8cpp.html#afe461d27b9c48d5921c00d521181f12f" title="Main execution loop." alt="" coords="1269,52,1319,77"/>
-<area shape="rect" id="node10" href="$classPartyScene.html#a1c9b31d0f63459f9dc58a8fdb9b18c64" title="Periodic update &#45; applies scene effects to devices." alt="" coords="1221,309,1367,335"/>
-<area shape="rect" id="node11" href="$classAlarmScene.html#aa227bd4fc2553362da49dba7d725b8cb" title="Periodic update &#45; applies scene effects to devices." alt="" coords="1217,359,1371,384"/>
-<area shape="rect" id="node3" href="$classMenuBuilder.html#a44dccff1d668cb9f591482e7db2aa73d" title="Builds root menu page." alt="" coords="112,157,324,183"/>
-<area shape="rect" id="node8" href="$classMenuBuilder.html#a1fbeed1a43d18c0f6e4ac1bcd22b3185" title="Builds sensor statistics page." alt="" coords="968,42,1156,82"/>
-<area shape="rect" id="node9" href="$classMenuBuilder.html#ac7a33e9b51ec8a93d8d8f2315833be07" title="Builds light sensor settings page." alt="" coords="647,5,907,31"/>
+<area shape="rect" id="Node000001" title="Gets all registered devices." alt="" coords="647,156,848,181"/>
+<area shape="rect" id="Node000002" href="$classMenuBuilder.html#a328fd58e3a936663a7bb71913e1dc216" title="Builds lights listing page with all light devices." alt="" coords="378,5,593,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="724,147,670,95,635,67,597,44,568,33,570,28,600,40,638,63,674,91,728,144"/>
+<area shape="rect" id="Node000004" href="$main_8cpp.html#a4fc01d736fe50cf5b977f755b675f11d" title="System initialization." alt="" coords="5,80,64,105"/>
+<area shape="poly" id="edge8_Node000001_Node000004" title=" " alt="" coords="661,156,598,147,285,115,64,97,64,92,286,109,599,142,661,151"/>
+<area shape="rect" id="Node000005" href="$classMenuBuilder.html#a25f90f5a7cc6a6901ba1c7d4b51ecaa7" title="Builds sensors listing page with all sensor devices." alt="" coords="372,55,599,80"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="709,152,657,127,598,102,537,83,539,78,600,97,659,122,711,147"/>
+<area shape="rect" id="Node000006" href="$main_8cpp.html#afe461d27b9c48d5921c00d521181f12f" title="Main execution loop." alt="" coords="460,156,511,181"/>
+<area shape="poly" id="edge6_Node000001_Node000006" title=" " alt="" coords="633,171,511,171,511,166,633,166"/>
+<area shape="rect" id="Node000007" href="$classAlarmScene.html#a01c969d79ed63fa2e6be01f9f171d2ee" title="Called when scene is deactivated." alt="" coords="388,205,583,231"/>
+<area shape="poly" id="edge7_Node000001_Node000007" title=" " alt="" coords="666,187,554,208,553,203,665,181"/>
+<area shape="rect" id="Node000008" href="$classAlarmScene.html#aa227bd4fc2553362da49dba7d725b8cb" title="Periodic update &#45; applies scene effects to devices." alt="" coords="409,255,562,280"/>
+<area shape="poly" id="edge9_Node000001_Node000008" title=" " alt="" coords="715,191,662,219,600,246,560,257,559,252,598,241,659,214,712,186"/>
+<area shape="rect" id="Node000009" href="$classPartyScene.html#a1c9b31d0f63459f9dc58a8fdb9b18c64" title="Periodic update &#45; applies scene effects to devices." alt="" coords="412,304,559,329"/>
+<area shape="poly" id="edge10_Node000001_Node000009" title=" " alt="" coords="727,194,673,245,638,272,600,295,560,309,558,304,598,290,635,268,670,241,724,190"/>
+<area shape="rect" id="Node000003" href="$classMenuBuilder.html#a817eae2da07a2f797df3b6aad343a7eb" title="Builds root menu page." alt="" coords="112,55,324,80"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="403,36,288,57,287,52,402,31"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="113,85,64,91,64,86,112,79"/>
+<area shape="poly" id="edge5_Node000005_Node000003" title=" " alt="" coords="358,70,324,70,324,65,358,65"/>
 </map>

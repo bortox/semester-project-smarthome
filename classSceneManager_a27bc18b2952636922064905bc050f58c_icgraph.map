@@ -1,4 +1,5 @@
 <map id="SceneManager::removeScene" name="SceneManager::removeScene">
-<area shape="rect" id="node1" title="Deactivates a scene and removes it from the active list." alt="" coords="272,5,487,31"/>
-<area shape="rect" id="node2" href="$classSceneToggleItem.html#a3887147921378d3868419a518dc04777" title="Toggles scene activation on &#39;E&#39; key." alt="" coords="5,5,224,31"/>
+<area shape="rect" id="Node000001" title="Deactivates a scene and removes it from the active list." alt="" coords="272,5,487,31"/>
+<area shape="rect" id="Node000002" href="$classSceneToggleItem.html#a3887147921378d3868419a518dc04777" title="Toggles scene activation on ENTER." alt="" coords="5,5,224,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="258,21,224,21,224,15,258,15"/>
 </map>

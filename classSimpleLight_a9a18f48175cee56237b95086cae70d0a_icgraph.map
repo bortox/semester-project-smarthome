@@ -1,4 +1,0 @@
-<map id="SimpleLight::toggle" name="SimpleLight::toggle">
-<area shape="rect" id="node1" title="Toggles the light state (on/off)" alt="" coords="241,5,389,31"/>
-<area shape="rect" id="node2" href="$classSimpleLight.html#a8eb27a23067d5622985a6eec3196d368" title="Handles received events." alt="" coords="5,5,193,31"/>
-</map>

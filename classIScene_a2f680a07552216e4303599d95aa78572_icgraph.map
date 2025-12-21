@@ -1,0 +1,12 @@
+<map id="IScene::onDeactivate" name="IScene::onDeactivate">
+<area shape="rect" id="Node000001" title="Called when scene is deactivated." alt="" coords="717,31,877,56"/>
+<area shape="rect" id="Node000002" href="$classIScene.html#a86b15f77aa16b7179fd19b651f0b00a8" title="Sets scene active state and calls appropriate callback." alt="" coords="535,31,669,56"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="704,46,670,46,670,41,704,41"/>
+<area shape="rect" id="Node000003" href="$classSceneManager.html#a2e66e72657889d2aa9aba239b75b5f6e" title="Activates a scene and adds it to the active list." alt="" coords="285,5,474,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="521,37,474,31,475,26,521,32"/>
+<area shape="rect" id="Node000005" href="$classSceneManager.html#a27bc18b2952636922064905bc050f58c" title="Deactivates a scene and removes it from the active list." alt="" coords="272,55,487,80"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="522,55,487,58,487,53,521,49"/>
+<area shape="rect" id="Node000004" href="$classSceneToggleItem.html#a3887147921378d3868419a518dc04777" title="Toggles scene activation on ENTER." alt="" coords="5,31,224,56"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="271,31,224,36,224,30,271,26"/>
+<area shape="poly" id="edge5_Node000005_Node000004" title=" " alt="" coords="258,59,224,56,224,51,259,54"/>
+</map>

@@ -1,0 +1,26 @@
+<map id="EventSystem::addListener" name="EventSystem::addListener">
+<area shape="rect" id="Node000001" title="Registers listener for specific event type." alt="" coords="715,128,907,153"/>
+<area shape="rect" id="Node000002" href="$classButtonInput.html#a9fd770100c290159f91e8dab73971d01" title="Constructor." alt="" coords="483,5,666,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="782,121,730,82,666,44,635,33,637,28,668,40,733,78,786,117"/>
+<area shape="rect" id="Node000003" href="$classMenuPage.html#a18b387d211cabb195fcb63e9f858c578" title="Constructs a menu page." alt="" coords="493,79,657,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="735,128,636,107,637,101,736,123"/>
+<area shape="rect" id="Node000007" href="$classAlarmScene.html#a26b4e1785dbe0a17649e68d07a9814c0" title="Called when scene is activated." alt="" coords="485,128,664,153"/>
+<area shape="poly" id="edge8_Node000001_Node000007" title=" " alt="" coords="701,143,664,143,664,138,701,138"/>
+<area shape="rect" id="Node000008" href="$classOutsideLight.html#a5dd0d0e24e63cf4401d897199bab370e" title="Constructor for outdoor light." alt="" coords="222,191,417,216"/>
+<area shape="poly" id="edge9_Node000001_Node000008" title=" " alt="" coords="726,158,667,167,417,197,416,191,666,162,725,153"/>
+<area shape="rect" id="Node000009" href="$classSimpleLight.html#aa1c82517b03b5a5e3f4ad7321d27163d" title="Constructor for simple light." alt="" coords="483,229,667,255"/>
+<area shape="poly" id="edge10_Node000001_Node000009" title=" " alt="" coords="774,162,668,212,616,232,614,227,666,208,772,157"/>
+<area shape="poly" id="edge5_Node000003_Node000003" title=" " alt="" coords="617,70,606,61,575,57,550,59,536,64,533,70,540,77,537,80,528,70,533,60,548,54,575,52,608,56,620,65"/>
+<area shape="rect" id="Node000004" href="$classMenuPage.html#af438cbdcaa75d3c818b59ca28d2575d8" title="Gets parent page." alt="" coords="240,19,399,44"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="513,78,434,58,383,47,384,41,435,53,514,73"/>
+<area shape="rect" id="Node000005" href="$classMenuPage.html#a897302ae94dd3399450e54c74c951a5a" title="Handles device events for automatic page updates." alt="" coords="230,68,409,93"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="478,90,409,87,409,82,479,85"/>
+<area shape="rect" id="Node000006" href="$classMenuPage.html#a10808bd05cf3bbba8b7055d32139b04e" title=" " alt="" coords="207,141,432,167"/>
+<area shape="poly" id="edge6_Node000003_Node000006" title=" " alt="" coords="510,110,373,144,372,139,508,105"/>
+<area shape="poly" id="edge7_Node000006_Node000006" title=" " alt="" coords="362,132,351,123,319,120,294,122,280,127,278,132,285,139,281,143,272,133,277,123,293,117,319,115,353,119,365,128"/>
+<area shape="poly" id="edge13_Node000009_Node000008" title=" " alt="" coords="477,230,403,219,404,213,477,225"/>
+<area shape="rect" id="Node000010" href="$classDimmableLight.html#a59b0b7ebe1ba2054a007899e3954e984" title="Constructor for dimmable light." alt="" coords="204,240,435,265"/>
+<area shape="poly" id="edge11_Node000009_Node000010" title=" " alt="" coords="469,249,435,251,435,245,469,244"/>
+<area shape="rect" id="Node000011" href="$classRGBLight.html#ace975f57267c062b34c2ec8f1cde225a" title="Constructor for RGB light." alt="" coords="5,240,156,265"/>
+<area shape="poly" id="edge12_Node000010_Node000011" title=" " alt="" coords="190,255,156,255,156,250,190,250"/>
+</map>

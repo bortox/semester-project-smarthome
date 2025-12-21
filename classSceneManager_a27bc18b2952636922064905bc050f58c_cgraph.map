@@ -1,7 +1,9 @@
 <map id="SceneManager::removeScene" name="SceneManager::removeScene">
-<area shape="rect" id="node1" title="Deactivates a scene and removes it from the active list." alt="" coords="5,55,220,80"/>
-<area shape="rect" id="node2" href="$classIScene.html#a4fccf11789e8b421a7f6cb286b5ba56a" title="Called when scene is deactivated." alt="" coords="305,5,403,31"/>
-<area shape="rect" id="node3" href="$classDynamicArray.html#a6136d8a8f320429bd61d474f076a85a7" title="Removes an element at specific index." alt="" coords="268,55,440,80"/>
-<area shape="rect" id="node5" href="$classDynamicArray.html#a521af75e017863b464537d3b6dd1cf14" title=" " alt="" coords="280,104,428,129"/>
-<area shape="rect" id="node4" href="$classDynamicArray.html#ae3a1749632e283b1ee52ab153b855fa1" title=" " alt="" coords="488,55,651,80"/>
+<area shape="rect" id="Node000001" title="Deactivates a scene and removes it from the active list." alt="" coords="5,31,220,56"/>
+<area shape="rect" id="Node000002" href="$classIScene.html#a86b15f77aa16b7179fd19b651f0b00a8" title="Sets scene active state and calls appropriate callback." alt="" coords="268,31,403,56"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="220,41,254,41,254,46,220,46"/>
+<area shape="rect" id="Node000003" href="$classIScene.html#aa23ee6afe2d6c296b7fa600b0deee722" title="Called when scene is activated." alt="" coords="459,5,602,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="403,32,445,26,446,32,403,37"/>
+<area shape="rect" id="Node000004" href="$classIScene.html#a2f680a07552216e4303599d95aa78572" title="Called when scene is deactivated." alt="" coords="451,55,611,80"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="403,49,437,53,437,58,403,54"/>
 </map>

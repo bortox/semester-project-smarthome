@@ -1,0 +1,5 @@
+<map id="DimmableLight::update" name="DimmableLight::update">
+<area shape="rect" id="Node000001" title="Periodic update for smooth fading." alt="" coords="188,5,363,31"/>
+<area shape="rect" id="Node000002" href="$classRGBLight.html#a0bf99d90ce3fb6d0395e9e40574af43c" title="Periodic update for smooth color fading." alt="" coords="5,5,140,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="174,21,140,21,140,15,174,15"/>
+</map>

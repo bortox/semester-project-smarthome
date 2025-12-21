@@ -1,4 +1,0 @@
-<map id="IScene::getName" name="IScene::getName">
-<area shape="rect" id="node1" title="Gets the scene name." alt="" coords="227,5,360,31"/>
-<area shape="rect" id="node2" href="$classSceneToggleItem.html#a0b17886584fb5c75c383b4a340c7e552" title="Draws scene name and ON/OFF status." alt="" coords="5,5,179,31"/>
-</map>

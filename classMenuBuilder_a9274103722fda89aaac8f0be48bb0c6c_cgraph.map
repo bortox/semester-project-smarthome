@@ -1,0 +1,15 @@
+<map id="MenuBuilder::buildBrightnessPage" name="MenuBuilder::buildBrightnessPage">
+<area shape="rect" id="Node000001" title="Builds brightness adjustment page." alt="" coords="5,80,249,105"/>
+<area shape="rect" id="Node000002" href="$classMenuPage.html#a612a17be8fea1aa8f8497b474e6df406" title="Adds item to page." alt="" coords="332,5,483,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="167,77,297,39,330,31,332,36,298,45,169,83"/>
+<area shape="rect" id="Node000003" href="$classDimmableLight.html#aea53981c9a42765dd01fae15534095c0" title="Gets the current brightness level." alt="" coords="297,55,517,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="249,79,284,76,284,81,250,84"/>
+<area shape="rect" id="Node000004" href="$FlexibleMenu_8h.html#a522d65dd8288e6b7412941bc24ca42d5" title="Helper factory for slider creation with type deduction." alt="" coords="360,104,455,129"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="250,100,347,109,346,114,249,106"/>
+<area shape="rect" id="Node000005" href="$classDimmableLight.html#a24268c4542c8419e6ddad8c85c2b738f" title="Sets the light brightness." alt="" coords="298,153,517,179"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="172,103,298,138,336,148,335,153,297,143,170,108"/>
+<area shape="rect" id="Node000006" href="$classEventSystem.html#a7d557111351077f5454f3ef839df55fa" title="Emits event to all registered listeners." alt="" coords="577,128,724,153"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="516,152,563,147,564,152,517,157"/>
+<area shape="rect" id="Node000007" href="$classEventSystem.html#a962434d9ad5d95c624c62938c1b9c89f" title="Gets singleton instance." alt="" coords="565,177,736,203"/>
+<area shape="poly" id="edge6_Node000005_Node000007" title=" " alt="" coords="517,174,552,178,551,183,516,179"/>
+</map>

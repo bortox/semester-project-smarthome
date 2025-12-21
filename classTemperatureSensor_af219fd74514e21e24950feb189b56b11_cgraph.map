@@ -1,7 +1,9 @@
 <map id="TemperatureSensor::TemperatureSensor" name="TemperatureSensor::TemperatureSensor">
-<area shape="rect" id="node1" title="Constructor for temperature sensor." alt="" coords="5,47,161,87"/>
-<area shape="rect" id="node2" href="$classLM75Sensor.html#a3a0d1103cfa1c6f5884d7ba7c70f1ca7" title=" " alt="" coords="228,5,373,31"/>
-<area shape="rect" id="node3" href="$classDeviceRegistry.html#acea4fa19e872f726874a15dfd6caea98" title=" " alt="" coords="209,55,392,80"/>
-<area shape="rect" id="node4" href="$classDeviceRegistry.html#ad138dc35e86f58166d1cef2decb119b3" title=" " alt="" coords="211,105,390,145"/>
-<area shape="rect" id="node5" href="$classDynamicArray.html#a0597a43587fc9571429924e4ee8c2f07" title="Adds an element to the array." alt="" coords="440,112,587,137"/>
+<area shape="rect" id="Node000001" title="Constructor for temperature sensor." alt="" coords="5,47,161,87"/>
+<area shape="rect" id="Node000002" href="$classIDevice.html#a6694cdba3e1cd93a6d8d683f433b80e6" title="Constructor." alt="" coords="237,5,365,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="161,47,230,31,231,36,162,52"/>
+<area shape="rect" id="Node000003" href="$classDeviceRegistry.html#acea4fa19e872f726874a15dfd6caea98" title="Gets singleton instance." alt="" coords="209,55,392,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="162,65,196,65,196,70,162,70"/>
+<area shape="rect" id="Node000004" href="$classDeviceRegistry.html#ad138dc35e86f58166d1cef2decb119b3" title="Registers device with registry." alt="" coords="211,105,390,145"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="160,85,212,99,211,104,159,90"/>
 </map>

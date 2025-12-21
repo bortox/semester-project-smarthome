@@ -1,10 +1,5 @@
 <map id="LightSensor::getRaw" name="LightSensor::getRaw">
-<area shape="rect" id="node1" title=" " alt="" coords="653,77,808,102"/>
-<area shape="rect" id="node2" href="$classPhotoresistorSensor.html#aa582780f50f591321fa67281a4ef0dbd" title="Calibrates maximum value with current reading." alt="" coords="427,5,605,45"/>
-<area shape="rect" id="node4" href="$classPhotoresistorSensor.html#a83516838f3e0ef91ef6c1b9a48224d02" title="Calibrates minimum value with current reading." alt="" coords="429,69,603,109"/>
-<area shape="rect" id="node5" href="$classLightSensor.html#a57285d8ed2b27f81cb9bf4a402dd2a0d" title=" " alt="" coords="435,134,597,159"/>
-<area shape="rect" id="node3" href="$classLightCalibrationItem.html#a1697698dc734fe5d9007d5f47d414c3e" title="Executes calibration on &#39;E&#39; key." alt="" coords="223,23,377,63"/>
-<area shape="rect" id="node6" href="$classOutsideLight.html#aa078355216f84cf9006a4184fa53b5a3" title="Periodic state update." alt="" coords="221,105,379,130"/>
-<area shape="rect" id="node8" href="$classPhotoresistorSensor.html#a1a7a7c3968a61522dad877422b724a52" title="Periodic reading update." alt="" coords="224,155,376,195"/>
-<area shape="rect" id="node7" href="$classOutsideLight.html#a902b61d3271950e55b2124d521716eb2" title="Sets the operating mode." alt="" coords="5,105,173,130"/>
+<area shape="rect" id="Node000001" title="Gets raw ADC reading." alt="" coords="216,5,371,31"/>
+<area shape="rect" id="Node000002" href="$classLightSensor.html#a57285d8ed2b27f81cb9bf4a402dd2a0d" title="Gets light level as percentage." alt="" coords="5,5,168,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="202,21,168,21,168,15,202,15"/>
 </map>

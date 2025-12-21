@@ -1,13 +1,22 @@
 <map id="NavigationManager::update" name="NavigationManager::update">
-<area shape="rect" id="node1" title="Updates display if current page needs redraw." alt="" coords="5,87,164,127"/>
-<area shape="rect" id="node2" href="$classMenuPage.html#a09737efa40ac6cc3a080152ee5620c03" title="Clears redraw flag after rendering." alt="" coords="218,18,397,43"/>
-<area shape="rect" id="node3" href="$classNavigationManager.html#a81aec9176f9a3dbe8b4ccb66cbcaa22d" title="Renders full page with scrolling support." alt="" coords="212,119,403,145"/>
-<area shape="rect" id="node5" href="$classNavigationManager.html#a77baf5c45046cbec5e4c1eb3f852352e" title="Gets current page from top of stack." alt="" coords="477,5,635,45"/>
-<area shape="rect" id="node11" href="$classMenuPage.html#afe24eaf37d507cb415cdcf9340f95497" title="Checks if page needs redrawing." alt="" coords="215,169,400,194"/>
-<area shape="rect" id="node4" href="$classMenuItem.html#ab73d6181396cd81d3c12afd332a21faa" title="Renders the item on LCD." alt="" coords="492,70,620,95"/>
-<area shape="rect" id="node7" href="$classMenuPage.html#aba1aead5d2ab95c38e84b314e7f51920" title="Gets item by index." alt="" coords="482,119,630,145"/>
-<area shape="rect" id="node8" href="$classMenuPage.html#ae85cf6f5d972a9ed27567c1c80196028" title="Gets total number of items." alt="" coords="459,169,653,194"/>
-<area shape="rect" id="node9" href="$classMenuPage.html#ab146e7a26d721e4ea5742caf42c59d8b" title="Gets currently selected item index." alt="" coords="451,218,661,243"/>
-<area shape="rect" id="node10" href="$classNavigationManager.html#a08a5da9652a54c36efc1ec923e754ade" title=" " alt="" coords="477,268,635,308"/>
-<area shape="rect" id="node6" href="$classDynamicArray.html#a521af75e017863b464537d3b6dd1cf14" title=" " alt="" coords="709,91,857,117"/>
+<area shape="rect" id="Node000001" title="Updates display if current page needs redraw." alt="" coords="5,87,164,127"/>
+<area shape="rect" id="Node000002" href="$classMenuPage.html#a09737efa40ac6cc3a080152ee5620c03" title="Clears redraw flag after rendering." alt="" coords="218,18,397,43"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="142,84,211,60,255,45,256,50,213,65,144,89"/>
+<area shape="rect" id="Node000003" href="$classNavigationManager.html#a81aec9176f9a3dbe8b4ccb66cbcaa22d" title="Renders full page with scrolling support." alt="" coords="212,119,403,145"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="164,113,199,117,198,122,164,118"/>
+<area shape="rect" id="Node000005" href="$classNavigationManager.html#a77baf5c45046cbec5e4c1eb3f852352e" title="Gets current page from top of stack." alt="" coords="477,5,635,45"/>
+<area shape="poly" id="edge9_Node000001_Node000005" title=" " alt="" coords="164,92,402,52,463,41,464,46,403,57,165,97"/>
+<area shape="rect" id="Node000010" href="$classMenuPage.html#afe24eaf37d507cb415cdcf9340f95497" title="Checks if page needs redrawing." alt="" coords="215,169,400,194"/>
+<area shape="poly" id="edge10_Node000001_Node000010" title=" " alt="" coords="135,124,213,153,242,162,241,168,211,159,133,129"/>
+<area shape="rect" id="Node000004" href="$classMenuItem.html#ab73d6181396cd81d3c12afd332a21faa" title="Renders the item on LCD." alt="" coords="492,70,620,95"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="371,117,478,95,479,101,373,122"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="357,117,401,98,415,87,425,77,434,66,449,55,463,48,465,53,452,60,438,70,429,80,419,91,404,102,359,122"/>
+<area shape="rect" id="Node000006" href="$classMenuPage.html#aba1aead5d2ab95c38e84b314e7f51920" title="Gets item by index." alt="" coords="482,119,630,145"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="403,129,468,129,468,135,403,135"/>
+<area shape="rect" id="Node000007" href="$classMenuPage.html#ae85cf6f5d972a9ed27567c1c80196028" title="Gets total number of items." alt="" coords="459,169,653,194"/>
+<area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="373,142,478,163,477,169,371,147"/>
+<area shape="rect" id="Node000008" href="$classMenuPage.html#ab146e7a26d721e4ea5742caf42c59d8b" title="Gets currently selected item index." alt="" coords="451,218,661,243"/>
+<area shape="poly" id="edge7_Node000003_Node000008" title=" " alt="" coords="379,142,404,154,420,167,429,180,438,193,452,204,465,211,463,216,449,209,434,196,424,183,416,170,401,158,377,147"/>
+<area shape="rect" id="Node000009" href="$classNavigationManager.html#a08a5da9652a54c36efc1ec923e754ade" title="Helper to print Flash string." alt="" coords="477,268,635,308"/>
+<area shape="poly" id="edge8_Node000003_Node000009" title=" " alt="" coords="386,143,404,154,416,166,423,179,430,205,435,230,442,242,452,254,466,264,463,268,449,258,437,245,430,232,424,206,419,181,412,170,401,158,383,147"/>
 </map>

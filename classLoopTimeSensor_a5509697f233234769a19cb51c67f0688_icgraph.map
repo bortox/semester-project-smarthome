@@ -1,4 +1,0 @@
-<map id="LoopTimeSensor::updateWindow" name="LoopTimeSensor::updateWindow">
-<area shape="rect" id="node1" title="Updates the measurement window." alt="" coords="228,13,463,38"/>
-<area shape="rect" id="node2" href="$classLoopTimeSensorDevice.html#a169b53a1152d07b993b2b57750385148" title="Periodic update handles window rotation and stats." alt="" coords="5,5,180,45"/>
-</map>

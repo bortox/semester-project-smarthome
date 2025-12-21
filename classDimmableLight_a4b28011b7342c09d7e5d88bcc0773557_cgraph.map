@@ -1,4 +1,5 @@
 <map id="DimmableLight::applyHardware" name="DimmableLight::applyHardware">
-<area shape="rect" id="node1" title="Applies current brightness to hardware with gamma correction." alt="" coords="5,13,235,38"/>
-<area shape="rect" id="node2" href="$classDimmableLight.html#ae0188dafb54dfe5ba3a801bc6e8fbf65" title=" " alt="" coords="283,5,481,45"/>
+<area shape="rect" id="Node000001" title="Applies current brightness to hardware with gamma correction." alt="" coords="5,13,235,38"/>
+<area shape="rect" id="Node000002" href="$classDimmableLight.html#ad8c7dd130cf6cb5413e187cd12866f3f" title="Gets reference to global brightness multiplier." alt="" coords="283,5,481,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="235,23,269,23,269,28,235,28"/>
 </map>

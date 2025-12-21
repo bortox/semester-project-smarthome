@@ -1,6 +1,7 @@
 <map id="RGBLight::setColor" name="RGBLight::setColor">
-<area shape="rect" id="node1" title="Sets the RGB color." alt="" coords="5,31,149,56"/>
-<area shape="rect" id="node2" href="$classEventSystem.html#a7d557111351077f5454f3ef839df55fa" title=" " alt="" coords="209,5,356,31"/>
-<area shape="rect" id="node4" href="$classEventSystem.html#a962434d9ad5d95c624c62938c1b9c89f" title="Access the singleton instance." alt="" coords="197,55,368,80"/>
-<area shape="rect" id="node3" href="$classDynamicArray.html#a521af75e017863b464537d3b6dd1cf14" title=" " alt="" coords="416,5,564,31"/>
+<area shape="rect" id="Node000001" title="Sets the RGB color." alt="" coords="5,31,149,56"/>
+<area shape="rect" id="Node000002" href="$classEventSystem.html#a7d557111351077f5454f3ef839df55fa" title="Emits event to all registered listeners." alt="" coords="209,5,356,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="149,32,195,26,196,31,150,37"/>
+<area shape="rect" id="Node000003" href="$classEventSystem.html#a962434d9ad5d95c624c62938c1b9c89f" title="Gets singleton instance." alt="" coords="197,55,368,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="150,49,184,53,183,58,149,54"/>
 </map>

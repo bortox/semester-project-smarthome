@@ -1,4 +1,5 @@
 <map id="LivePIRItem" name="LivePIRItem">
-<area shape="rect" id="node1" title="Specialized live display for PIR motion sensors." alt="" coords="5,79,105,104"/>
-<area shape="rect" id="node2" href="$classMenuItem.html" title="Abstract base class for all menu items." alt="" coords="11,5,99,31"/>
+<area shape="rect" id="Node000001" title="Specialized live display for PIR motion sensors." alt="" coords="5,79,105,104"/>
+<area shape="rect" id="Node000002" href="$classMenuItem.html" title="Abstract base class for all menu items." alt="" coords="11,5,99,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="58,44,58,79,53,79,53,44"/>
 </map>

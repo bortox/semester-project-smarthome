@@ -1,5 +1,0 @@
-<map id="SceneToggleItem::draw" name="SceneToggleItem::draw">
-<area shape="rect" id="node1" title="Draws scene name and ON/OFF status." alt="" coords="5,31,179,56"/>
-<area shape="rect" id="node2" href="$classIScene.html#adf4543b0cbbf9b73c509a6dd89d42712" title="Gets the scene name." alt="" coords="227,5,360,31"/>
-<area shape="rect" id="node3" href="$classIScene.html#af625f8e15633cd85e0f8ef60ebf08cd7" title="Checks if scene is currently active." alt="" coords="231,55,356,80"/>
-</map>

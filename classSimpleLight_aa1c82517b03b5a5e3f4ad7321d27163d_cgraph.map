@@ -1,8 +1,13 @@
 <map id="SimpleLight::SimpleLight" name="SimpleLight::SimpleLight">
-<area shape="rect" id="node1" title="Constructor for simple light." alt="" coords="5,80,189,105"/>
-<area shape="rect" id="node2" href="$classEventSystem.html#af936feabeb4ec33e303963a1f9b6ffd7" title=" " alt="" coords="237,5,429,31"/>
-<area shape="rect" id="node4" href="$classEventSystem.html#a962434d9ad5d95c624c62938c1b9c89f" title="Access the singleton instance." alt="" coords="248,55,419,80"/>
-<area shape="rect" id="node5" href="$classDeviceRegistry.html#acea4fa19e872f726874a15dfd6caea98" title=" " alt="" coords="242,104,425,129"/>
-<area shape="rect" id="node6" href="$classDeviceRegistry.html#ad138dc35e86f58166d1cef2decb119b3" title=" " alt="" coords="244,154,423,194"/>
-<area shape="rect" id="node3" href="$classDynamicArray.html#a0597a43587fc9571429924e4ee8c2f07" title="Adds an element to the array." alt="" coords="477,84,624,109"/>
+<area shape="rect" id="Node000001" title="Constructor for simple light." alt="" coords="5,104,189,129"/>
+<area shape="rect" id="Node000002" href="$classEventSystem.html#a42b5bb399cebf2a54de5e55817026996" title="Registers listener for specific event type." alt="" coords="237,5,429,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="117,102,170,71,236,40,258,32,260,37,238,44,172,76,120,106"/>
+<area shape="rect" id="Node000003" href="$classIDevice.html#a6694cdba3e1cd93a6d8d683f433b80e6" title="Constructor." alt="" coords="269,55,397,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="158,101,258,80,259,86,159,107"/>
+<area shape="rect" id="Node000004" href="$classDeviceRegistry.html#acea4fa19e872f726874a15dfd6caea98" title="Gets singleton instance." alt="" coords="242,104,425,129"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="190,114,228,114,228,119,190,119"/>
+<area shape="rect" id="Node000005" href="$classEventSystem.html#a962434d9ad5d95c624c62938c1b9c89f" title="Gets singleton instance." alt="" coords="248,153,419,179"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="159,127,259,148,258,153,158,132"/>
+<area shape="rect" id="Node000006" href="$classDeviceRegistry.html#ad138dc35e86f58166d1cef2decb119b3" title="Registers device with registry." alt="" coords="244,203,423,243"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="122,127,174,156,238,188,259,196,257,201,236,192,172,161,119,132"/>
 </map>

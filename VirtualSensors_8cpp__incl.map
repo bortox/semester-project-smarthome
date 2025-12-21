@@ -1,8 +1,14 @@
 <map id="src/VirtualSensors.cpp" name="src/VirtualSensors.cpp">
-<area shape="rect" id="node1" title="Static member definitions for virtual sensors." alt="" coords="5,5,172,31"/>
-<area shape="rect" id="node2" href="$sensors_8h.html" title=" " alt="" coords="47,79,131,104"/>
-<area shape="rect" id="node3" title=" " alt="" coords="93,299,177,324"/>
-<area shape="rect" id="node4" href="$DebugConfig_8h.html" title="Global debug configuration macros." alt="" coords="77,225,194,251"/>
-<area shape="rect" id="node5" title=" " alt="" coords="83,152,182,177"/>
-<area shape="rect" id="node6" href="$MemoryMonitor_8h.html" title="RAM usage monitoring utilities." alt="" coords="207,152,344,177"/>
+<area shape="rect" id="Node000001" title="Static member definitions for virtual sensors." alt="" coords="64,5,231,31"/>
+<area shape="rect" id="Node000002" href="$sensors_8h.html" title="Low&#45;level sensor abstractions and hardware drivers." alt="" coords="106,79,190,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="150,31,150,65,145,65,145,31"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="130,225,214,251"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="106,104,67,115,31,131,18,141,10,151,9,163,14,176,35,197,60,212,89,223,117,229,116,235,87,228,58,217,31,201,10,179,3,164,5,149,14,137,28,127,65,110,105,99"/>
+<area shape="rect" id="Node000004" href="$DebugConfig_8h.html" title="Debug configuration flags for the smart home system." alt="" coords="24,152,141,177"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="139,106,104,144,100,140,135,103"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="165,152,264,177"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="161,103,196,140,192,144,157,106"/>
+<area shape="rect" id="Node000006" href="$MemoryMonitor_8h.html" title="Memory monitoring utilities for AVR microcontrollers." alt="" coords="288,152,426,177"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="182,101,311,145,309,150,181,107"/>
+<area shape="poly" id="edge6_Node000006_Node000003" title=" " alt="" coords="328,180,216,223,214,218,326,175"/>
 </map>

@@ -1,5 +1,8 @@
 <map id="DimmableLight::update" name="DimmableLight::update">
-<area shape="rect" id="node1" title="Periodic update for smooth fading." alt="" coords="5,31,180,56"/>
-<area shape="rect" id="node2" href="$classDimmableLight.html#a4b28011b7342c09d7e5d88bcc0773557" title="Applies current brightness to hardware with gamma correction." alt="" coords="228,5,457,31"/>
-<area shape="rect" id="node3" href="$classDimmableLight.html#ae0188dafb54dfe5ba3a801bc6e8fbf65" title=" " alt="" coords="505,23,704,63"/>
+<area shape="rect" id="Node000001" title="Periodic update for smooth fading." alt="" coords="5,31,180,56"/>
+<area shape="rect" id="Node000002" href="$classDimmableLight.html#a4b28011b7342c09d7e5d88bcc0773557" title="Applies current brightness to hardware with gamma correction." alt="" coords="228,5,457,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="180,32,214,28,214,34,180,37"/>
+<area shape="rect" id="Node000003" href="$classDimmableLight.html#ad8c7dd130cf6cb5413e187cd12866f3f" title="Gets reference to global brightness multiplier." alt="" coords="505,23,704,63"/>
+<area shape="poly" id="edge3_Node000001_Node000003" title=" " alt="" coords="180,41,492,41,492,46,180,46"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="458,26,492,30,492,35,457,32"/>
 </map>

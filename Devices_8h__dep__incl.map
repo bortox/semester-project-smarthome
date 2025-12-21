@@ -1,7 +1,16 @@
 <map id="include/Devices.h" name="include/Devices.h">
-<area shape="rect" id="node1" title=" " alt="" coords="57,5,195,31"/>
-<area shape="rect" id="node2" href="$FlexibleMenu_8h.html" title="Dynamic menu system with JIT page allocation and scene integration." alt="" coords="77,152,250,177"/>
-<area shape="rect" id="node3" href="$PhysicalInput_8cpp.html" title="Implementation of hardware input handling." alt="" coords="5,225,164,251"/>
-<area shape="rect" id="node5" href="$Scenes_8h.html" title="Scene management and concrete scene implementations." alt="" coords="163,79,294,104"/>
-<area shape="rect" id="node4" href="$main_8cpp.html" title="Main application entry point." alt="" coords="211,225,316,251"/>
+<area shape="rect" id="Node000001" title="Device class declarations for lights, sensors, and automation." alt="" coords="371,5,509,31"/>
+<area shape="rect" id="Node000002" href="$FlexibleMenu_8h.html" title="Dynamic menu system with JIT page allocation and scene integration." alt="" coords="172,79,345,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="399,38,289,81,287,76,397,33"/>
+<area shape="rect" id="Node000004" href="$PhysicalInput_8cpp.html" title="Implementation of physical input handlers." alt="" coords="319,152,478,177"/>
+<area shape="poly" id="edge6_Node000001_Node000004" title=" " alt="" coords="432,44,420,79,403,152,398,151,415,78,427,43"/>
+<area shape="rect" id="Node000006" href="$Devices_8cpp.html" title="Implementation of device classes." alt="" coords="429,79,553,104"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="459,41,485,77,480,80,454,44"/>
+<area shape="rect" id="Node000007" href="$Scenes_8cpp.html" title="Scene management system implementation." alt="" coords="577,79,695,104"/>
+<area shape="poly" id="edge7_Node000001_Node000007" title=" " alt="" coords="485,33,605,76,603,81,483,38"/>
+<area shape="rect" id="Node000003" href="$FlexibleMenu_8cpp.html" title="Implementation of dynamic menu system components." alt="" coords="5,152,165,177"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="219,112,115,154,113,149,217,107"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="295,108,377,149,375,154,292,113"/>
+<area shape="rect" id="Node000005" href="$main_8cpp.html" title="Main application entry point." alt="" coords="190,152,295,177"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="256,118,248,152,243,151,250,117"/>
 </map>

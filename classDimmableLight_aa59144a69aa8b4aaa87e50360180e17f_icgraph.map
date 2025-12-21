@@ -1,4 +1,0 @@
-<map id="DimmableLight::currentBrightness" name="DimmableLight::currentBrightness">
-<area shape="rect" id="node1" title="Protected access to current brightness." alt="" coords="188,5,433,31"/>
-<area shape="rect" id="node2" href="$classRGBLight.html#a0bf99d90ce3fb6d0395e9e40574af43c" title="Periodic update for smooth color and brightness fading." alt="" coords="5,5,140,31"/>
-</map>

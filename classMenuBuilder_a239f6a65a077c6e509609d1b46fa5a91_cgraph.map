@@ -1,0 +1,11 @@
+<map id="MenuBuilder::buildOutsideLightPage" name="MenuBuilder::buildOutsideLightPage">
+<area shape="rect" id="Node000001" title="Builds outside light control page." alt="" coords="5,41,200,81"/>
+<area shape="rect" id="Node000002" href="$classMenuPage.html#a612a17be8fea1aa8f8497b474e6df406" title="Adds item to page." alt="" coords="495,5,645,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="181,38,248,26,370,16,481,14,481,19,370,22,248,31,182,43"/>
+<area shape="rect" id="Node000003" href="$classMenuBuilder.html#aa78836987629471734aa7f2f285de8ce" title="Builds outside light modes selection page." alt="" coords="248,41,443,81"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="200,58,234,58,234,63,200,63"/>
+<area shape="rect" id="Node000004" href="$classNavigationManager.html#a4e087247732c41076edfe0503a80efec" title="Gets singleton instance." alt="" coords="491,70,649,110"/>
+<area shape="poly" id="edge5_Node000001_Node000004" title=" " alt="" coords="180,78,248,90,303,94,345,94,443,90,477,90,477,95,443,95,345,99,302,99,248,95,179,83"/>
+<area shape="poly" id="edge3_Node000003_Node000002" title=" " alt="" coords="442,40,488,31,489,36,443,45"/>
+<area shape="poly" id="edge4_Node000003_Node000004" title=" " alt="" coords="443,71,477,75,477,81,442,76"/>
+</map>

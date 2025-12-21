@@ -1,0 +1,17 @@
+<map id="OutsideLight::OutsideLight" name="OutsideLight::OutsideLight">
+<area shape="rect" id="Node000001" title="Constructor for outdoor light." alt="" coords="5,56,200,81"/>
+<area shape="rect" id="Node000002" href="$classEventSystem.html#a42b5bb399cebf2a54de5e55817026996" title="Registers listener for specific event type." alt="" coords="480,5,672,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="198,53,248,47,466,25,467,30,248,53,199,59"/>
+<area shape="rect" id="Node000003" href="$classEventSystem.html#a962434d9ad5d95c624c62938c1b9c89f" title="Gets singleton instance." alt="" coords="491,56,661,81"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="200,66,477,66,477,71,200,71"/>
+<area shape="rect" id="Node000004" href="$classSimpleLight.html#aa1c82517b03b5a5e3f4ad7321d27163d" title="Constructor for simple light." alt="" coords="248,107,432,132"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="164,79,267,101,266,106,163,84"/>
+<area shape="poly" id="edge4_Node000004_Node000002" title=" " alt="" coords="360,104,413,73,479,41,504,32,506,37,481,46,415,78,363,109"/>
+<area shape="poly" id="edge7_Node000004_Node000003" title=" " alt="" coords="400,104,502,82,504,87,401,109"/>
+<area shape="rect" id="Node000005" href="$classIDevice.html#a6694cdba3e1cd93a6d8d683f433b80e6" title="Constructor." alt="" coords="512,105,640,131"/>
+<area shape="poly" id="edge5_Node000004_Node000005" title=" " alt="" coords="432,116,498,116,498,121,432,121"/>
+<area shape="rect" id="Node000006" href="$classDeviceRegistry.html#acea4fa19e872f726874a15dfd6caea98" title="Gets singleton instance." alt="" coords="485,155,667,180"/>
+<area shape="poly" id="edge6_Node000004_Node000006" title=" " alt="" coords="404,129,500,149,499,154,403,135"/>
+<area shape="rect" id="Node000007" href="$classDeviceRegistry.html#ad138dc35e86f58166d1cef2decb119b3" title="Registers device with registry." alt="" coords="487,205,665,245"/>
+<area shape="poly" id="edge8_Node000004_Node000007" title=" " alt="" coords="364,130,417,159,481,190,499,197,497,202,479,195,414,164,362,134"/>
+</map>

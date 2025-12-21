@@ -1,4 +1,5 @@
 <map id="PhotoresistorSensor" name="PhotoresistorSensor">
-<area shape="rect" id="node1" title="Light sensor with calibration." alt="" coords="5,79,157,104"/>
-<area shape="rect" id="node2" href="$classIDevice.html" title="Abstract base interface for all hardware devices." alt="" coords="46,5,117,31"/>
+<area shape="rect" id="Node000001" title="Light sensor device with calibration and statistics." alt="" coords="5,79,157,104"/>
+<area shape="rect" id="Node000002" href="$classIDevice.html" title="Abstract base class for all controllable devices." alt="" coords="46,5,117,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="84,44,84,79,79,79,79,44"/>
 </map>

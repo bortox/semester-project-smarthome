@@ -1,3 +1,57 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classDynamicArray.html" title=" " alt="" coords="5,5,204,31"/>
+<area shape="rect" id="Node000000" href="$classIDevice.html" title="Abstract base class for all controllable devices." alt="" coords="27,153,98,179"/>
+<area shape="rect" id="Node000001" href="$classLoopTimeSensorDevice.html" title="Loop execution time monitoring device with statistics." alt="" coords="196,153,371,179"/>
+<area shape="poly" id="edge1_Node000000_Node000001" title=" " alt="" coords="111,163,196,163,196,169,111,169"/>
+<area shape="rect" id="Node000002" href="$classPIRSensorDevice.html" title="PIR motion sensor device." alt="" coords="217,203,349,228"/>
+<area shape="poly" id="edge2_Node000000_Node000002" title=" " alt="" coords="112,174,169,187,225,200,224,205,167,193,111,180"/>
+<area shape="rect" id="Node000003" href="$classPhotoresistorSensor.html" title="Light sensor device with calibration and statistics." alt="" coords="207,252,359,277"/>
+<area shape="poly" id="edge3_Node000000_Node000003" title=" " alt="" coords="91,186,126,213,169,237,208,250,206,255,167,242,124,217,87,190"/>
+<area shape="rect" id="Node000004" href="$classRamSensorDevice.html" title="RAM usage monitoring device with statistics." alt="" coords="213,5,354,31"/>
+<area shape="poly" id="edge4_Node000000_Node000004" title=" " alt="" coords="76,140,112,88,137,62,167,40,188,29,212,22,213,28,190,34,169,44,141,66,116,92,80,143"/>
+<area shape="rect" id="Node000005" href="$classSimpleLight.html" title="Class for managing a simple on/off light." alt="" coords="234,301,333,327"/>
+<area shape="poly" id="edge5_Node000000_Node000005" title=" " alt="" coords="80,189,116,239,141,265,169,286,201,300,235,308,233,313,200,305,167,291,138,269,112,243,76,192"/>
+<area shape="rect" id="Node000026" href="$classTemperatureSensor.html" title="Temperature sensor device with statistics (NO FLOATS)." alt="" coords="209,55,357,80"/>
+<area shape="poly" id="edge9_Node000000_Node000026" title=" " alt="" coords="87,142,123,114,167,89,208,75,210,81,169,94,126,119,90,146"/>
+<area shape="rect" id="Node000027" href="$classVccSensorDevice.html" title="VCC voltage monitoring device with statistics." alt="" coords="216,104,351,129"/>
+<area shape="poly" id="edge10_Node000000_Node000027" title=" " alt="" coords="111,152,167,138,219,127,220,132,169,143,112,157"/>
+<area shape="rect" id="Node000006" href="$classDimmableLight.html" title="Light with brightness control (dimmer)." alt="" coords="447,277,569,303"/>
+<area shape="poly" id="edge6_Node000005_Node000006" title=" " alt="" coords="346,305,446,294,447,299,347,310"/>
+<area shape="rect" id="Node000008" href="$classOutsideLight.html" title="Outdoor light with sensors and automation." alt="" coords="456,327,560,352"/>
+<area shape="poly" id="edge8_Node000005_Node000008" title=" " alt="" coords="346,318,456,331,456,336,346,324"/>
+<area shape="rect" id="Node000007" href="$classRGBLight.html" title="RGB light with color and brightness control." alt="" coords="617,277,700,303"/>
+<area shape="poly" id="edge7_Node000006_Node000007" title=" " alt="" coords="583,287,617,287,617,293,583,293"/>
+<area shape="rect" id="Node000009" href="$classIEventListener.html" title="Interface for event&#45;driven components." alt="" coords="5,473,120,499"/>
+<area shape="poly" id="edge14_Node000009_Node000005" title=" " alt="" coords="91,463,118,436,132,410,138,385,146,361,166,337,199,320,233,313,234,318,200,325,170,341,151,363,143,386,137,412,122,440,95,467"/>
+<area shape="rect" id="Node000010" href="$classAlarmScene.html" title="Alarm mode scene &#45; motion&#45;triggered red flash." alt="" coords="233,449,333,475"/>
+<area shape="poly" id="edge11_Node000009_Node000010" title=" " alt="" coords="133,476,233,465,233,470,134,481"/>
+<area shape="rect" id="Node000014" href="$classButtonInput.html" title="Debounced button input handler with device linking." alt="" coords="234,499,333,524"/>
+<area shape="poly" id="edge12_Node000009_Node000014" title=" " alt="" coords="134,491,234,503,234,508,133,497"/>
+<area shape="rect" id="Node000015" href="$classMenuPage.html" title="Menu page container with event&#45;driven updates." alt="" coords="239,548,328,573"/>
+<area shape="poly" id="edge13_Node000009_Node000015" title=" " alt="" coords="99,503,169,534,239,552,238,557,167,539,97,508"/>
+<area shape="rect" id="Node000011" href="$classIScene.html" title="Abstract base class for automation scenes." alt="" coords="30,400,95,425"/>
+<area shape="poly" id="edge15_Node000011_Node000010" title=" " alt="" coords="109,421,169,435,234,449,233,455,167,441,108,426"/>
+<area shape="rect" id="Node000012" href="$classNightModeScene.html" title="Night mode scene &#45; reduces all light brightness." alt="" coords="217,351,349,376"/>
+<area shape="poly" id="edge16_Node000011_Node000012" title=" " alt="" coords="108,400,167,386,224,373,225,379,169,391,109,405"/>
+<area shape="rect" id="Node000013" href="$classPartyScene.html" title="Party mode scene &#45; RGB color cycling." alt="" coords="236,400,331,425"/>
+<area shape="poly" id="edge17_Node000011_Node000013" title=" " alt="" coords="109,410,236,410,236,415,109,415"/>
+<area shape="rect" id="Node000016" href="$classMenuItem.html" title="Abstract base class for all menu items." alt="" coords="19,769,107,795"/>
+<area shape="poly" id="edge24_Node000016_Node000015" title=" " alt="" coords="68,755,80,717,100,670,128,623,146,602,167,584,201,567,238,559,239,564,203,572,169,588,150,606,132,626,104,672,85,718,73,757"/>
+<area shape="rect" id="Node000017" href="$classActionItem.html" title="Action item for scrollable lists." alt="" coords="237,597,330,623"/>
+<area shape="poly" id="edge18_Node000016_Node000017" title=" " alt="" coords="72,755,108,693,134,661,167,633,201,618,236,610,237,615,202,623,169,638,138,664,112,696,77,758"/>
+<area shape="rect" id="Node000018" href="$classBackMenuItem.html" title="Back navigation menu item." alt="" coords="223,647,343,672"/>
+<area shape="poly" id="edge19_Node000016_Node000018" title=" " alt="" coords="80,757,117,718,141,699,167,682,194,671,222,664,224,669,196,676,169,687,144,703,121,722,84,761"/>
+<area shape="rect" id="Node000019" href="$classDeviceToggleItem.html" title="Toggle control for light devices." alt="" coords="214,696,353,721"/>
+<area shape="poly" id="edge20_Node000016_Node000019" title=" " alt="" coords="99,761,167,731,213,719,215,724,169,737,101,766"/>
+<area shape="rect" id="Node000020" href="$classLightCalibrationItem.html" title="Light sensor calibration item." alt="" coords="206,745,361,771"/>
+<area shape="poly" id="edge21_Node000016_Node000020" title=" " alt="" coords="120,773,206,764,206,769,121,778"/>
+<area shape="rect" id="Node000021" href="$classLiveItem.html" title="Template&#45;based live value display with automatic updates." alt="" coords="225,795,342,820"/>
+<area shape="poly" id="edge22_Node000016_Node000021" title=" " alt="" coords="121,786,225,798,224,803,120,791"/>
+<area shape="rect" id="Node000022" href="$classLivePIRItem.html" title="Specialized live display for PIR motion sensors." alt="" coords="233,844,333,869"/>
+<area shape="poly" id="edge23_Node000016_Node000022" title=" " alt="" coords="99,799,169,830,234,847,232,852,167,835,97,804"/>
+<area shape="rect" id="Node000023" href="$classSceneToggleItem.html" title="Scene activation/deactivation control." alt="" coords="217,893,350,919"/>
+<area shape="poly" id="edge25_Node000016_Node000023" title=" " alt="" coords="84,804,121,844,144,863,169,880,217,896,216,901,167,884,141,868,117,847,80,808"/>
+<area shape="rect" id="Node000024" href="$classSubMenuItem.html" title="Submenu item with JIT page creation." alt="" coords="227,943,339,968"/>
+<area shape="poly" id="edge26_Node000016_Node000024" title=" " alt="" coords="77,806,112,869,138,902,169,929,197,942,228,950,227,955,196,947,167,934,134,906,107,872,72,809"/>
+<area shape="rect" id="Node000025" href="$classValueSliderItem.html" title="Template&#45;based value slider with pixel&#45;perfect progress bar." alt="" coords="168,992,399,1017"/>
+<area shape="poly" id="edge27_Node000016_Node000025" title=" " alt="" coords="73,808,85,847,104,893,132,940,150,961,170,979,189,990,186,994,166,983,146,964,128,943,99,896,80,848,68,809"/>
 </map>

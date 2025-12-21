@@ -1,6 +1,8 @@
 <map id="MenuPage::MenuPage" name="MenuPage::MenuPage">
-<area shape="rect" id="node1" title="Constructs a menu page." alt="" coords="5,31,169,56"/>
-<area shape="rect" id="node2" href="$classEventSystem.html#af936feabeb4ec33e303963a1f9b6ffd7" title=" " alt="" coords="217,5,409,31"/>
-<area shape="rect" id="node4" href="$classEventSystem.html#a962434d9ad5d95c624c62938c1b9c89f" title="Access the singleton instance." alt="" coords="228,55,399,80"/>
-<area shape="rect" id="node3" href="$classDynamicArray.html#a0597a43587fc9571429924e4ee8c2f07" title="Adds an element to the array." alt="" coords="457,5,604,31"/>
+<area shape="rect" id="Node000001" title="Constructs a menu page." alt="" coords="5,31,169,56"/>
+<area shape="poly" id="edge3_Node000001_Node000001" title=" " alt="" coords="51,32,43,22,47,12,62,6,87,4,119,8,131,17,128,21,117,13,87,9,63,11,51,16,48,22,55,29"/>
+<area shape="rect" id="Node000002" href="$classEventSystem.html#a42b5bb399cebf2a54de5e55817026996" title="Registers listener for specific event type." alt="" coords="217,5,409,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="170,31,204,28,204,33,170,37"/>
+<area shape="rect" id="Node000003" href="$classEventSystem.html#a962434d9ad5d95c624c62938c1b9c89f" title="Gets singleton instance." alt="" coords="228,55,399,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="170,49,215,54,214,59,170,55"/>
 </map>

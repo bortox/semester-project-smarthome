@@ -1,0 +1,5 @@
+<map id="OutsideLight::setMode" name="OutsideLight::setMode">
+<area shape="rect" id="Node000001" title="Sets the operating mode." alt="" coords="207,5,375,31"/>
+<area shape="rect" id="Node000002" href="$classOutsideLight.html#afc549ce77daf854160fa6d26e2ec2153" title="Toggles between ON and OFF modes." alt="" coords="5,5,159,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="192,21,159,21,159,15,192,15"/>
+</map>

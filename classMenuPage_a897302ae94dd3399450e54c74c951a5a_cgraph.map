@@ -1,7 +1,16 @@
 <map id="MenuPage::handleEvent" name="MenuPage::handleEvent">
-<area shape="rect" id="node1" title="Handles device events for related items." alt="" coords="5,99,184,125"/>
-<area shape="rect" id="node2" href="$classNavigationManager.html#a77baf5c45046cbec5e4c1eb3f852352e" title="Gets current page from top of stack." alt="" coords="232,5,391,45"/>
-<area shape="rect" id="node3" href="$classDynamicArray.html#a521af75e017863b464537d3b6dd1cf14" title=" " alt="" coords="439,42,587,67"/>
-<area shape="rect" id="node4" href="$classNavigationManager.html#a8b77c624d734d2f86336af7843ecee32" title="Gets singleton instance." alt="" coords="232,120,391,160"/>
-<area shape="rect" id="node5" href="$classMenuItem.html#a959779bdfcb70778c70db13d3788d92d" title="Checks if item is related to a specific device." alt="" coords="234,185,389,210"/>
+<area shape="rect" id="Node000001" title="Handles device events for automatic page updates." alt="" coords="5,118,184,143"/>
+<area shape="rect" id="Node000002" href="$classNavigationManager.html#a77baf5c45046cbec5e4c1eb3f852352e" title="Gets current page from top of stack." alt="" coords="235,5,393,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="116,116,231,55,246,48,248,53,233,60,119,120"/>
+<area shape="rect" id="Node000003" href="$classNavigationManager.html#a4e087247732c41076edfe0503a80efec" title="Gets singleton instance." alt="" coords="235,69,393,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="162,115,220,104,221,109,163,121"/>
+<area shape="rect" id="Node000004" href="$classMenuPage.html#a18b387d211cabb195fcb63e9f858c578" title="Constructs a menu page." alt="" coords="232,158,396,183"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="166,141,231,153,230,158,165,146"/>
+<area shape="rect" id="Node000007" href="$classMenuItem.html#a959779bdfcb70778c70db13d3788d92d" title="Checks if item is related to a specific device." alt="" coords="237,207,391,233"/>
+<area shape="poly" id="edge7_Node000001_Node000007" title=" " alt="" coords="122,141,233,192,256,201,254,206,231,197,120,146"/>
+<area shape="poly" id="edge6_Node000004_Node000004" title=" " alt="" coords="278,160,271,150,275,140,289,134,314,131,344,135,356,144,353,148,342,140,314,137,291,139,278,144,276,149,282,156"/>
+<area shape="rect" id="Node000005" href="$classEventSystem.html#a42b5bb399cebf2a54de5e55817026996" title="Registers listener for specific event type." alt="" coords="444,133,636,158"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="396,159,430,155,431,160,397,164"/>
+<area shape="rect" id="Node000006" href="$classEventSystem.html#a962434d9ad5d95c624c62938c1b9c89f" title="Gets singleton instance." alt="" coords="455,182,625,207"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="397,177,441,182,441,187,396,182"/>
 </map>

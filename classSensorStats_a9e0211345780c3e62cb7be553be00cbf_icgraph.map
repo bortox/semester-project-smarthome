@@ -1,8 +1,0 @@
-<map id="SensorStats::addSample" name="SensorStats::addSample">
-<area shape="rect" id="node1" title="Adds a new sample to the statistics." alt="" coords="248,134,428,159"/>
-<area shape="rect" id="node2" href="$classTemperatureSensor.html#a91754010b0f23056beb3b380ed98fafa" title="Periodic reading update." alt="" coords="25,5,181,45"/>
-<area shape="rect" id="node3" href="$classPhotoresistorSensor.html#a1a7a7c3968a61522dad877422b724a52" title="Periodic reading update." alt="" coords="27,69,179,109"/>
-<area shape="rect" id="node4" href="$classRamSensorDevice.html#a90a05b48339752bdb02458203fdf4edc" title="Periodic reading update." alt="" coords="5,134,200,159"/>
-<area shape="rect" id="node5" href="$classVccSensorDevice.html#a8f3a99c4750f64f7916a334e75dac6e4" title="Periodic reading update." alt="" coords="9,183,196,209"/>
-<area shape="rect" id="node6" href="$classLoopTimeSensorDevice.html#a169b53a1152d07b993b2b57750385148" title="Periodic update handles window rotation and stats." alt="" coords="15,233,190,273"/>
-</map>

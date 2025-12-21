@@ -1,7 +1,5 @@
 <map id="getFreeMemory" name="getFreeMemory">
-<area shape="rect" id="node1" title="Calculates free RAM between stack and heap." alt="" coords="527,67,652,93"/>
-<area shape="rect" id="node2" href="$classRamUsageSensor.html#a441393f49273984c802d3f9fd3dfaa14" title="Gets current free RAM in bytes." alt="" coords="276,42,479,67"/>
-<area shape="rect" id="node5" href="$MemoryMonitor_8h.html#a24c2eb6816046a37363877048cb7f23a" title="Prints memory usage report to Serial." alt="" coords="303,91,452,117"/>
-<area shape="rect" id="node3" href="$classRamSensorDevice.html#ad46dd833608031245971eb0c615b2ca9" title="Constructor for RAM sensor device." alt="" coords="5,5,228,45"/>
-<area shape="rect" id="node4" href="$classRamSensorDevice.html#a90a05b48339752bdb02458203fdf4edc" title="Periodic reading update." alt="" coords="19,70,214,95"/>
+<area shape="rect" id="Node000001" title="Calculates free RAM between heap and stack." alt="" coords="256,5,381,31"/>
+<area shape="rect" id="Node000002" href="$classRamUsageSensor.html#a441393f49273984c802d3f9fd3dfaa14" title="Gets current free RAM." alt="" coords="5,5,208,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="242,21,208,21,208,15,242,15"/>
 </map>

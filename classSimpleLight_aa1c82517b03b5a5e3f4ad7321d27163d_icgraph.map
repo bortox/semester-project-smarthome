@@ -1,0 +1,9 @@
+<map id="SimpleLight::SimpleLight" name="SimpleLight::SimpleLight">
+<area shape="rect" id="Node000001" title="Constructor for simple light." alt="" coords="483,31,667,56"/>
+<area shape="rect" id="Node000002" href="$classDimmableLight.html#a59b0b7ebe1ba2054a007899e3954e984" title="Constructor for dimmable light." alt="" coords="204,5,435,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="469,36,435,32,435,27,469,30"/>
+<area shape="rect" id="Node000004" href="$classOutsideLight.html#a5dd0d0e24e63cf4401d897199bab370e" title="Constructor for outdoor light." alt="" coords="222,55,417,80"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="469,56,417,61,416,56,469,51"/>
+<area shape="rect" id="Node000003" href="$classRGBLight.html#ace975f57267c062b34c2ec8f1cde225a" title="Constructor for RGB light." alt="" coords="5,5,156,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="190,21,156,21,156,15,190,15"/>
+</map>

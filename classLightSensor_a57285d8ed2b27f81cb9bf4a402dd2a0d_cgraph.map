@@ -1,4 +1,5 @@
 <map id="LightSensor::getValue" name="LightSensor::getValue">
-<area shape="rect" id="node1" title=" " alt="" coords="5,5,168,31"/>
-<area shape="rect" id="node2" href="$classLightSensor.html#ac68507155117cdbe384049194ae23d41" title=" " alt="" coords="216,5,371,31"/>
+<area shape="rect" id="Node000001" title="Gets light level as percentage." alt="" coords="5,5,168,31"/>
+<area shape="rect" id="Node000002" href="$classLightSensor.html#ac68507155117cdbe384049194ae23d41" title="Gets raw ADC reading." alt="" coords="216,5,371,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="168,15,202,15,202,21,168,21"/>
 </map>

@@ -1,6 +1,0 @@
-<map id="MenuBuilder::buildRGBLightPage" name="MenuBuilder::buildRGBLightPage">
-<area shape="rect" id="node1" title="Builds RGB light control page." alt="" coords="635,5,869,31"/>
-<area shape="rect" id="node2" href="$classMenuBuilder.html#a6b11a8ff5c14c601f25dfa550b090c84" title="Builds lights overview page." alt="" coords="372,5,587,31"/>
-<area shape="rect" id="node3" href="$classMenuBuilder.html#a44dccff1d668cb9f591482e7db2aa73d" title="Builds root menu page." alt="" coords="112,5,324,31"/>
-<area shape="rect" id="node4" href="$main_8cpp.html#a4fc01d736fe50cf5b977f755b675f11d" title="System initialization." alt="" coords="5,5,64,31"/>
-</map>

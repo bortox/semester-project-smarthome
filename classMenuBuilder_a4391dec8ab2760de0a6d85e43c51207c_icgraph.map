@@ -1,8 +1,0 @@
-<map id="MenuBuilder::buildGreenPage" name="MenuBuilder::buildGreenPage">
-<area shape="rect" id="node1" title="Builds RGB green channel slider page." alt="" coords="1160,13,1375,38"/>
-<area shape="rect" id="node2" href="$classMenuBuilder.html#aaedb1ceaadcbe80e141a2e36e569181b" title="Builds custom RGB color page with channel submenu." alt="" coords="917,5,1112,45"/>
-<area shape="rect" id="node3" href="$classMenuBuilder.html#ac029426e87fda27a930e260bf4b211ef" title="Builds RGB light control page." alt="" coords="635,13,869,38"/>
-<area shape="rect" id="node4" href="$classMenuBuilder.html#a6b11a8ff5c14c601f25dfa550b090c84" title="Builds lights overview page." alt="" coords="372,13,587,38"/>
-<area shape="rect" id="node5" href="$classMenuBuilder.html#a44dccff1d668cb9f591482e7db2aa73d" title="Builds root menu page." alt="" coords="112,13,324,38"/>
-<area shape="rect" id="node6" href="$main_8cpp.html#a4fc01d736fe50cf5b977f755b675f11d" title="System initialization." alt="" coords="5,13,64,38"/>
-</map>

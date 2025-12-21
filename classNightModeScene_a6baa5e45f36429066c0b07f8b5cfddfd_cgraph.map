@@ -1,0 +1,7 @@
+<map id="NightModeScene::onActivate" name="NightModeScene::onActivate">
+<area shape="rect" id="Node000001" title="Called when scene is activated." alt="" coords="5,13,216,38"/>
+<area shape="rect" id="Node000002" href="$classDimmableLight.html#a92823a900ea2332472d56cde34da596c" title="Sets the global brightness multiplier." alt="" coords="264,5,483,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="216,23,251,23,251,28,216,28"/>
+<area shape="rect" id="Node000003" href="$classDimmableLight.html#ad8c7dd130cf6cb5413e187cd12866f3f" title="Gets reference to global brightness multiplier." alt="" coords="531,5,729,45"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="483,23,517,23,517,28,483,28"/>
+</map>

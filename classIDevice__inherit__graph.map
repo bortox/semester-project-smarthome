@@ -1,13 +1,23 @@
 <map id="IDevice" name="IDevice">
-<area shape="rect" id="node1" title="Abstract base interface for all hardware devices." alt="" coords="5,153,76,179"/>
-<area shape="rect" id="node2" href="$classLoopTimeSensorDevice.html" title="Loop execution time monitoring device with statistics." alt="" coords="124,5,299,31"/>
-<area shape="rect" id="node3" href="$classPIRSensorDevice.html" title="PIR motion sensor." alt="" coords="145,55,277,80"/>
-<area shape="rect" id="node4" href="$classPhotoresistorSensor.html" title="Light sensor with calibration." alt="" coords="135,104,287,129"/>
-<area shape="rect" id="node5" href="$classRamSensorDevice.html" title="RAM usage monitoring device with statistics." alt="" coords="141,153,282,179"/>
-<area shape="rect" id="node6" href="$classSimpleLight.html" title="Class for managing a simple on/off light." alt="" coords="162,203,261,228"/>
-<area shape="rect" id="node10" href="$classTemperatureSensor.html" title="Temperature sensor with statistics (NO FLOATS)" alt="" coords="137,252,285,277"/>
-<area shape="rect" id="node11" href="$classVccSensorDevice.html" title="VCC voltage monitoring device with statistics." alt="" coords="144,301,279,327"/>
-<area shape="rect" id="node7" href="$classDimmableLight.html" title="Light with brightness control (dimmer)" alt="" coords="347,179,469,204"/>
-<area shape="rect" id="node9" href="$classOutsideLight.html" title="Outdoor light with sensors and automation." alt="" coords="356,228,460,253"/>
-<area shape="rect" id="node8" href="$classRGBLight.html" title="RGB light with color and brightness control." alt="" coords="517,179,600,204"/>
+<area shape="rect" id="Node000001" title="Abstract base class for all controllable devices." alt="" coords="5,153,76,179"/>
+<area shape="rect" id="Node000002" href="$classLoopTimeSensorDevice.html" title="Loop execution time monitoring device with statistics." alt="" coords="124,5,299,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="50,140,77,89,98,62,122,40,143,28,146,33,126,44,102,66,82,92,54,142"/>
+<area shape="rect" id="Node000003" href="$classPIRSensorDevice.html" title="PIR motion sensor device." alt="" coords="145,55,277,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="60,141,88,114,123,89,149,78,151,83,125,94,91,118,64,145"/>
+<area shape="rect" id="Node000004" href="$classPhotoresistorSensor.html" title="Light sensor device with calibration and statistics." alt="" coords="135,104,287,129"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="88,149,123,138,163,127,164,132,125,143,90,154"/>
+<area shape="rect" id="Node000005" href="$classRamSensorDevice.html" title="RAM usage monitoring device with statistics." alt="" coords="141,153,282,179"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="90,163,141,163,141,169,90,169"/>
+<area shape="rect" id="Node000006" href="$classSimpleLight.html" title="Class for managing a simple on/off light." alt="" coords="162,203,261,228"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="90,177,167,200,166,205,89,182"/>
+<area shape="rect" id="Node000010" href="$classTemperatureSensor.html" title="Temperature sensor device with statistics (NO FLOATS)." alt="" coords="137,252,285,277"/>
+<area shape="poly" id="edge9_Node000001_Node000010" title=" " alt="" coords="64,187,92,213,125,237,155,249,152,254,123,242,88,217,60,191"/>
+<area shape="rect" id="Node000011" href="$classVccSensorDevice.html" title="VCC voltage monitoring device with statistics." alt="" coords="144,301,279,327"/>
+<area shape="poly" id="edge10_Node000001_Node000011" title=" " alt="" coords="54,190,82,240,102,266,126,288,146,299,143,304,122,292,98,270,77,243,50,192"/>
+<area shape="rect" id="Node000007" href="$classDimmableLight.html" title="Light with brightness control (dimmer)." alt="" coords="347,179,469,204"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="275,205,346,196,347,201,275,210"/>
+<area shape="rect" id="Node000009" href="$classOutsideLight.html" title="Outdoor light with sensors and automation." alt="" coords="356,228,460,253"/>
+<area shape="poly" id="edge8_Node000006_Node000009" title=" " alt="" coords="275,221,356,231,355,237,274,226"/>
+<area shape="rect" id="Node000008" href="$classRGBLight.html" title="RGB light with color and brightness control." alt="" coords="517,179,600,204"/>
+<area shape="poly" id="edge7_Node000007_Node000008" title=" " alt="" coords="483,189,517,189,517,194,483,194"/>
 </map>

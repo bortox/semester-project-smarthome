@@ -1,4 +1,0 @@
-<map id="PIRSensorDevice::isMotionDetected" name="PIRSensorDevice::isMotionDetected">
-<area shape="rect" id="node1" title="Checks if motion is detected." alt="" coords="193,5,389,45"/>
-<area shape="rect" id="node2" href="$classLivePIRItem.html#a1ef2b153afc4c3b4a484cbcaa120ac2f" title="Draws sensor name and Yes/No motion status." alt="" coords="5,13,145,38"/>
-</map>

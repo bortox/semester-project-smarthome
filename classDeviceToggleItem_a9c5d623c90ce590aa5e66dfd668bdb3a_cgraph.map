@@ -1,6 +1,7 @@
 <map id="DeviceToggleItem::draw" name="DeviceToggleItem::draw">
-<area shape="rect" id="node1" title="Draws device name and ON/OFF state." alt="" coords="5,55,184,80"/>
-<area shape="rect" id="node2" href="$classSimpleLight.html#a554a73db0e975bb4c941a1fef4b91f80" title="Gets the current light state." alt="" coords="232,5,395,31"/>
-<area shape="rect" id="node3" href="$classIDevice.html#ac79f88442a5e7fa4a34fd5365b3c6039" title=" " alt="" coords="252,55,375,80"/>
-<area shape="rect" id="node4" href="$classMenuItem.html#a24353246e4799be82e73af57f2e15c8b" title=" " alt="" coords="233,104,394,129"/>
+<area shape="rect" id="Node000001" title="Renders toggle item with device name and state." alt="" coords="5,31,184,56"/>
+<area shape="rect" id="Node000002" href="$classSimpleLight.html#a554a73db0e975bb4c941a1fef4b91f80" title="Gets the current light state." alt="" coords="232,5,395,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="184,30,218,26,219,32,185,36"/>
+<area shape="rect" id="Node000003" href="$classMenuItem.html#a24353246e4799be82e73af57f2e15c8b" title="Helper to print RAM string to LCD." alt="" coords="233,55,394,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="185,51,219,54,219,60,184,56"/>
 </map>

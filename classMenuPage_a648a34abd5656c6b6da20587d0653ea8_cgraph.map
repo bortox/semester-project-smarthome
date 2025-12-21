@@ -1,4 +1,5 @@
 <map id="MenuPage::draw" name="MenuPage::draw">
-<area shape="rect" id="node1" title="Renders the item on LCD." alt="" coords="5,5,135,31"/>
-<area shape="rect" id="node2" href="$classMenuItem.html#a24353246e4799be82e73af57f2e15c8b" title=" " alt="" coords="183,5,344,31"/>
+<area shape="rect" id="Node000001" title="Renders this page as a menu item (for nested pages)." alt="" coords="5,5,135,31"/>
+<area shape="rect" id="Node000002" href="$classMenuItem.html#a24353246e4799be82e73af57f2e15c8b" title="Helper to print RAM string to LCD." alt="" coords="183,5,344,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="135,15,169,15,169,21,135,21"/>
 </map>

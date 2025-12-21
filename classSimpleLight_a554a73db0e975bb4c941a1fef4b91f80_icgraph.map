@@ -1,4 +1,5 @@
 <map id="SimpleLight::getState" name="SimpleLight::getState">
-<area shape="rect" id="node1" title="Gets the current light state." alt="" coords="232,5,395,31"/>
-<area shape="rect" id="node2" href="$classDeviceToggleItem.html#a9c5d623c90ce590aa5e66dfd668bdb3a" title="Draws device name and ON/OFF state." alt="" coords="5,5,184,31"/>
+<area shape="rect" id="Node000001" title="Gets the current light state." alt="" coords="232,5,395,31"/>
+<area shape="rect" id="Node000002" href="$classDeviceToggleItem.html#a9c5d623c90ce590aa5e66dfd668bdb3a" title="Renders toggle item with device name and state." alt="" coords="5,5,184,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="218,21,184,21,184,15,218,15"/>
 </map>

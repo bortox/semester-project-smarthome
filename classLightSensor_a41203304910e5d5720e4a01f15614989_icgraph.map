@@ -1,4 +1,0 @@
-<map id="LightSensor::getRawMin" name="LightSensor::getRawMin">
-<area shape="rect" id="node1" title=" " alt="" coords="205,13,384,38"/>
-<area shape="rect" id="node2" href="$classPhotoresistorSensor.html#ad352127f41a29a2331b38689c4241282" title="Gets the calibrated raw minimum value." alt="" coords="5,5,157,45"/>
-</map>

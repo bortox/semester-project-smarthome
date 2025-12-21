@@ -1,0 +1,7 @@
+<map id="MenuPage::~MenuPage" name="MenuPage::~MenuPage">
+<area shape="rect" id="Node000001" title="Destructor &#45; cleans up event listeners and child items." alt="" coords="5,31,180,56"/>
+<area shape="rect" id="Node000002" href="$classEventSystem.html#a962434d9ad5d95c624c62938c1b9c89f" title="Gets singleton instance." alt="" coords="252,5,423,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="180,32,238,26,239,31,180,37"/>
+<area shape="rect" id="Node000003" href="$classEventSystem.html#a5e0cf7b422c86b63495fa8e4c193b971" title="Unregisters listener from all event types." alt="" coords="228,55,447,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="180,49,215,53,214,58,180,55"/>
+</map>

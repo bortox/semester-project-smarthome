@@ -1,0 +1,10 @@
+<map id="MenuPage::getParent" name="MenuPage::getParent">
+<area shape="rect" id="Node000001" title="Gets parent page." alt="" coords="5,31,164,56"/>
+<area shape="rect" id="Node000002" href="$classMenuPage.html#a18b387d211cabb195fcb63e9f858c578" title="Constructs a menu page." alt="" coords="212,31,376,56"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="164,41,198,41,198,46,164,46"/>
+<area shape="poly" id="edge4_Node000002_Node000002" title=" " alt="" coords="260,32,253,22,256,12,271,6,294,4,323,8,334,17,331,21,321,13,294,9,272,11,260,16,258,22,264,29"/>
+<area shape="rect" id="Node000003" href="$classEventSystem.html#a42b5bb399cebf2a54de5e55817026996" title="Registers listener for specific event type." alt="" coords="424,5,616,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="376,31,410,28,411,33,377,37"/>
+<area shape="rect" id="Node000004" href="$classEventSystem.html#a962434d9ad5d95c624c62938c1b9c89f" title="Gets singleton instance." alt="" coords="435,55,605,80"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="377,49,421,54,421,59,376,55"/>
+</map>

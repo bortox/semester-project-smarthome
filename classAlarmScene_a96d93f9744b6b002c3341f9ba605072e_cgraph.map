@@ -1,0 +1,5 @@
+<map id="AlarmScene::AlarmScene" name="AlarmScene::AlarmScene">
+<area shape="rect" id="Node000001" title="Constructs alarm mode scene." alt="" coords="5,5,192,31"/>
+<area shape="rect" id="Node000002" href="$classIScene.html#aab4b92576fca7673a984e2a8bb3a206d" title="Constructs scene with priority." alt="" coords="240,5,356,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="193,15,226,15,226,21,193,21"/>
+</map>

@@ -1,9 +1,20 @@
 <map id="include/sensors.h" name="include/sensors.h">
-<area shape="rect" id="node1" title=" " alt="" coords="147,5,281,31"/>
-<area shape="rect" id="node2" href="$Devices_8h.html" title=" " alt="" coords="57,79,195,104"/>
-<area shape="rect" id="node7" href="$VirtualSensors_8cpp.html" title="Static member definitions for virtual sensors." alt="" coords="219,79,385,104"/>
-<area shape="rect" id="node3" href="$FlexibleMenu_8h.html" title="Dynamic menu system with JIT page allocation and scene integration." alt="" coords="77,225,250,251"/>
-<area shape="rect" id="node4" href="$PhysicalInput_8cpp.html" title="Implementation of hardware input handling." alt="" coords="5,299,164,324"/>
-<area shape="rect" id="node6" href="$Scenes_8h.html" title="Scene management and concrete scene implementations." alt="" coords="163,152,294,177"/>
-<area shape="rect" id="node5" href="$main_8cpp.html" title="Main application entry point." alt="" coords="211,299,316,324"/>
+<area shape="rect" id="Node000001" title="Low&#45;level sensor abstractions and hardware drivers." alt="" coords="461,5,595,31"/>
+<area shape="rect" id="Node000002" href="$Devices_8h.html" title="Device class declarations for lights, sensors, and automation." alt="" coords="371,79,509,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="505,41,456,81,453,76,502,37"/>
+<area shape="rect" id="Node000009" href="$VirtualSensors_8cpp.html" title="Static member definitions for virtual sensors." alt="" coords="533,79,699,104"/>
+<area shape="poly" id="edge9_Node000001_Node000009" title=" " alt="" coords="554,37,603,76,600,81,551,41"/>
+<area shape="rect" id="Node000003" href="$FlexibleMenu_8h.html" title="Dynamic menu system with JIT page allocation and scene integration." alt="" coords="172,152,345,177"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="399,111,289,154,287,149,397,106"/>
+<area shape="rect" id="Node000005" href="$PhysicalInput_8cpp.html" title="Implementation of physical input handlers." alt="" coords="319,225,478,251"/>
+<area shape="poly" id="edge7_Node000002_Node000005" title=" " alt="" coords="432,118,420,153,403,226,398,224,415,151,427,116"/>
+<area shape="rect" id="Node000007" href="$Devices_8cpp.html" title="Implementation of device classes." alt="" coords="429,152,553,177"/>
+<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="459,114,485,150,480,153,454,117"/>
+<area shape="rect" id="Node000008" href="$Scenes_8cpp.html" title="Scene management system implementation." alt="" coords="577,152,695,177"/>
+<area shape="poly" id="edge8_Node000002_Node000008" title=" " alt="" coords="485,106,605,149,603,154,483,111"/>
+<area shape="rect" id="Node000004" href="$FlexibleMenu_8cpp.html" title="Implementation of dynamic menu system components." alt="" coords="5,225,165,251"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="219,185,115,228,113,223,217,180"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="295,181,377,223,375,227,292,186"/>
+<area shape="rect" id="Node000006" href="$main_8cpp.html" title="Main application entry point." alt="" coords="190,225,295,251"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="256,191,248,226,243,225,250,190"/>
 </map>

@@ -1,4 +1,5 @@
 <map id="ButtonInput::onButtonPressed" name="ButtonInput::onButtonPressed">
-<area shape="rect" id="node1" title=" " alt="" coords="204,5,420,31"/>
-<area shape="rect" id="node2" href="$classButtonInput.html#a57c28f555118cd64bba9f3a30de4aa6d" title=" " alt="" coords="5,5,156,31"/>
+<area shape="rect" id="Node000001" title="Called when valid button press is detected." alt="" coords="204,5,420,31"/>
+<area shape="rect" id="Node000002" href="$classButtonInput.html#a57c28f555118cd64bba9f3a30de4aa6d" title="Periodic update &#45; reads and debounces button state." alt="" coords="5,5,156,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="190,21,156,21,156,15,190,15"/>
 </map>

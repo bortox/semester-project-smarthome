@@ -1,7 +1,11 @@
 <map id="RGBLight" name="RGBLight">
-<area shape="rect" id="node1" title="RGB light with color and brightness control." alt="" coords="58,225,141,251"/>
-<area shape="rect" id="node2" href="$classDimmableLight.html" title="Light with brightness control (dimmer)" alt="" coords="38,152,161,177"/>
-<area shape="rect" id="node3" href="$classSimpleLight.html" title="Class for managing a simple on/off light." alt="" coords="50,79,149,104"/>
-<area shape="rect" id="node4" href="$classIDevice.html" title="Abstract base interface for all hardware devices." alt="" coords="5,5,76,31"/>
-<area shape="rect" id="node5" href="$classIEventListener.html" title="Interface for the Observer Pattern." alt="" coords="101,5,215,31"/>
+<area shape="rect" id="Node000001" title="RGB light with color and brightness control." alt="" coords="58,225,141,251"/>
+<area shape="rect" id="Node000002" href="$classDimmableLight.html" title="Light with brightness control (dimmer)." alt="" coords="38,152,161,177"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="102,191,102,225,97,225,97,191"/>
+<area shape="rect" id="Node000003" href="$classSimpleLight.html" title="Class for managing a simple on/off light." alt="" coords="50,79,149,104"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="102,118,102,152,97,152,97,118"/>
+<area shape="rect" id="Node000004" href="$classIDevice.html" title="Abstract base class for all controllable devices." alt="" coords="5,5,76,31"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="61,40,92,77,88,80,57,43"/>
+<area shape="rect" id="Node000005" href="$classIEventListener.html" title="Interface for event&#45;driven components." alt="" coords="101,5,215,31"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="142,43,111,80,107,77,138,40"/>
 </map>

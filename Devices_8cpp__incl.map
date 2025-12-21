@@ -1,0 +1,22 @@
+<map id="src/Devices.cpp" name="src/Devices.cpp">
+<area shape="rect" id="Node000001" title="Implementation of device classes." alt="" coords="5,5,129,31"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="64,299,148,324"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="66,32,49,94,45,135,49,177,69,237,94,286,89,288,64,239,43,178,40,135,44,93,60,30"/>
+<area shape="rect" id="Node000003" href="$Devices_8h.html" title="Device class declarations for lights, sensors, and automation." alt="" coords="133,79,220,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="86,28,149,69,146,73,83,33"/>
+<area shape="rect" id="Node000004" href="$CoreSystem_8h.html" title="Core system infrastructure for event&#45;driven embedded architecture." alt="" coords="59,152,172,177"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="169,106,136,143,132,140,165,103"/>
+<area shape="rect" id="Node000005" href="$sensors_8h.html" title="Low&#45;level sensor abstractions and hardware drivers." alt="" coords="196,152,280,177"/>
+<area shape="poly" id="edge5_Node000003_Node000005" title=" " alt="" coords="189,103,221,140,217,143,185,106"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="304,152,431,177"/>
+<area shape="poly" id="edge11_Node000003_Node000009" title=" " alt="" coords="208,102,324,144,322,149,206,107"/>
+<area shape="poly" id="edge4_Node000004_Node000002" title=" " alt="" coords="117,178,110,285,105,285,112,178"/>
+<area shape="poly" id="edge6_Node000005_Node000002" title=" " alt="" coords="219,180,189,200,159,227,136,257,119,288,115,285,132,255,155,224,186,196,216,175"/>
+<area shape="rect" id="Node000006" href="$DebugConfig_8h.html" title="Debug configuration flags for the smart home system." alt="" coords="169,225,286,251"/>
+<area shape="poly" id="edge7_Node000005_Node000006" title=" " alt="" coords="239,178,234,212,228,211,234,177"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="310,225,409,251"/>
+<area shape="poly" id="edge8_Node000005_Node000007" title=" " alt="" coords="259,175,329,216,327,221,256,180"/>
+<area shape="rect" id="Node000008" href="$MemoryMonitor_8h.html" title="Memory monitoring utilities for AVR microcontrollers." alt="" coords="433,225,571,251"/>
+<area shape="poly" id="edge9_Node000005_Node000008" title=" " alt="" coords="281,175,447,219,445,224,280,180"/>
+<area shape="poly" id="edge10_Node000008_Node000002" title=" " alt="" coords="439,253,162,303,161,297,438,248"/>
+</map>

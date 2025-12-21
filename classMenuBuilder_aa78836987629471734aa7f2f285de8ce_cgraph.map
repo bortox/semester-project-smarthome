@@ -1,0 +1,7 @@
+<map id="MenuBuilder::buildOutsideModesPage" name="MenuBuilder::buildOutsideModesPage">
+<area shape="rect" id="Node000001" title="Builds outside light modes selection page." alt="" coords="5,27,200,67"/>
+<area shape="rect" id="Node000002" href="$classMenuPage.html#a612a17be8fea1aa8f8497b474e6df406" title="Adds item to page." alt="" coords="252,5,403,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="200,32,238,27,239,32,200,37"/>
+<area shape="rect" id="Node000003" href="$classNavigationManager.html#a4e087247732c41076edfe0503a80efec" title="Gets singleton instance." alt="" coords="248,55,407,95"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="200,57,235,61,234,66,200,62"/>
+</map>

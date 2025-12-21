@@ -1,0 +1,15 @@
+<map id="DimmableLight::DimmableLight" name="DimmableLight::DimmableLight">
+<area shape="rect" id="Node000001" title="Constructor for dimmable light." alt="" coords="5,104,236,129"/>
+<area shape="rect" id="Node000002" href="$classSimpleLight.html#aa1c82517b03b5a5e3f4ad7321d27163d" title="Constructor for simple light." alt="" coords="284,104,468,129"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="236,114,270,114,270,119,236,119"/>
+<area shape="rect" id="Node000003" href="$classEventSystem.html#a42b5bb399cebf2a54de5e55817026996" title="Registers listener for specific event type." alt="" coords="516,5,708,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="396,102,449,71,515,40,537,32,538,37,517,44,451,76,399,106"/>
+<area shape="rect" id="Node000004" href="$classIDevice.html#a6694cdba3e1cd93a6d8d683f433b80e6" title="Constructor." alt="" coords="548,55,676,80"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="437,101,536,80,538,86,438,107"/>
+<area shape="rect" id="Node000005" href="$classDeviceRegistry.html#acea4fa19e872f726874a15dfd6caea98" title="Gets singleton instance." alt="" coords="521,104,703,129"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="468,114,507,114,507,119,468,119"/>
+<area shape="rect" id="Node000006" href="$classEventSystem.html#a962434d9ad5d95c624c62938c1b9c89f" title="Gets singleton instance." alt="" coords="527,153,697,179"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="438,127,538,148,536,153,437,132"/>
+<area shape="rect" id="Node000007" href="$classDeviceRegistry.html#ad138dc35e86f58166d1cef2decb119b3" title="Registers device with registry." alt="" coords="523,203,701,243"/>
+<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="400,127,453,156,517,188,538,196,536,201,515,192,450,161,398,132"/>
+</map>

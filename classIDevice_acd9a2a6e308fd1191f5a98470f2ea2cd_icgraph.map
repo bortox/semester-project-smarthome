@@ -1,6 +1,9 @@
 <map id="IDevice::isSensor" name="IDevice::isSensor">
-<area shape="rect" id="node1" title=" " alt="" coords="647,5,781,31"/>
-<area shape="rect" id="node2" href="$classMenuBuilder.html#a5fb86dfd5959b0b3e80679cc777dfc50" title="Builds sensors overview page." alt="" coords="372,5,599,31"/>
-<area shape="rect" id="node3" href="$classMenuBuilder.html#a44dccff1d668cb9f591482e7db2aa73d" title="Builds root menu page." alt="" coords="112,5,324,31"/>
-<area shape="rect" id="node4" href="$main_8cpp.html#a4fc01d736fe50cf5b977f755b675f11d" title="System initialization." alt="" coords="5,5,64,31"/>
+<area shape="rect" id="Node000001" title="Checks if device is a sensor." alt="" coords="647,5,781,31"/>
+<area shape="rect" id="Node000002" href="$classMenuBuilder.html#a25f90f5a7cc6a6901ba1c7d4b51ecaa7" title="Builds sensors listing page with all sensor devices." alt="" coords="372,5,599,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="633,21,599,21,599,15,633,15"/>
+<area shape="rect" id="Node000003" href="$classMenuBuilder.html#a817eae2da07a2f797df3b6aad343a7eb" title="Builds root menu page." alt="" coords="112,5,324,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="358,21,324,21,324,15,358,15"/>
+<area shape="rect" id="Node000004" href="$main_8cpp.html#a4fc01d736fe50cf5b977f755b675f11d" title="System initialization." alt="" coords="5,5,64,31"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="98,21,64,21,64,15,98,15"/>
 </map>

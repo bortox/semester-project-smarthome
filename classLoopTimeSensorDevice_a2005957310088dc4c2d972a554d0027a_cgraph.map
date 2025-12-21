@@ -1,6 +1,9 @@
 <map id="LoopTimeSensorDevice::LoopTimeSensorDevice" name="LoopTimeSensorDevice::LoopTimeSensorDevice">
-<area shape="rect" id="node1" title="Constructor for loop time sensor device." alt="" coords="5,27,188,67"/>
-<area shape="rect" id="node2" href="$classDeviceRegistry.html#acea4fa19e872f726874a15dfd6caea98" title=" " alt="" coords="236,5,419,31"/>
-<area shape="rect" id="node3" href="$classDeviceRegistry.html#ad138dc35e86f58166d1cef2decb119b3" title=" " alt="" coords="238,55,417,95"/>
-<area shape="rect" id="node4" href="$classDynamicArray.html#a0597a43587fc9571429924e4ee8c2f07" title="Adds an element to the array." alt="" coords="467,63,613,88"/>
+<area shape="rect" id="Node000001" title="Constructor for loop time sensor device." alt="" coords="5,47,188,87"/>
+<area shape="rect" id="Node000002" href="$classIDevice.html#a6694cdba3e1cd93a6d8d683f433b80e6" title="Constructor." alt="" coords="263,5,391,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="188,45,253,31,254,36,189,50"/>
+<area shape="rect" id="Node000003" href="$classDeviceRegistry.html#acea4fa19e872f726874a15dfd6caea98" title="Gets singleton instance." alt="" coords="236,55,419,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="188,65,222,65,222,70,188,70"/>
+<area shape="rect" id="Node000004" href="$classDeviceRegistry.html#ad138dc35e86f58166d1cef2decb119b3" title="Registers device with registry." alt="" coords="238,105,417,145"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="178,85,234,99,232,104,177,90"/>
 </map>

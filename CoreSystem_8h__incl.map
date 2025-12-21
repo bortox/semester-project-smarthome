@@ -1,4 +1,5 @@
 <map id="include/CoreSystem.h" name="include/CoreSystem.h">
-<area shape="rect" id="node1" title="Core system definitions, interfaces, and memory management." alt="" coords="5,5,169,31"/>
-<area shape="rect" id="node2" title=" " alt="" coords="45,79,129,104"/>
+<area shape="rect" id="Node000001" title="Core system infrastructure for event&#45;driven embedded architecture." alt="" coords="5,5,169,31"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="45,79,129,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="90,31,90,65,85,65,85,31"/>
 </map>

@@ -1,0 +1,52 @@
+<map id="MenuBuilder::buildSensorsPage" name="MenuBuilder::buildSensorsPage">
+<area shape="rect" id="Node000001" title="Builds sensors listing page with all sensor devices." alt="" coords="5,552,232,577"/>
+<area shape="rect" id="Node000002" href="$classMenuPage.html#a612a17be8fea1aa8f8497b474e6df406" title="Adds item to page." alt="" coords="852,5,1003,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="130,550,192,487,278,405,417,281,530,188,588,149,653,112,730,76,823,39,847,32,849,37,825,45,732,81,656,117,591,153,533,192,420,285,282,409,196,490,134,554"/>
+<area shape="rect" id="Node000003" href="$classMenuBuilder.html#afc4c63c87f32e98b928c1d1c8fdce975" title="Builds light sensor settings page with calibration." alt="" coords="280,420,540,445"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="136,550,197,508,279,465,333,446,335,451,281,470,200,513,139,554"/>
+<area shape="rect" id="Node000004" href="$classMenuBuilder.html#a2f96fce8ad239583f40a79fca95c0a42" title="Builds sensor statistics page." alt="" coords="588,411,776,451"/>
+<area shape="poly" id="edge22_Node000001_Node000004" title=" " alt="" coords="163,549,279,518,574,451,575,456,281,523,165,555"/>
+<area shape="rect" id="Node000018" href="$classNavigationManager.html#a4e087247732c41076edfe0503a80efec" title="Gets singleton instance." alt="" coords="848,838,1007,878"/>
+<area shape="poly" id="edge25_Node000001_Node000018" title=" " alt="" coords="177,549,251,538,344,532,394,533,444,538,493,547,541,562,593,588,633,618,663,650,688,685,713,720,741,756,777,791,825,824,838,830,835,835,823,828,774,795,737,760,709,724,684,688,659,654,629,622,591,593,539,567,492,552,443,543,393,538,344,537,252,543,177,555"/>
+<area shape="rect" id="Node000020" href="$classDeviceRegistry.html#ab222f7413c82a27f8c06d55756ded728" title="Gets all registered devices." alt="" coords="309,577,511,603"/>
+<area shape="poly" id="edge23_Node000001_Node000020" title=" " alt="" coords="232,572,296,577,295,583,232,577"/>
+<area shape="rect" id="Node000021" href="$classDeviceRegistry.html#acea4fa19e872f726874a15dfd6caea98" title="Gets singleton instance." alt="" coords="319,627,501,652"/>
+<area shape="poly" id="edge24_Node000001_Node000021" title=" " alt="" coords="157,575,281,613,319,621,318,627,279,618,155,580"/>
+<area shape="rect" id="Node000022" href="$classIDevice.html#acd9a2a6e308fd1191f5a98470f2ea2cd" title="Checks if device is a sensor." alt="" coords="343,676,477,701"/>
+<area shape="poly" id="edge26_Node000001_Node000022" title=" " alt="" coords="137,575,198,618,238,642,281,662,330,676,329,681,279,667,236,647,195,623,134,580"/>
+<area shape="rect" id="Node000023" href="$classDynamicArray.html#a521af75e017863b464537d3b6dd1cf14" title="Gets current element count." alt="" coords="336,725,484,751"/>
+<area shape="poly" id="edge27_Node000001_Node000023" title=" " alt="" coords="132,576,190,642,233,680,281,712,323,726,322,731,279,716,229,684,186,646,128,579"/>
+<area shape="poly" id="edge3_Node000003_Node000002" title=" " alt="" coords="424,418,568,287,774,91,796,63,806,51,823,40,838,32,840,37,825,44,810,55,800,67,778,94,572,291,428,422"/>
+<area shape="poly" id="edge4_Node000003_Node000004" title=" " alt="" coords="540,429,574,429,574,435,540,435"/>
+<area shape="poly" id="edge21_Node000003_Node000018" title=" " alt="" coords="483,443,660,479,737,500,763,510,778,519,793,538,804,558,813,596,811,635,804,673,797,711,794,748,803,786,812,805,826,824,838,835,834,839,822,828,807,808,797,788,789,749,791,710,799,672,806,634,808,597,799,559,789,541,774,523,761,514,735,505,659,485,482,448"/>
+<area shape="poly" id="edge5_Node000004_Node000002" title=" " alt="" coords="692,410,730,330,773,225,781,197,784,172,785,126,787,105,792,84,804,62,822,40,838,29,841,33,826,44,808,65,797,85,792,106,791,126,790,172,786,198,779,227,735,332,696,412"/>
+<area shape="rect" id="Node000005" href="$classSensorStats.html#aa82d8bdc63b949d906e1a55677522f9c" title="Gets the average of recorded values." alt="" coords="837,55,1018,80"/>
+<area shape="poly" id="edge6_Node000004_Node000005" title=" " alt="" coords="691,410,728,330,773,225,784,186,789,152,797,121,807,105,822,89,827,85,831,89,826,93,811,108,802,123,794,153,789,187,779,227,733,332,696,412"/>
+<area shape="rect" id="Node000006" href="$classSensorStats.html#a1cf2339b80591125b65aacaacd497233" title="Gets the maximum recorded value." alt="" coords="849,104,1005,129"/>
+<area shape="poly" id="edge7_Node000004_Node000006" title=" " alt="" coords="690,410,762,254,800,177,822,139,835,130,838,135,826,142,805,179,767,256,695,412"/>
+<area shape="rect" id="Node000007" href="$classSensorStats.html#ad3022ce269159df7007c7b015ae6e5ee" title="Gets the minimum recorded value." alt="" coords="851,153,1003,179"/>
+<area shape="poly" id="edge8_Node000004_Node000007" title=" " alt="" coords="687,410,703,365,730,304,770,242,795,214,822,189,837,180,840,185,826,193,798,217,774,245,735,307,708,367,692,412"/>
+<area shape="rect" id="Node000008" href="$classLoopTimeSensorDevice.html#a769b17f75cbf450619840eabdeae0d69" title="Gets statistics tracker." alt="" coords="840,203,1015,243"/>
+<area shape="poly" id="edge9_Node000004_Node000008" title=" " alt="" coords="692,410,712,376,741,334,779,290,822,253,832,247,834,252,826,257,782,294,746,337,716,379,696,413"/>
+<area shape="rect" id="Node000009" href="$classPhotoresistorSensor.html#ae7f2bd6954368c30d6f970ebec433dfa" title="Gets statistics tracker." alt="" coords="851,267,1003,307"/>
+<area shape="poly" id="edge10_Node000004_Node000009" title=" " alt="" coords="702,409,754,363,787,339,823,317,837,310,840,315,825,322,790,343,757,367,705,413"/>
+<area shape="rect" id="Node000010" href="$classRamSensorDevice.html#a4790e1d4afc28e46868be2a8f4e19067" title="Gets statistics tracker." alt="" coords="826,332,1029,357"/>
+<area shape="poly" id="edge11_Node000004_Node000010" title=" " alt="" coords="723,409,823,367,854,358,856,363,825,373,725,414"/>
+<area shape="rect" id="Node000011" href="$classTemperatureSensor.html#affc7fc31269982717b769d2601ba0796" title="Gets statistics tracker." alt="" coords="849,382,1005,422"/>
+<area shape="poly" id="edge12_Node000004_Node000011" title=" " alt="" coords="776,417,835,410,836,416,776,423"/>
+<area shape="rect" id="Node000012" href="$classVccSensorDevice.html#a96cf2b0948a8b96e49f464f5e99c5b29" title="Gets statistics tracker." alt="" coords="829,447,1025,472"/>
+<area shape="poly" id="edge13_Node000004_Node000012" title=" " alt="" coords="776,439,816,444,815,449,776,445"/>
+<area shape="rect" id="Node000013" href="$classTemperatureSensor.html#a60eea8160e8274279aaa0c0c7d67c378" title="Gets current temperature." alt="" coords="849,497,1005,537"/>
+<area shape="poly" id="edge14_Node000004_Node000013" title=" " alt="" coords="738,449,825,481,851,490,849,495,823,486,736,454"/>
+<area shape="rect" id="Node000014" href="$classLoopTimeSensorDevice.html#ae415a0177d63f6bc051db1853c80223c" title="Gets current loop time." alt="" coords="840,561,1015,601"/>
+<area shape="poly" id="edge15_Node000004_Node000014" title=" " alt="" coords="748,449,778,468,794,489,802,509,810,528,826,547,833,552,830,556,822,551,805,531,797,511,790,491,774,472,745,454"/>
+<area shape="rect" id="Node000015" href="$classPhotoresistorSensor.html#a2f01b4236a3edb410f520b78dcc8a6bf" title="Gets current light level." alt="" coords="851,625,1003,665"/>
+<area shape="poly" id="edge16_Node000004_Node000015" title=" " alt="" coords="753,449,778,468,792,487,799,506,802,542,805,577,812,594,826,611,840,622,837,626,822,615,808,596,800,578,797,542,793,507,787,490,774,472,749,454"/>
+<area shape="rect" id="Node000016" href="$classRamSensorDevice.html#ab254edec72f313d72eefac88b530ed2f" title="Gets current free RAM." alt="" coords="824,689,1031,715"/>
+<area shape="poly" id="edge17_Node000004_Node000016" title=" " alt="" coords="754,449,778,468,795,496,803,523,803,549,801,575,798,601,800,626,808,650,826,675,831,680,828,684,822,678,803,653,795,627,793,601,795,575,798,549,797,524,790,498,774,472,751,453"/>
+<area shape="rect" id="Node000017" href="$classVccSensorDevice.html#a5cdb70defb9b2c5b4c66baf0d46799b9" title="Gets current VCC voltage." alt="" coords="828,739,1027,764"/>
+<area shape="poly" id="edge18_Node000004_Node000017" title=" " alt="" coords="755,449,778,468,798,503,806,536,805,569,800,601,795,633,796,664,804,695,826,726,829,729,825,732,822,729,799,697,790,665,790,633,795,601,799,569,800,537,793,505,774,472,752,453"/>
+<area shape="poly" id="edge19_Node000004_Node000018" title=" " alt="" coords="756,449,778,468,794,492,804,516,813,562,809,606,800,650,792,693,789,736,799,780,810,802,826,824,838,835,834,839,822,828,805,805,794,782,784,737,787,693,795,649,804,606,807,562,799,517,789,495,774,472,752,453"/>
+<area shape="rect" id="Node000019" href="$FlexibleMenu_8h.html#a6abba53baa5044f0ed7bb637e0cd30c4" title="Helper factory for live item creation." alt="" coords="870,788,985,813"/>
+<area shape="poly" id="edge20_Node000004_Node000019" title=" " alt="" coords="756,449,778,468,801,509,809,549,807,588,799,627,793,664,792,701,801,738,826,775,840,786,858,793,856,798,838,791,822,778,796,740,786,702,787,664,794,626,801,588,804,550,796,511,774,472,752,454"/>
+</map>

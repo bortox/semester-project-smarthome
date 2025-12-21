@@ -1,14 +1,7 @@
 <map id="LightCalibrationItem::handleInput" name="LightCalibrationItem::handleInput">
-<area shape="rect" id="node1" title="Executes calibration on &#39;E&#39; key." alt="" coords="5,207,160,247"/>
-<area shape="rect" id="node2" href="$classPhotoresistorSensor.html#aa582780f50f591321fa67281a4ef0dbd" title="Calibrates maximum value with current reading." alt="" coords="208,29,387,69"/>
-<area shape="rect" id="node5" href="$classPhotoresistorSensor.html#a83516838f3e0ef91ef6c1b9a48224d02" title="Calibrates minimum value with current reading." alt="" coords="210,93,385,133"/>
-<area shape="rect" id="node7" href="$classEventSystem.html#a7d557111351077f5454f3ef839df55fa" title=" " alt="" coords="224,157,371,183"/>
-<area shape="rect" id="node9" href="$classPhotoresistorSensor.html#ae7f2bd6954368c30d6f970ebec433dfa" title="Gets the sensor statistics." alt="" coords="221,207,373,247"/>
-<area shape="rect" id="node10" href="$classPhotoresistorSensor.html#a2f01b4236a3edb410f520b78dcc8a6bf" title="Gets the current light level." alt="" coords="221,271,373,311"/>
-<area shape="rect" id="node11" href="$classEventSystem.html#a962434d9ad5d95c624c62938c1b9c89f" title="Access the singleton instance." alt="" coords="212,336,383,361"/>
-<area shape="rect" id="node12" href="$classSensorStats.html#ae61f61c039a36ddc5a1ba29c0022a8ab" title="Resets all statistics to initial state." alt="" coords="227,385,367,411"/>
-<area shape="rect" id="node3" href="$classLightSensor.html#ac68507155117cdbe384049194ae23d41" title=" " alt="" coords="449,55,603,80"/>
-<area shape="rect" id="node4" href="$classLightSensor.html#a1cbf8e552cc340ca741c6bc214abddde" title=" " alt="" coords="435,5,617,31"/>
-<area shape="rect" id="node6" href="$classLightSensor.html#af6957d909e350354ac4dbee7b1971733" title=" " alt="" coords="437,104,615,129"/>
-<area shape="rect" id="node8" href="$classDynamicArray.html#a521af75e017863b464537d3b6dd1cf14" title=" " alt="" coords="452,157,600,183"/>
+<area shape="rect" id="Node000001" title="Handles calibration action on ENTER." alt="" coords="5,23,160,63"/>
+<area shape="rect" id="Node000002" href="$classEventSystem.html#a7d557111351077f5454f3ef839df55fa" title="Emits event to all registered listeners." alt="" coords="220,5,367,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="160,31,206,26,207,31,161,37"/>
+<area shape="rect" id="Node000003" href="$classEventSystem.html#a962434d9ad5d95c624c62938c1b9c89f" title="Gets singleton instance." alt="" coords="208,55,379,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="161,49,195,53,194,59,160,55"/>
 </map>

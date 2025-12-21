@@ -1,6 +1,0 @@
-<map id="NightModeScene::exit" name="NightModeScene::exit">
-<area shape="rect" id="node1" title="Called when scene is deactivated." alt="" coords="5,35,171,60"/>
-<area shape="rect" id="node2" href="$classIScene.html#a4fccf11789e8b421a7f6cb286b5ba56a" title="Called when scene is deactivated." alt="" coords="279,5,377,31"/>
-<area shape="rect" id="node3" href="$classDimmableLight.html#a1de013d4267178a5eb7c52cb0ae41c34" title="Sets the global brightness multiplier." alt="" coords="219,55,437,95"/>
-<area shape="rect" id="node4" href="$classDimmableLight.html#ae0188dafb54dfe5ba3a801bc6e8fbf65" title=" " alt="" coords="485,55,684,95"/>
-</map>

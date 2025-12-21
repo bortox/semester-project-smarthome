@@ -1,12 +1,21 @@
 <map id="AlarmScene::update" name="AlarmScene::update">
-<area shape="rect" id="node1" title="Periodic update &#45; applies scene effects to devices." alt="" coords="5,105,159,131"/>
-<area shape="rect" id="node2" href="$classDeviceRegistry.html#ab222f7413c82a27f8c06d55756ded728" title=" " alt="" coords="207,5,408,31"/>
-<area shape="rect" id="node3" href="$classDeviceRegistry.html#acea4fa19e872f726874a15dfd6caea98" title=" " alt="" coords="216,55,399,80"/>
-<area shape="rect" id="node4" href="$classRGBLight.html#a8d207c5659398bf3716c531fb6e35df5" title="Sets the RGB light brightness." alt="" coords="218,205,397,231"/>
-<area shape="rect" id="node6" href="$classDynamicArray.html#a521af75e017863b464537d3b6dd1cf14" title=" " alt="" coords="743,131,891,156"/>
-<area shape="rect" id="node10" href="$classRGBLight.html#a24ff27f0ddd26cef3b765a2d35b2b20d" title="Sets the RGB color." alt="" coords="235,156,379,181"/>
-<area shape="rect" id="node5" href="$classEventSystem.html#a7d557111351077f5454f3ef839df55fa" title=" " alt="" coords="502,156,649,181"/>
-<area shape="rect" id="node7" href="$classEventSystem.html#a962434d9ad5d95c624c62938c1b9c89f" title="Access the singleton instance." alt="" coords="490,205,661,231"/>
-<area shape="rect" id="node8" href="$classDimmableLight.html#a343102812c45ae8078a4b4352939a6ce" title="Protected access to last saved brightness." alt="" coords="464,304,687,329"/>
-<area shape="rect" id="node9" href="$classDimmableLight.html#a27bbdbdd5528ab5d610a3b7c187dadc1" title="Protected access to target brightness." alt="" coords="456,255,695,280"/>
+<area shape="rect" id="Node000001" title="Periodic update &#45; applies scene effects to devices." alt="" coords="5,104,159,129"/>
+<area shape="rect" id="Node000002" href="$classDeviceRegistry.html#ab222f7413c82a27f8c06d55756ded728" title="Gets all registered devices." alt="" coords="207,5,408,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="99,102,146,71,206,40,227,32,229,37,208,44,148,75,102,106"/>
+<area shape="rect" id="Node000003" href="$classDeviceRegistry.html#acea4fa19e872f726874a15dfd6caea98" title="Gets singleton instance." alt="" coords="216,55,399,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="140,101,235,80,236,86,141,107"/>
+<area shape="rect" id="Node000004" href="$classRGBLight.html#a8d207c5659398bf3716c531fb6e35df5" title="Sets overall brightness." alt="" coords="218,104,397,129"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="159,114,204,114,204,119,159,119"/>
+<area shape="rect" id="Node000008" href="$classRGBLight.html#a24ff27f0ddd26cef3b765a2d35b2b20d" title="Sets the RGB color." alt="" coords="493,155,637,180"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="138,127,207,139,351,154,480,162,479,167,351,159,206,145,137,132"/>
+<area shape="rect" id="Node000009" href="$classDynamicArray.html#a521af75e017863b464537d3b6dd1cf14" title="Gets current element count." alt="" coords="233,205,381,231"/>
+<area shape="poly" id="edge10_Node000001_Node000009" title=" " alt="" coords="105,127,151,155,208,184,248,199,246,204,206,188,148,159,102,132"/>
+<area shape="rect" id="Node000005" href="$classDimmableLight.html#a24268c4542c8419e6ddad8c85c2b738f" title="Sets the light brightness." alt="" coords="456,105,675,131"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="397,114,442,115,442,120,397,120"/>
+<area shape="rect" id="Node000006" href="$classEventSystem.html#a7d557111351077f5454f3ef839df55fa" title="Emits event to all registered listeners." alt="" coords="735,105,881,131"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="675,115,721,115,721,121,675,121"/>
+<area shape="rect" id="Node000007" href="$classEventSystem.html#a962434d9ad5d95c624c62938c1b9c89f" title="Gets singleton instance." alt="" coords="723,155,893,180"/>
+<area shape="poly" id="edge6_Node000005_Node000007" title=" " alt="" coords="629,128,732,149,731,154,628,133"/>
+<area shape="poly" id="edge8_Node000008_Node000006" title=" " alt="" coords="628,152,731,131,732,136,629,157"/>
+<area shape="poly" id="edge9_Node000008_Node000007" title=" " alt="" coords="637,165,709,165,709,170,637,170"/>
 </map>

@@ -1,52 +1,130 @@
 <map id="setup" name="setup">
-<area shape="rect" id="node1" title="System initialization." alt="" coords="5,557,64,582"/>
-<area shape="rect" id="node2" href="$classMenuBuilder.html#a44dccff1d668cb9f591482e7db2aa73d" title="Builds root menu page." alt="" coords="130,1045,342,1070"/>
-<area shape="rect" id="node8" href="$classNavigationManager.html#a8b77c624d734d2f86336af7843ecee32" title="Gets singleton instance." alt="" coords="1347,811,1506,851"/>
-<area shape="rect" id="node14" href="$classDeviceRegistry.html#ab222f7413c82a27f8c06d55756ded728" title=" " alt="" coords="748,969,949,994"/>
-<area shape="rect" id="node15" href="$classDeviceRegistry.html#acea4fa19e872f726874a15dfd6caea98" title=" " alt="" coords="757,920,940,945"/>
-<area shape="rect" id="node29" href="$classDeviceFactory.html#aef4100cd9a66cdd1e18a78aa2146b5a9" title="Creates a dimmable light." alt="" coords="121,243,351,283"/>
-<area shape="rect" id="node30" href="$classDeviceFactory.html#a0a9e6b0cfc17cbb98d1188af8a76b89c" title="Creates a loop time sensor." alt="" coords="139,307,333,347"/>
-<area shape="rect" id="node31" href="$classDeviceFactory.html#a8532de1d2fe1271a5528ac50c1828389" title="Creates an automatic outdoor light." alt="" coords="130,371,342,411"/>
-<area shape="rect" id="node32" href="$classDeviceFactory.html#a6e3dc4be79c7835e389eaf8a269e64af" title="Creates a light sensor." alt="" coords="112,435,360,475"/>
-<area shape="rect" id="node33" href="$classDeviceFactory.html#a9d9dbc39c5ae3a456ffbe273a5f59278" title="Creates a PIR motion sensor." alt="" coords="123,500,349,525"/>
-<area shape="rect" id="node34" href="$classDeviceFactory.html#a0fc573a1c23efca2c5c979ec5668c601" title="Creates a RAM usage sensor." alt="" coords="140,550,332,590"/>
-<area shape="rect" id="node35" href="$classDeviceFactory.html#a00e5823f9b2fe871caa8d4582069a9c1" title="Creates an RGB light." alt="" coords="125,614,347,640"/>
-<area shape="rect" id="node36" href="$classDeviceFactory.html#ad005f22f2a49b6d496aca952ca20404e" title="Creates a temperature sensor." alt="" coords="114,664,358,704"/>
-<area shape="rect" id="node37" href="$classDeviceFactory.html#a0cac1110433759641b7ef7eb18e4bcd7" title="Creates a VCC voltage sensor." alt="" coords="131,728,341,768"/>
-<area shape="rect" id="node38" href="$classNavigationManager.html#aeb20dc241a17ce19e93210aa9c274169" title="Initializes navigation with root page." alt="" coords="157,179,315,219"/>
-<area shape="rect" id="node46" href="$classInputManager.html#a06944dbb84f714fdb1c6d53ca18b6146" title=" " alt="" coords="149,844,323,869"/>
-<area shape="rect" id="node47" href="$classInputManager.html#a1b07470f1bc00eadefa76c23c915ee96" title=" " alt="" coords="433,21,646,46"/>
-<area shape="rect" id="node48" href="$classInputManager.html#a0b67d24005c25623649b19c638bfd762" title=" " alt="" coords="441,71,637,111"/>
-<area shape="rect" id="node49" href="$classInputManager.html#a3fa47911560aef7672cd6b434af40a7b" title=" " alt="" coords="408,136,671,161"/>
-<area shape="rect" id="node50" href="$classNavigationManager.html#af3b145a9a346fc30416599b76dac7b4f" title="Marks LCD as initialized." alt="" coords="157,1095,315,1135"/>
-<area shape="rect" id="node3" href="$classMenuPage.html#a612a17be8fea1aa8f8497b474e6df406" title="Adds item to page." alt="" coords="1351,1161,1502,1186"/>
-<area shape="rect" id="node5" href="$classMenuBuilder.html#a6b11a8ff5c14c601f25dfa550b090c84" title="Builds lights overview page." alt="" coords="432,1070,647,1096"/>
-<area shape="rect" id="node17" href="$classMenuBuilder.html#a1c8ff4c9850aae0f95ed4838c73a12c3" title="Builds scenes control page." alt="" coords="1041,1136,1263,1161"/>
-<area shape="rect" id="node18" href="$classMenuBuilder.html#a5fb86dfd5959b0b3e80679cc777dfc50" title="Builds sensors overview page." alt="" coords="426,818,653,844"/>
-<area shape="rect" id="node4" href="$classDynamicArray.html#a0597a43587fc9571429924e4ee8c2f07" title="Adds an element to the array." alt="" coords="1576,136,1723,161"/>
-<area shape="rect" id="node6" href="$classMenuBuilder.html#a99c9fe7d757f5800b334a6b551af2e82" title="Builds dimmable light control page." alt="" coords="743,1184,955,1224"/>
-<area shape="rect" id="node9" href="$classMenuBuilder.html#a496170a95397e4aa870786bcc4dd6bcf" title="Builds outside light control page." alt="" coords="751,1120,946,1160"/>
-<area shape="rect" id="node11" href="$classMenuBuilder.html#ac029426e87fda27a930e260bf4b211ef" title="Builds RGB light control page." alt="" coords="731,1300,966,1325"/>
-<area shape="rect" id="node16" href="$classDynamicArray.html#a521af75e017863b464537d3b6dd1cf14" title=" " alt="" coords="1078,717,1226,742"/>
-<area shape="rect" id="node7" href="$classMenuBuilder.html#a18d73ff68acbd838f03f10aa8cb423e6" title="Builds brightness slider page." alt="" coords="1030,1237,1274,1262"/>
-<area shape="rect" id="node10" href="$classMenuBuilder.html#acc82398ad95ef18ddf43669af03ac00c" title="Builds outside light mode selection page." alt="" coords="1055,970,1249,1010"/>
-<area shape="rect" id="node12" href="$classMenuBuilder.html#aaedb1ceaadcbe80e141a2e36e569181b" title="Builds custom RGB color page with channel submenu." alt="" coords="1055,1387,1249,1427"/>
-<area shape="rect" id="node13" href="$classMenuBuilder.html#a16c4b3c7f96b3001518a8433d5be147f" title="Builds RGB color preset selection page." alt="" coords="1027,1286,1277,1312"/>
-<area shape="rect" id="node19" href="$classMenuBuilder.html#ac7a33e9b51ec8a93d8d8f2315833be07" title="Builds light sensor settings page." alt="" coords="719,604,979,629"/>
-<area shape="rect" id="node20" href="$classMenuBuilder.html#a1fbeed1a43d18c0f6e4ac1bcd22b3185" title="Builds sensor statistics page." alt="" coords="1058,438,1246,478"/>
-<area shape="rect" id="node28" href="$classIDevice.html#acd9a2a6e308fd1191f5a98470f2ea2cd" title=" " alt="" coords="781,768,916,793"/>
-<area shape="rect" id="node21" href="$classSensorStats.html#aa82d8bdc63b949d906e1a55677522f9c" title="Gets the average of recorded values." alt="" coords="1336,494,1517,520"/>
-<area shape="rect" id="node22" href="$classSensorStats.html#a1cf2339b80591125b65aacaacd497233" title="Gets the maximum recorded value." alt="" coords="1349,544,1505,569"/>
-<area shape="rect" id="node23" href="$classSensorStats.html#ad3022ce269159df7007c7b015ae6e5ee" title="Gets the minimum recorded value." alt="" coords="1351,593,1503,618"/>
-<area shape="rect" id="node24" href="$classTemperatureSensor.html#affc7fc31269982717b769d2601ba0796" title="Gets the sensor statistics." alt="" coords="1349,267,1505,307"/>
-<area shape="rect" id="node25" href="$classPhotoresistorSensor.html#ae7f2bd6954368c30d6f970ebec433dfa" title="Gets the sensor statistics." alt="" coords="1351,331,1503,371"/>
-<area shape="rect" id="node26" href="$classRamSensorDevice.html#a4790e1d4afc28e46868be2a8f4e19067" title="Gets the sensor statistics." alt="" coords="1325,396,1528,421"/>
-<area shape="rect" id="node27" href="$classVccSensorDevice.html#a96cf2b0948a8b96e49f464f5e99c5b29" title="Gets the sensor statistics." alt="" coords="1329,445,1525,470"/>
-<area shape="rect" id="node39" href="$classNavigationManager.html#a81aec9176f9a3dbe8b4ccb66cbcaa22d" title="Renders full page with scrolling support." alt="" coords="444,352,635,377"/>
-<area shape="rect" id="node40" href="$classMenuItem.html#ab73d6181396cd81d3c12afd332a21faa" title="Renders the item on LCD." alt="" coords="785,352,913,377"/>
-<area shape="rect" id="node41" href="$classNavigationManager.html#a77baf5c45046cbec5e4c1eb3f852352e" title="Gets current page from top of stack." alt="" coords="769,654,928,694"/>
-<area shape="rect" id="node42" href="$classMenuPage.html#aba1aead5d2ab95c38e84b314e7f51920" title="Gets item by index." alt="" coords="775,401,923,426"/>
-<area shape="rect" id="node43" href="$classMenuPage.html#ae85cf6f5d972a9ed27567c1c80196028" title="Gets total number of items." alt="" coords="752,718,945,744"/>
-<area shape="rect" id="node44" href="$classMenuPage.html#ab146e7a26d721e4ea5742caf42c59d8b" title="Gets currently selected item index." alt="" coords="743,237,954,262"/>
-<area shape="rect" id="node45" href="$classNavigationManager.html#a08a5da9652a54c36efc1ec923e754ade" title=" " alt="" coords="769,287,928,327"/>
+<area shape="rect" id="Node000001" title="System initialization." alt="" coords="5,1317,64,1343"/>
+<area shape="rect" id="Node000002" href="$classMenuBuilder.html#a817eae2da07a2f797df3b6aad343a7eb" title="Builds root menu page." alt="" coords="137,472,349,497"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="33,1317,33,1181,40,959,49,840,63,728,83,634,95,597,110,567,127,546,148,527,193,501,195,505,151,532,131,549,114,570,100,599,88,636,68,729,55,840,46,959,38,1181,38,1317"/>
+<area shape="rect" id="Node000012" href="$classNavigationManager.html#a4e087247732c41076edfe0503a80efec" title="Gets singleton instance." alt="" coords="1326,642,1485,682"/>
+<area shape="poly" id="edge74_Node000001_Node000012" title=" " alt="" coords="34,1317,41,1248,54,1149,77,1052,92,1014,110,989,139,975,184,963,317,948,489,941,682,936,875,932,1048,925,1181,912,1227,902,1254,889,1269,875,1277,861,1283,830,1287,796,1292,777,1302,758,1332,720,1365,689,1369,693,1336,724,1306,761,1297,779,1292,797,1289,831,1282,863,1273,879,1258,893,1228,907,1182,917,1048,931,875,938,682,942,490,946,317,954,185,969,140,980,114,993,97,1017,82,1054,60,1150,46,1249,40,1317"/>
+<area shape="rect" id="Node000027" href="$classDeviceRegistry.html#ab222f7413c82a27f8c06d55756ded728" title="Gets all registered devices." alt="" coords="727,649,928,675"/>
+<area shape="poly" id="edge63_Node000001_Node000027" title=" " alt="" coords="33,1317,34,1256,42,1161,52,1107,65,1051,84,997,110,946,174,849,205,813,237,782,274,756,315,732,422,685,495,663,571,651,645,647,713,648,713,653,646,652,572,656,496,668,424,690,318,737,277,760,241,786,208,816,178,852,114,949,89,999,70,1053,57,1108,48,1161,39,1256,38,1317"/>
+<area shape="rect" id="Node000028" href="$classDeviceRegistry.html#acea4fa19e872f726874a15dfd6caea98" title="Gets singleton instance." alt="" coords="736,551,919,576"/>
+<area shape="poly" id="edge72_Node000001_Node000028" title=" " alt="" coords="34,1317,38,1219,49,1068,59,989,72,914,89,852,110,809,138,773,170,741,205,713,242,687,323,645,408,614,494,591,578,576,655,566,722,562,722,567,655,572,579,581,495,596,410,619,325,650,245,692,208,717,174,745,142,777,114,811,94,854,77,916,64,989,55,1069,43,1220,39,1317"/>
+<area shape="rect" id="Node000049" href="$classDeviceFactory.html#aef59315a54f0666f6c92ef0e8428b4bc" title="Creates a dimmable light." alt="" coords="128,1003,359,1043"/>
+<area shape="poly" id="edge54_Node000001_Node000049" title=" " alt="" coords="33,1317,33,1268,42,1197,51,1158,65,1120,85,1085,110,1053,115,1049,118,1053,114,1057,89,1087,70,1122,56,1160,47,1198,39,1268,38,1317"/>
+<area shape="rect" id="Node000050" href="$classDeviceFactory.html#af277162d34d834bc2a076b68cf5f80c8" title="Creates a loop time sensor." alt="" coords="147,1067,340,1107"/>
+<area shape="poly" id="edge55_Node000001_Node000050" title=" " alt="" coords="34,1317,38,1278,50,1224,73,1167,89,1140,110,1117,132,1103,135,1107,114,1121,94,1144,77,1169,55,1226,44,1279,39,1318"/>
+<area shape="rect" id="Node000051" href="$classDeviceFactory.html#a3b241afbacb0deee2ccddeb59c76848c" title="Creates an outdoor light with sensors." alt="" coords="137,1131,349,1171"/>
+<area shape="poly" id="edge56_Node000001_Node000051" title=" " alt="" coords="36,1316,44,1288,59,1252,80,1214,110,1181,123,1173,126,1177,114,1185,85,1217,64,1254,49,1290,41,1318"/>
+<area shape="rect" id="Node000052" href="$classDeviceFactory.html#ac3013abf7103e3438532b737840ecff4" title="Creates a photoresistor sensor." alt="" coords="119,1195,367,1235"/>
+<area shape="poly" id="edge57_Node000001_Node000052" title=" " alt="" coords="43,1315,70,1281,89,1262,111,1246,126,1238,129,1243,113,1251,92,1266,74,1284,47,1318"/>
+<area shape="rect" id="Node000053" href="$classDeviceFactory.html#ae4abaa36002a2a45b99cd916855e5c45" title="Creates a PIR motion sensor." alt="" coords="130,1260,357,1285"/>
+<area shape="poly" id="edge58_Node000001_Node000053" title=" " alt="" coords="62,1315,111,1295,149,1286,150,1291,113,1300,64,1320"/>
+<area shape="rect" id="Node000054" href="$classDeviceFactory.html#a7f58141e0f0b167ac27fb6a0c646d614" title="Creates a RAM usage sensor." alt="" coords="147,1310,339,1350"/>
+<area shape="poly" id="edge59_Node000001_Node000054" title=" " alt="" coords="64,1327,134,1327,134,1333,64,1333"/>
+<area shape="rect" id="Node000055" href="$classDeviceFactory.html#a8b18d4c1b041549a8e155fcd8a5d3709" title="Creates an RGB light." alt="" coords="132,1375,355,1400"/>
+<area shape="poly" id="edge60_Node000001_Node000055" title=" " alt="" coords="64,1340,113,1359,150,1369,149,1374,111,1364,62,1345"/>
+<area shape="rect" id="Node000056" href="$classDeviceFactory.html#afbdb8ca17306bc1b434660866f59cfb6" title="Creates a temperature sensor." alt="" coords="121,1425,365,1465"/>
+<area shape="poly" id="edge61_Node000001_Node000056" title=" " alt="" coords="46,1341,73,1376,92,1395,113,1410,126,1417,123,1422,111,1415,89,1399,69,1380,42,1344"/>
+<area shape="rect" id="Node000057" href="$classDeviceFactory.html#a27c198438028c7626955d7fdab19549d" title="Creates a VCC voltage sensor." alt="" coords="138,1489,349,1529"/>
+<area shape="poly" id="edge62_Node000001_Node000057" title=" " alt="" coords="41,1342,49,1370,64,1406,85,1443,114,1475,127,1483,124,1488,110,1479,80,1446,59,1408,44,1372,36,1344"/>
+<area shape="rect" id="Node000058" href="$classNavigationManager.html#aeb20dc241a17ce19e93210aa9c274169" title="Initializes navigation with root page." alt="" coords="164,1553,323,1593"/>
+<area shape="poly" id="edge64_Node000001_Node000058" title=" " alt="" coords="39,1342,44,1381,55,1434,77,1491,94,1516,114,1539,131,1551,152,1560,150,1565,129,1556,110,1543,89,1520,73,1493,50,1436,38,1382,34,1343"/>
+<area shape="rect" id="Node000066" href="$classInputManager.html#a06944dbb84f714fdb1c6d53ca18b6146" title="Gets singleton instance." alt="" coords="156,1617,331,1643"/>
+<area shape="poly" id="edge73_Node000001_Node000066" title=" " alt="" coords="38,1343,38,1392,46,1462,55,1501,69,1538,88,1573,114,1603,144,1621,141,1625,110,1607,84,1576,64,1540,50,1502,41,1463,33,1392,33,1343"/>
+<area shape="rect" id="Node000067" href="$classInputManager.html#a1b07470f1bc00eadefa76c23c915ee96" title="Registers a button input." alt="" coords="137,1667,350,1692"/>
+<area shape="poly" id="edge75_Node000001_Node000067" title=" " alt="" coords="40,1343,47,1408,62,1502,84,1595,98,1630,114,1653,126,1663,123,1667,110,1657,93,1633,79,1596,56,1504,42,1409,35,1343"/>
+<area shape="rect" id="Node000068" href="$classInputManager.html#a0b67d24005c25623649b19c638bfd762" title="Registers a navigation button." alt="" coords="145,1717,341,1757"/>
+<area shape="poly" id="edge76_Node000001_Node000068" title=" " alt="" coords="39,1343,46,1416,59,1525,82,1633,96,1675,114,1703,134,1718,131,1722,110,1706,92,1677,76,1634,54,1526,40,1417,34,1343"/>
+<area shape="rect" id="Node000069" href="$classInputManager.html#a3fa47911560aef7672cd6b434af40a7b" title="Registers a potentiometer input." alt="" coords="112,1781,375,1807"/>
+<area shape="poly" id="edge77_Node000001_Node000069" title=" " alt="" coords="39,1343,43,1428,54,1556,64,1623,77,1684,94,1734,114,1767,119,1771,115,1775,110,1770,89,1736,72,1685,59,1624,49,1557,38,1428,34,1343"/>
+<area shape="rect" id="Node000070" href="$classNavigationManager.html#af3b145a9a346fc30416599b76dac7b4f" title="Marks LCD as initialized." alt="" coords="164,1831,323,1871"/>
+<area shape="poly" id="edge78_Node000001_Node000070" title=" " alt="" coords="39,1343,42,1436,52,1580,62,1655,75,1723,92,1780,114,1818,131,1831,152,1841,150,1846,128,1836,110,1821,87,1782,70,1725,56,1655,47,1580,36,1437,33,1343"/>
+<area shape="rect" id="Node000003" href="$classMenuPage.html#a612a17be8fea1aa8f8497b474e6df406" title="Adds item to page." alt="" coords="1330,332,1481,357"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="255,470,316,407,419,311,482,259,550,206,622,158,696,116,778,78,845,57,915,44,1005,33,1077,18,1136,5,1164,3,1193,6,1224,15,1257,33,1293,61,1323,96,1347,135,1366,177,1391,256,1403,318,1398,319,1386,258,1361,179,1342,138,1318,99,1289,65,1255,38,1222,20,1192,11,1164,8,1137,10,1078,23,1006,38,916,50,847,62,780,83,699,120,625,162,553,211,485,263,422,315,320,410,258,473"/>
+<area shape="rect" id="Node000004" href="$classMenuBuilder.html#a328fd58e3a936663a7bb71913e1dc216" title="Builds lights listing page with all light devices." alt="" coords="429,472,643,497"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="349,482,415,482,415,487,349,487"/>
+<area shape="rect" id="Node000030" href="$classMenuBuilder.html#af3306030377e755cd483df7267cb9304" title="Builds scenes control page." alt="" coords="1020,383,1241,408"/>
+<area shape="poly" id="edge29_Node000002_Node000030" title=" " alt="" coords="278,469,352,443,455,411,574,380,697,357,770,348,827,346,958,357,1015,365,1069,377,1068,382,1014,371,957,362,827,352,770,354,698,362,575,385,457,416,354,448,280,474"/>
+<area shape="rect" id="Node000031" href="$classMenuBuilder.html#a25f90f5a7cc6a6901ba1c7d4b51ecaa7" title="Builds sensors listing page with all sensor devices." alt="" coords="423,700,649,725"/>
+<area shape="poly" id="edge32_Node000002_Node000031" title=" " alt="" coords="263,495,509,689,506,694,259,500"/>
+<area shape="poly" id="edge4_Node000004_Node000003" title=" " alt="" coords="538,471,555,420,587,345,633,263,662,225,696,191,735,158,770,134,804,115,838,102,911,83,1005,66,1077,49,1135,37,1164,35,1192,39,1223,49,1257,66,1290,91,1318,121,1341,156,1360,192,1387,262,1402,318,1397,319,1382,264,1356,194,1337,158,1314,125,1287,95,1255,71,1221,54,1191,44,1163,41,1136,42,1078,54,1006,71,912,89,839,107,806,120,773,138,738,162,699,195,666,228,638,266,592,347,560,422,544,472"/>
+<area shape="rect" id="Node000005" href="$classMenuBuilder.html#a8d7d05bad9df7f58e5cfda65fd2e33ff" title="Builds dimmable light control page." alt="" coords="721,371,933,411"/>
+<area shape="poly" id="edge5_Node000004_Node000005" title=" " alt="" coords="567,469,696,421,725,412,727,417,698,426,569,474"/>
+<area shape="poly" id="edge27_Node000004_Node000012" title=" " alt="" coords="644,489,836,508,915,521,943,528,959,536,976,555,983,577,983,619,982,640,983,660,991,679,1007,696,1047,718,1091,731,1138,735,1185,732,1231,724,1275,712,1349,685,1351,690,1277,717,1232,729,1185,737,1138,740,1090,736,1045,723,1004,700,986,682,978,662,976,641,978,619,978,577,971,558,956,540,941,533,914,526,835,514,643,495"/>
+<area shape="rect" id="Node000013" href="$classMenuBuilder.html#a239f6a65a077c6e509609d1b46fa5a91" title="Builds outside light control page." alt="" coords="730,435,925,475"/>
+<area shape="poly" id="edge10_Node000004_Node000013" title=" " alt="" coords="643,471,716,464,717,469,644,476"/>
+<area shape="rect" id="Node000015" href="$classMenuBuilder.html#a55f678cfd453567ac15f33d55d21ad46" title="Builds RGB light control page." alt="" coords="710,205,945,231"/>
+<area shape="poly" id="edge16_Node000004_Node000015" title=" " alt="" coords="549,470,800,238,804,242,553,474"/>
+<area shape="poly" id="edge25_Node000004_Node000027" title=" " alt="" coords="549,496,606,563,650,602,699,634,718,643,715,647,696,639,646,606,603,567,544,499"/>
+<area shape="poly" id="edge26_Node000004_Node000028" title=" " alt="" coords="580,495,698,529,760,545,759,550,697,534,579,500"/>
+<area shape="rect" id="Node000029" href="$classDynamicArray.html#a521af75e017863b464537d3b6dd1cf14" title="Gets current element count." alt="" coords="753,600,901,625"/>
+<area shape="poly" id="edge28_Node000004_Node000029" title=" " alt="" coords="555,495,615,540,656,564,698,585,741,598,739,603,696,590,653,569,612,544,551,500"/>
+<area shape="poly" id="edge6_Node000005_Node000003" title=" " alt="" coords="933,375,1005,367,1316,346,1316,351,1006,373,934,380"/>
+<area shape="rect" id="Node000006" href="$classMenuBuilder.html#a9274103722fda89aaac8f0be48bb0c6c" title="Builds brightness adjustment page." alt="" coords="1009,281,1253,307"/>
+<area shape="poly" id="edge7_Node000005_Node000006" title=" " alt="" coords="878,369,1005,323,1061,307,1063,313,1006,328,880,374"/>
+<area shape="poly" id="edge9_Node000005_Node000012" title=" " alt="" coords="921,409,958,421,1077,471,1191,530,1290,586,1363,632,1360,637,1287,591,1188,534,1075,476,956,426,919,414"/>
+<area shape="poly" id="edge8_Node000006_Node000003" title=" " alt="" coords="1201,304,1323,327,1322,332,1200,309"/>
+<area shape="poly" id="edge11_Node000013_Node000003" title=" " alt="" coords="925,455,998,453,1082,447,1169,436,1255,417,1319,391,1372,362,1375,367,1321,396,1257,422,1170,441,1082,453,998,459,925,460"/>
+<area shape="poly" id="edge15_Node000013_Node000012" title=" " alt="" coords="926,471,959,492,973,510,980,530,982,567,985,603,992,619,1007,635,1041,656,1079,672,1118,682,1159,688,1240,688,1312,680,1313,685,1240,694,1159,693,1117,687,1077,677,1039,661,1004,639,988,622,980,604,977,568,975,531,969,513,956,496,924,475"/>
+<area shape="rect" id="Node000014" href="$classMenuBuilder.html#aa78836987629471734aa7f2f285de8ce" title="Builds outside light modes selection page." alt="" coords="1033,585,1228,625"/>
+<area shape="poly" id="edge12_Node000013_Node000014" title=" " alt="" coords="909,473,958,492,1032,532,1094,574,1091,579,1029,537,956,496,907,478"/>
+<area shape="poly" id="edge13_Node000014_Node000003" title=" " alt="" coords="1221,582,1254,564,1303,518,1342,464,1372,411,1392,369,1396,371,1376,414,1346,467,1307,521,1258,568,1224,587"/>
+<area shape="poly" id="edge14_Node000014_Node000012" title=" " alt="" coords="1228,622,1313,640,1312,645,1227,627"/>
+<area shape="poly" id="edge17_Node000015_Node000003" title=" " alt="" coords="841,203,907,150,954,122,1004,101,1075,80,1134,68,1162,68,1191,73,1223,84,1257,101,1287,122,1313,148,1336,177,1355,208,1383,268,1400,318,1395,319,1378,270,1350,210,1331,180,1309,151,1284,126,1255,106,1221,89,1190,78,1162,74,1135,74,1077,85,1006,106,956,127,910,154,844,207"/>
+<area shape="poly" id="edge18_Node000015_Node000006" title=" " alt="" coords="880,228,1066,275,1065,280,878,233"/>
+<area shape="poly" id="edge24_Node000015_Node000012" title=" " alt="" coords="945,216,1034,220,1124,228,1204,243,1235,254,1258,267,1282,316,1320,417,1395,628,1390,629,1315,419,1277,318,1254,270,1233,258,1202,248,1124,233,1033,225,945,221"/>
+<area shape="rect" id="Node000016" href="$classMenuBuilder.html#a87ac96e88c2976f9c5a5057983602dd4" title="Builds custom color submenu page." alt="" coords="1033,115,1228,155"/>
+<area shape="poly" id="edge19_Node000015_Node000016" title=" " alt="" coords="871,203,1005,165,1036,156,1038,161,1006,170,873,208"/>
+<area shape="rect" id="Node000026" href="$classMenuBuilder.html#a8f1a1f2d5079bb32ef19d94016636834" title="Builds RGB presets selection page." alt="" coords="1005,180,1256,205"/>
+<area shape="poly" id="edge21_Node000015_Node000026" title=" " alt="" coords="945,206,991,202,992,207,945,211"/>
+<area shape="poly" id="edge20_Node000016_Node000003" title=" " alt="" coords="1230,151,1257,165,1302,200,1340,242,1371,284,1393,318,1388,321,1366,287,1336,246,1298,204,1255,170,1227,156"/>
+<area shape="poly" id="edge22_Node000026_Node000003" title=" " alt="" coords="1204,203,1257,222,1295,244,1330,271,1384,320,1381,324,1326,275,1292,249,1255,227,1202,208"/>
+<area shape="poly" id="edge23_Node000026_Node000012" title=" " alt="" coords="1226,203,1258,223,1273,240,1284,256,1293,289,1297,325,1307,368,1395,628,1390,630,1301,369,1292,326,1288,290,1279,259,1269,243,1254,227,1223,208"/>
+<area shape="poly" id="edge30_Node000030_Node000003" title=" " alt="" coords="1200,380,1322,357,1323,362,1201,385"/>
+<area shape="poly" id="edge31_Node000030_Node000012" title=" " alt="" coords="1218,406,1257,425,1283,447,1307,472,1346,527,1375,582,1395,628,1390,630,1370,585,1341,530,1303,475,1280,451,1255,430,1216,411"/>
+<area shape="poly" id="edge33_Node000031_Node000003" title=" " alt="" coords="650,716,736,717,826,713,904,703,934,695,956,684,969,672,976,659,981,632,985,602,992,586,1003,571,1035,543,1065,525,1094,513,1123,505,1184,490,1218,478,1255,458,1323,410,1378,364,1382,368,1327,414,1257,463,1220,482,1186,495,1124,510,1095,518,1067,530,1038,548,1007,574,996,589,991,603,986,633,981,661,973,675,959,688,936,700,905,708,826,719,736,722,650,721"/>
+<area shape="poly" id="edge51_Node000031_Node000012" title=" " alt="" coords="558,723,619,756,658,773,698,785,855,818,919,829,980,834,1040,833,1104,824,1174,806,1255,779,1291,762,1324,739,1376,690,1380,694,1327,743,1294,767,1257,784,1176,811,1105,829,1041,838,980,839,919,834,854,824,697,790,656,778,617,761,556,728"/>
+<area shape="poly" id="edge49_Node000031_Node000027" title=" " alt="" coords="609,697,740,674,741,680,610,703"/>
+<area shape="poly" id="edge50_Node000031_Node000028" title=" " alt="" coords="547,698,607,643,650,611,696,585,722,575,724,580,698,590,653,616,611,647,551,702"/>
+<area shape="poly" id="edge53_Node000031_Node000029" title=" " alt="" coords="558,698,619,666,696,634,739,623,741,628,698,639,621,671,561,702"/>
+<area shape="rect" id="Node000032" href="$classMenuBuilder.html#afc4c63c87f32e98b928c1d1c8fdce975" title="Builds light sensor settings page with calibration." alt="" coords="697,852,957,877"/>
+<area shape="poly" id="edge34_Node000031_Node000032" title=" " alt="" coords="552,724,613,775,654,805,698,830,741,846,740,851,696,835,651,809,609,780,549,728"/>
+<area shape="rect" id="Node000033" href="$classMenuBuilder.html#a2f96fce8ad239583f40a79fca95c0a42" title="Builds sensor statistics page." alt="" coords="1037,953,1225,993"/>
+<area shape="poly" id="edge48_Node000031_Node000033" title=" " alt="" coords="547,724,569,757,603,802,647,848,699,886,738,906,779,922,864,946,948,960,1023,968,1022,973,947,966,863,951,777,927,735,911,696,891,643,852,599,805,564,760,543,727"/>
+<area shape="rect" id="Node000048" href="$classIDevice.html#acd9a2a6e308fd1191f5a98470f2ea2cd" title="Checks if device is a sensor." alt="" coords="760,751,895,776"/>
+<area shape="poly" id="edge52_Node000031_Node000048" title=" " alt="" coords="610,723,747,747,746,752,609,728"/>
+<area shape="poly" id="edge35_Node000032_Node000003" title=" " alt="" coords="869,849,949,821,1050,776,1104,747,1158,714,1208,676,1254,635,1282,603,1307,567,1347,493,1376,423,1394,369,1399,371,1381,425,1352,495,1311,570,1286,606,1258,638,1212,680,1161,718,1107,751,1052,780,951,826,871,854"/>
+<area shape="poly" id="edge47_Node000032_Node000012" title=" " alt="" coords="900,875,977,882,1070,881,1118,876,1165,866,1212,851,1255,830,1272,815,1281,799,1288,779,1302,758,1368,689,1372,693,1306,761,1293,782,1286,801,1276,819,1257,835,1214,856,1167,872,1118,881,1070,887,977,887,899,880"/>
+<area shape="poly" id="edge36_Node000032_Node000033" title=" " alt="" coords="890,875,958,894,1021,918,1078,944,1076,949,1019,923,956,899,888,880"/>
+<area shape="poly" id="edge37_Node000033_Node000003" title=" " alt="" coords="1141,951,1192,857,1254,730,1337,523,1393,369,1398,371,1342,525,1258,732,1197,859,1146,954"/>
+<area shape="poly" id="edge46_Node000033_Node000012" title=" " alt="" coords="1223,953,1254,932,1270,911,1279,891,1283,851,1284,807,1290,783,1302,758,1331,720,1364,689,1368,693,1335,723,1306,761,1295,785,1290,808,1288,851,1284,893,1275,914,1258,936,1226,958"/>
+<area shape="rect" id="Node000034" href="$classSensorStats.html#aa82d8bdc63b949d906e1a55677522f9c" title="Gets the average of recorded values." alt="" coords="1315,885,1496,911"/>
+<area shape="poly" id="edge38_Node000033_Node000034" title=" " alt="" coords="1196,950,1303,919,1335,911,1336,916,1305,925,1198,955"/>
+<area shape="rect" id="Node000035" href="$classSensorStats.html#a1cf2339b80591125b65aacaacd497233" title="Gets the maximum recorded value." alt="" coords="1327,935,1483,960"/>
+<area shape="poly" id="edge39_Node000033_Node000035" title=" " alt="" coords="1225,961,1313,953,1314,958,1225,967"/>
+<area shape="rect" id="Node000036" href="$classSensorStats.html#ad3022ce269159df7007c7b015ae6e5ee" title="Gets the minimum recorded value." alt="" coords="1329,984,1481,1009"/>
+<area shape="poly" id="edge40_Node000033_Node000036" title=" " alt="" coords="1225,978,1316,986,1315,991,1225,983"/>
+<area shape="rect" id="Node000037" href="$classLoopTimeSensorDevice.html#a769b17f75cbf450619840eabdeae0d69" title="Gets statistics tracker." alt="" coords="1318,1034,1493,1074"/>
+<area shape="poly" id="edge41_Node000033_Node000037" title=" " alt="" coords="1200,990,1325,1027,1323,1033,1198,995"/>
+<area shape="rect" id="Node000038" href="$classPhotoresistorSensor.html#ae7f2bd6954368c30d6f970ebec433dfa" title="Gets statistics tracker." alt="" coords="1329,1098,1481,1138"/>
+<area shape="poly" id="edge42_Node000033_Node000038" title=" " alt="" coords="1159,990,1224,1036,1305,1084,1322,1091,1320,1096,1303,1088,1221,1041,1156,995"/>
+<area shape="rect" id="Node000039" href="$classRamSensorDevice.html#a4790e1d4afc28e46868be2a8f4e19067" title="Gets statistics tracker." alt="" coords="1304,1163,1507,1188"/>
+<area shape="poly" id="edge43_Node000033_Node000039" title=" " alt="" coords="1148,992,1174,1026,1210,1068,1255,1111,1305,1148,1322,1156,1319,1160,1303,1152,1251,1115,1206,1072,1170,1029,1144,995"/>
+<area shape="rect" id="Node000040" href="$classTemperatureSensor.html#affc7fc31269982717b769d2601ba0796" title="Gets statistics tracker." alt="" coords="1327,771,1483,811"/>
+<area shape="poly" id="edge44_Node000033_Node000040" title=" " alt="" coords="1223,951,1254,932,1266,919,1272,906,1277,878,1283,850,1290,835,1302,821,1314,813,1317,817,1306,825,1294,838,1288,852,1283,879,1277,907,1270,922,1258,936,1226,956"/>
+<area shape="rect" id="Node000041" href="$classVccSensorDevice.html#a96cf2b0948a8b96e49f464f5e99c5b29" title="Gets statistics tracker." alt="" coords="1307,836,1503,861"/>
+<area shape="poly" id="edge45_Node000033_Node000041" title=" " alt="" coords="1219,950,1254,932,1269,917,1277,902,1286,886,1302,870,1313,864,1316,869,1306,875,1290,889,1282,904,1274,920,1258,936,1221,955"/>
+<area shape="rect" id="Node000059" href="$classNavigationManager.html#a81aec9176f9a3dbe8b4ccb66cbcaa22d" title="Renders full page with scrolling support." alt="" coords="441,1560,631,1585"/>
+<area shape="poly" id="edge65_Node000058_Node000059" title=" " alt="" coords="323,1570,427,1570,427,1575,323,1575"/>
+<area shape="rect" id="Node000060" href="$classMenuItem.html#ab73d6181396cd81d3c12afd332a21faa" title="Renders the item on LCD." alt="" coords="763,1645,891,1671"/>
+<area shape="poly" id="edge66_Node000059_Node000060" title=" " alt="" coords="568,1583,628,1607,698,1630,750,1642,749,1648,697,1635,626,1612,566,1588"/>
+<area shape="rect" id="Node000061" href="$classNavigationManager.html#a77baf5c45046cbec5e4c1eb3f852352e" title="Gets current page from top of stack." alt="" coords="748,1695,907,1735"/>
+<area shape="poly" id="edge67_Node000059_Node000061" title=" " alt="" coords="554,1584,614,1631,655,1658,698,1681,736,1695,734,1700,696,1686,652,1662,611,1635,550,1588"/>
+<area shape="rect" id="Node000062" href="$classMenuPage.html#aba1aead5d2ab95c38e84b314e7f51920" title="Gets item by index." alt="" coords="753,1432,901,1457"/>
+<area shape="poly" id="edge68_Node000059_Node000062" title=" " alt="" coords="551,1557,612,1513,653,1488,696,1467,739,1454,741,1459,698,1472,656,1493,615,1517,555,1562"/>
+<area shape="rect" id="Node000063" href="$classMenuPage.html#ae85cf6f5d972a9ed27567c1c80196028" title="Gets total number of items." alt="" coords="731,1481,924,1507"/>
+<area shape="poly" id="edge69_Node000059_Node000063" title=" " alt="" coords="570,1557,697,1517,739,1507,740,1512,698,1522,572,1562"/>
+<area shape="rect" id="Node000064" href="$classMenuPage.html#ab146e7a26d721e4ea5742caf42c59d8b" title="Gets currently selected item index." alt="" coords="722,1531,933,1556"/>
+<area shape="poly" id="edge70_Node000059_Node000064" title=" " alt="" coords="631,1560,708,1553,708,1558,632,1566"/>
+<area shape="rect" id="Node000065" href="$classNavigationManager.html#a08a5da9652a54c36efc1ec923e754ade" title="Helper to print Flash string." alt="" coords="748,1581,907,1621"/>
+<area shape="poly" id="edge71_Node000059_Node000065" title=" " alt="" coords="632,1579,735,1589,734,1594,631,1584"/>
 </map>

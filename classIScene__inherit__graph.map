@@ -1,6 +1,9 @@
 <map id="IScene" name="IScene">
-<area shape="rect" id="node1" title="Abstract interface for scene implementations." alt="" coords="163,5,228,31"/>
-<area shape="rect" id="node2" href="$classAlarmScene.html" title="Highest priority scene that flashes red on motion detection." alt="" coords="5,79,105,104"/>
-<area shape="rect" id="node3" href="$classNightModeScene.html" title="Low priority scene that limits global brightness." alt="" coords="129,79,261,104"/>
-<area shape="rect" id="node4" href="$classPartyScene.html" title="Medium priority scene that cycles RGB light colors." alt="" coords="285,79,380,104"/>
+<area shape="rect" id="Node000001" title="Abstract base class for automation scenes." alt="" coords="163,5,228,31"/>
+<area shape="rect" id="Node000002" href="$classAlarmScene.html" title="Alarm mode scene &#45; motion&#45;triggered red flash." alt="" coords="5,79,105,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="162,39,79,81,77,76,159,34"/>
+<area shape="rect" id="Node000003" href="$classNightModeScene.html" title="Night mode scene &#45; reduces all light brightness." alt="" coords="129,79,261,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="198,44,198,79,193,79,193,44"/>
+<area shape="rect" id="Node000004" href="$classPartyScene.html" title="Party mode scene &#45; RGB color cycling." alt="" coords="285,79,380,104"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="231,34,311,76,309,81,228,39"/>
 </map>

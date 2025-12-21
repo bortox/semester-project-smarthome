@@ -1,6 +1,0 @@
-<map id="MenuBuilder::buildRGBPresetsPage" name="MenuBuilder::buildRGBPresetsPage">
-<area shape="rect" id="node1" title="Builds RGB color preset selection page." alt="" coords="5,35,256,60"/>
-<area shape="rect" id="node2" href="$classMenuPage.html#a612a17be8fea1aa8f8497b474e6df406" title="Adds item to page." alt="" coords="308,5,459,31"/>
-<area shape="rect" id="node4" href="$classNavigationManager.html#a8b77c624d734d2f86336af7843ecee32" title="Gets singleton instance." alt="" coords="304,55,463,95"/>
-<area shape="rect" id="node3" href="$classDynamicArray.html#a0597a43587fc9571429924e4ee8c2f07" title="Adds an element to the array." alt="" coords="511,5,657,31"/>
-</map>

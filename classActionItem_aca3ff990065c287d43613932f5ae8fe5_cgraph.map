@@ -1,16 +1,24 @@
 <map id="ActionItem::handleInput" name="ActionItem::handleInput">
-<area shape="rect" id="node1" title="Executes action and navigates back on &#39;E&#39; key." alt="" coords="5,301,184,326"/>
-<area shape="rect" id="node2" href="$classNavigationManager.html#a8b77c624d734d2f86336af7843ecee32" title="Gets singleton instance." alt="" coords="232,261,391,301"/>
-<area shape="rect" id="node3" href="$classNavigationManager.html#af3a95079c6861b0386919b767159f996" title="Navigates back and frees current page (JIT cleanup)" alt="" coords="232,325,391,365"/>
-<area shape="rect" id="node4" href="$classNavigationManager.html#a81aec9176f9a3dbe8b4ccb66cbcaa22d" title="Renders full page with scrolling support." alt="" coords="439,169,629,194"/>
-<area shape="rect" id="node6" href="$classNavigationManager.html#a77baf5c45046cbec5e4c1eb3f852352e" title="Gets current page from top of stack." alt="" coords="703,5,862,45"/>
-<area shape="rect" id="node7" href="$classDynamicArray.html#a521af75e017863b464537d3b6dd1cf14" title=" " alt="" coords="936,169,1084,194"/>
-<area shape="rect" id="node12" href="$classMenuPage.html#a4505ef735f7812b52407f52111d45525" title="Forces full page redraw." alt="" coords="445,383,623,409"/>
-<area shape="rect" id="node13" href="$classDynamicArray.html#a6136d8a8f320429bd61d474f076a85a7" title="Removes an element at specific index." alt="" coords="448,433,620,458"/>
-<area shape="rect" id="node5" href="$classMenuItem.html#ab73d6181396cd81d3c12afd332a21faa" title="Renders the item on LCD." alt="" coords="719,70,847,95"/>
-<area shape="rect" id="node8" href="$classMenuPage.html#aba1aead5d2ab95c38e84b314e7f51920" title="Gets item by index." alt="" coords="709,119,857,145"/>
-<area shape="rect" id="node9" href="$classMenuPage.html#ae85cf6f5d972a9ed27567c1c80196028" title="Gets total number of items." alt="" coords="686,169,879,194"/>
-<area shape="rect" id="node10" href="$classMenuPage.html#ab146e7a26d721e4ea5742caf42c59d8b" title="Gets currently selected item index." alt="" coords="677,218,888,243"/>
-<area shape="rect" id="node11" href="$classNavigationManager.html#a08a5da9652a54c36efc1ec923e754ade" title=" " alt="" coords="703,268,862,308"/>
-<area shape="rect" id="node14" href="$classDynamicArray.html#ae3a1749632e283b1ee52ab153b855fa1" title=" " alt="" coords="701,433,864,458"/>
+<area shape="rect" id="Node000001" title="Executes action and navigates back on ENTER." alt="" coords="5,87,184,113"/>
+<area shape="rect" id="Node000002" href="$classNavigationManager.html#a4e087247732c41076edfe0503a80efec" title="Gets singleton instance." alt="" coords="232,48,391,88"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="181,85,218,79,219,84,182,90"/>
+<area shape="rect" id="Node000003" href="$classNavigationManager.html#af3a95079c6861b0386919b767159f996" title="Navigates back and frees current page." alt="" coords="232,112,391,152"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="182,110,219,116,218,121,181,115"/>
+<area shape="rect" id="Node000004" href="$classNavigationManager.html#a81aec9176f9a3dbe8b4ccb66cbcaa22d" title="Renders full page with scrolling support." alt="" coords="439,119,629,145"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="391,129,425,129,425,135,391,135"/>
+<area shape="rect" id="Node000006" href="$classNavigationManager.html#a77baf5c45046cbec5e4c1eb3f852352e" title="Gets current page from top of stack." alt="" coords="703,5,862,45"/>
+<area shape="poly" id="edge11_Node000003_Node000006" title=" " alt="" coords="391,112,689,44,691,49,392,117"/>
+<area shape="rect" id="Node000011" href="$classMenuPage.html#a4505ef735f7812b52407f52111d45525" title="Forces full page redraw." alt="" coords="445,169,623,194"/>
+<area shape="poly" id="edge10_Node000003_Node000011" title=" " alt="" coords="391,147,464,163,462,168,390,152"/>
+<area shape="rect" id="Node000005" href="$classMenuItem.html#ab73d6181396cd81d3c12afd332a21faa" title="Renders the item on LCD." alt="" coords="719,70,847,95"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="598,117,705,95,706,101,599,122"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="556,117,610,87,676,55,696,47,698,52,678,60,612,91,558,121"/>
+<area shape="rect" id="Node000007" href="$classMenuPage.html#aba1aead5d2ab95c38e84b314e7f51920" title="Gets item by index." alt="" coords="709,119,857,145"/>
+<area shape="poly" id="edge6_Node000004_Node000007" title=" " alt="" coords="629,129,695,129,695,135,629,135"/>
+<area shape="rect" id="Node000008" href="$classMenuPage.html#ae85cf6f5d972a9ed27567c1c80196028" title="Gets total number of items." alt="" coords="686,169,879,194"/>
+<area shape="poly" id="edge7_Node000004_Node000008" title=" " alt="" coords="599,142,705,163,704,169,598,147"/>
+<area shape="rect" id="Node000009" href="$classMenuPage.html#ab146e7a26d721e4ea5742caf42c59d8b" title="Gets currently selected item index." alt="" coords="677,218,888,243"/>
+<area shape="poly" id="edge8_Node000004_Node000009" title=" " alt="" coords="605,142,631,154,646,167,655,180,664,193,679,204,692,211,690,216,676,209,660,196,651,183,642,170,628,158,603,147"/>
+<area shape="rect" id="Node000010" href="$classNavigationManager.html#a08a5da9652a54c36efc1ec923e754ade" title="Helper to print Flash string." alt="" coords="703,268,862,308"/>
+<area shape="poly" id="edge9_Node000004_Node000010" title=" " alt="" coords="612,143,631,154,643,166,650,179,656,205,662,230,668,242,679,254,693,264,690,268,676,258,664,245,657,232,651,206,645,181,639,170,628,158,610,147"/>
 </map>

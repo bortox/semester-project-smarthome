@@ -1,7 +1,11 @@
 <map id="NavigationManager::navigateBack" name="NavigationManager::navigateBack">
-<area shape="rect" id="node1" title="Navigates back and frees current page (JIT cleanup)" alt="" coords="484,63,643,103"/>
-<area shape="rect" id="node2" href="$classNavigationManager.html#a5c219636b8c690954b0a2a21c5a255c0" title="Delegates input to current page." alt="" coords="254,5,413,45"/>
-<area shape="rect" id="node4" href="$classActionItem.html#aca3ff990065c287d43613932f5ae8fe5" title="Executes action and navigates back on &#39;E&#39; key." alt="" coords="244,70,423,95"/>
-<area shape="rect" id="node5" href="$classBackMenuItem.html#a401c56472500dacac04c19ca383e43f9" title="Navigates back on &#39;E&#39; key." alt="" coords="231,119,436,145"/>
-<area shape="rect" id="node3" href="$classNavButtonInput.html#a32d749745518b3a58aef44e71e3345f1" title=" " alt="" coords="5,13,183,38"/>
+<area shape="rect" id="Node000001" title="Navigates back and frees current page." alt="" coords="484,47,643,87"/>
+<area shape="rect" id="Node000002" href="$classActionItem.html#aca3ff990065c287d43613932f5ae8fe5" title="Executes action and navigates back on ENTER." alt="" coords="244,5,423,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="470,50,393,33,394,28,471,45"/>
+<area shape="rect" id="Node000003" href="$classBackMenuItem.html#a401c56472500dacac04c19ca383e43f9" title="Handles back navigation on ENTER." alt="" coords="231,55,436,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="470,70,436,70,436,65,470,65"/>
+<area shape="rect" id="Node000004" href="$classNavigationManager.html#a5c219636b8c690954b0a2a21c5a255c0" title="Delegates input to current page." alt="" coords="254,105,413,145"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="471,93,414,107,412,102,470,88"/>
+<area shape="rect" id="Node000005" href="$classNavButtonInput.html#a32d749745518b3a58aef44e71e3345f1" title="Periodic update &#45; reads and processes button state." alt="" coords="5,112,183,137"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="240,127,183,127,183,122,240,122"/>
 </map>

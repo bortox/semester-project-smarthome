@@ -1,10 +1,15 @@
 <map id="NavigationManager::draw" name="NavigationManager::draw">
-<area shape="rect" id="node1" title="Renders full page with scrolling support." alt="" coords="5,145,196,171"/>
-<area shape="rect" id="node2" href="$classMenuItem.html#ab73d6181396cd81d3c12afd332a21faa" title="Renders the item on LCD." alt="" coords="285,5,413,31"/>
-<area shape="rect" id="node3" href="$classNavigationManager.html#a77baf5c45046cbec5e4c1eb3f852352e" title="Gets current page from top of stack." alt="" coords="270,55,429,95"/>
-<area shape="rect" id="node5" href="$classMenuPage.html#aba1aead5d2ab95c38e84b314e7f51920" title="Gets item by index." alt="" coords="275,120,423,145"/>
-<area shape="rect" id="node6" href="$classMenuPage.html#ae85cf6f5d972a9ed27567c1c80196028" title="Gets total number of items." alt="" coords="253,169,446,195"/>
-<area shape="rect" id="node7" href="$classMenuPage.html#ab146e7a26d721e4ea5742caf42c59d8b" title="Gets currently selected item index." alt="" coords="244,219,455,244"/>
-<area shape="rect" id="node8" href="$classNavigationManager.html#a08a5da9652a54c36efc1ec923e754ade" title=" " alt="" coords="270,269,429,309"/>
-<area shape="rect" id="node4" href="$classDynamicArray.html#a521af75e017863b464537d3b6dd1cf14" title=" " alt="" coords="503,116,651,141"/>
+<area shape="rect" id="Node000001" title="Renders full page with scrolling support." alt="" coords="5,145,196,171"/>
+<area shape="rect" id="Node000002" href="$classMenuItem.html#ab73d6181396cd81d3c12afd332a21faa" title="Renders the item on LCD." alt="" coords="285,5,413,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="112,143,165,93,202,65,243,41,271,30,273,35,245,46,205,69,169,97,116,147"/>
+<area shape="rect" id="Node000003" href="$classNavigationManager.html#a77baf5c45046cbec5e4c1eb3f852352e" title="Gets current page from top of stack." alt="" coords="270,55,429,95"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="135,143,243,105,268,97,269,102,245,110,137,148"/>
+<area shape="rect" id="Node000004" href="$classMenuPage.html#aba1aead5d2ab95c38e84b314e7f51920" title="Gets item by index." alt="" coords="275,120,423,145"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="196,146,261,139,262,144,196,151"/>
+<area shape="rect" id="Node000005" href="$classMenuPage.html#ae85cf6f5d972a9ed27567c1c80196028" title="Gets total number of items." alt="" coords="253,169,446,195"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="196,165,239,169,239,174,196,170"/>
+<area shape="rect" id="Node000006" href="$classMenuPage.html#ab146e7a26d721e4ea5742caf42c59d8b" title="Gets currently selected item index." alt="" coords="244,219,455,244"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="138,168,245,203,279,213,278,218,243,209,136,173"/>
+<area shape="rect" id="Node000007" href="$classNavigationManager.html#a08a5da9652a54c36efc1ec923e754ade" title="Helper to print Flash string." alt="" coords="270,269,429,309"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="119,169,173,209,245,253,264,261,262,266,243,258,170,214,116,173"/>
 </map>

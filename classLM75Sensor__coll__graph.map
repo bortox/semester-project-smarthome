@@ -1,4 +1,5 @@
 <map id="LM75Sensor" name="LM75Sensor">
-<area shape="rect" id="node1" title=" " alt="" coords="25,79,127,104"/>
-<area shape="rect" id="node2" href="$classSensor.html" title=" " alt="" coords="5,5,147,31"/>
+<area shape="rect" id="Node000001" title="LM75 I2C temperature sensor driver (NO FLOATS)." alt="" coords="25,79,127,104"/>
+<area shape="rect" id="Node000002" href="$classSensor.html" title=" " alt="" coords="5,5,147,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="79,44,79,79,73,79,73,44"/>
 </map>

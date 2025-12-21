@@ -1,6 +1,10 @@
 <map id="RGBLight::update" name="RGBLight::update">
-<area shape="rect" id="node1" title="Periodic update for smooth color and brightness fading." alt="" coords="5,70,140,95"/>
-<area shape="rect" id="node2" href="$classDimmableLight.html#ae0188dafb54dfe5ba3a801bc6e8fbf65" title=" " alt="" coords="211,5,410,45"/>
-<area shape="rect" id="node3" href="$classDimmableLight.html#aa59144a69aa8b4aaa87e50360180e17f" title="Protected access to current brightness." alt="" coords="188,70,433,95"/>
-<area shape="rect" id="node4" href="$classDimmableLight.html#a27bbdbdd5528ab5d610a3b7c187dadc1" title="Protected access to target brightness." alt="" coords="191,119,430,145"/>
+<area shape="rect" id="Node000001" title="Periodic update for smooth color fading." alt="" coords="5,31,140,56"/>
+<area shape="rect" id="Node000002" href="$classDimmableLight.html#a9fb4a392a3f05f05fc989ef0287017d7" title="Periodic update for smooth fading." alt="" coords="188,31,363,56"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="140,41,174,41,174,46,140,46"/>
+<area shape="rect" id="Node000003" href="$classDimmableLight.html#a4b28011b7342c09d7e5d88bcc0773557" title="Applies current brightness to hardware with gamma correction." alt="" coords="411,5,640,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="363,32,397,28,397,34,363,37"/>
+<area shape="rect" id="Node000004" href="$classDimmableLight.html#ad8c7dd130cf6cb5413e187cd12866f3f" title="Gets reference to global brightness multiplier." alt="" coords="688,23,887,63"/>
+<area shape="poly" id="edge4_Node000002_Node000004" title=" " alt="" coords="363,41,674,41,674,46,363,46"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="640,26,675,30,674,35,640,32"/>
 </map>

@@ -1,6 +1,14 @@
 <map id="include/Scenes.h" name="include/Scenes.h">
-<area shape="rect" id="node1" title="Scene management and concrete scene implementations." alt="" coords="113,5,243,31"/>
-<area shape="rect" id="node2" href="$FlexibleMenu_8h.html" title="Dynamic menu system with JIT page allocation and scene integration." alt="" coords="30,79,203,104"/>
-<area shape="rect" id="node4" href="$main_8cpp.html" title="Main application entry point." alt="" coords="188,152,293,177"/>
-<area shape="rect" id="node3" href="$PhysicalInput_8cpp.html" title="Implementation of hardware input handling." alt="" coords="5,152,164,177"/>
+<area shape="rect" id="Node000001" title="Scene management system for automated lighting control." alt="" coords="352,5,483,31"/>
+<area shape="rect" id="Node000002" href="$FlexibleMenu_8h.html" title="Dynamic menu system with JIT page allocation and scene integration." alt="" coords="199,79,372,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="386,39,308,81,306,76,383,35"/>
+<area shape="rect" id="Node000005" href="$main_8cpp.html" title="Main application entry point." alt="" coords="373,152,478,177"/>
+<area shape="poly" id="edge6_Node000001_Node000005" title=" " alt="" coords="421,45,427,152,422,152,416,45"/>
+<area shape="rect" id="Node000006" href="$Scenes_8cpp.html" title="Scene management system implementation." alt="" coords="455,79,574,104"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="446,37,500,76,497,81,443,41"/>
+<area shape="rect" id="Node000003" href="$FlexibleMenu_8cpp.html" title="Implementation of dynamic menu system components." alt="" coords="5,152,165,177"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="241,111,119,154,117,149,239,106"/>
+<area shape="rect" id="Node000004" href="$PhysicalInput_8cpp.html" title="Implementation of physical input handlers." alt="" coords="190,152,349,177"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="282,118,275,152,269,151,277,117"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="321,108,404,149,401,154,319,113"/>
 </map>

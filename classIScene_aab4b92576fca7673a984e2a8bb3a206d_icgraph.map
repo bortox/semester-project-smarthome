@@ -1,0 +1,9 @@
+<map id="IScene::IScene" name="IScene::IScene">
+<area shape="rect" id="Node000001" title="Constructs scene with priority." alt="" coords="264,63,380,88"/>
+<area shape="rect" id="Node000002" href="$classAlarmScene.html#a96d93f9744b6b002c3341f9ba605072e" title="Constructs alarm mode scene." alt="" coords="17,5,204,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="267,61,215,46,166,33,167,28,217,41,269,56"/>
+<area shape="rect" id="Node000003" href="$classNightModeScene.html#aaab00c3d74775e369b5dd706762cc221" title="Constructs night mode scene." alt="" coords="5,55,216,95"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="250,78,216,78,216,73,250,73"/>
+<area shape="rect" id="Node000004" href="$classPartyScene.html#a705298cf76708a93f2216826349f4174" title="Constructs party mode scene." alt="" coords="23,120,198,145"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="269,95,217,110,167,123,166,117,215,105,267,89"/>
+</map>

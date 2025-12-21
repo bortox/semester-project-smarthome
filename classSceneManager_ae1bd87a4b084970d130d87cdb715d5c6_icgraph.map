@@ -1,0 +1,7 @@
+<map id="SceneManager::instance" name="SceneManager::instance">
+<area shape="rect" id="Node000001" title="Gets singleton instance." alt="" coords="272,31,453,56"/>
+<area shape="rect" id="Node000002" href="$classSceneToggleItem.html#a3887147921378d3868419a518dc04777" title="Toggles scene activation on ENTER." alt="" coords="5,5,224,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="258,35,224,32,224,27,258,30"/>
+<area shape="rect" id="Node000003" href="$main_8cpp.html#afe461d27b9c48d5921c00d521181f12f" title="Main execution loop." alt="" coords="89,55,140,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="259,56,140,68,140,62,258,51"/>
+</map>

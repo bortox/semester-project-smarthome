@@ -1,0 +1,20 @@
+<map id="AlarmScene::onDeactivate" name="AlarmScene::onDeactivate">
+<area shape="rect" id="Node000001" title="Called when scene is deactivated." alt="" coords="5,131,200,156"/>
+<area shape="rect" id="Node000002" href="$classDeviceRegistry.html#ab222f7413c82a27f8c06d55756ded728" title="Gets all registered devices." alt="" coords="257,5,458,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="116,129,171,85,208,60,247,40,267,32,268,37,249,44,210,65,174,89,120,133"/>
+<area shape="rect" id="Node000003" href="$classDeviceRegistry.html#acea4fa19e872f726874a15dfd6caea98" title="Gets singleton instance." alt="" coords="266,55,449,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="145,128,247,97,299,81,301,86,249,102,146,133"/>
+<area shape="rect" id="Node000004" href="$classEventSystem.html#a962434d9ad5d95c624c62938c1b9c89f" title="Gets singleton instance." alt="" coords="781,131,952,156"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="200,141,768,141,768,146,200,146"/>
+<area shape="rect" id="Node000005" href="$classEventSystem.html#a5e0cf7b422c86b63495fa8e4c193b971" title="Unregisters listener from all event types." alt="" coords="248,156,467,181"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="201,150,235,154,234,159,200,156"/>
+<area shape="rect" id="Node000006" href="$classRGBLight.html#a8d207c5659398bf3716c531fb6e35df5" title="Sets overall brightness." alt="" coords="268,205,447,231"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="138,154,249,191,281,200,279,205,247,197,136,159"/>
+<area shape="rect" id="Node000009" href="$classDynamicArray.html#a521af75e017863b464537d3b6dd1cf14" title="Gets current element count." alt="" coords="283,255,431,280"/>
+<area shape="poly" id="edge9_Node000001_Node000009" title=" " alt="" coords="120,154,174,197,211,221,249,241,271,249,269,254,247,246,208,225,171,201,117,158"/>
+<area shape="rect" id="Node000007" href="$classDimmableLight.html#a24268c4542c8419e6ddad8c85c2b738f" title="Sets the light brightness." alt="" coords="515,180,733,205"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="447,207,500,202,501,207,447,212"/>
+<area shape="poly" id="edge8_Node000007_Node000004" title=" " alt="" coords="687,177,789,156,791,161,688,183"/>
+<area shape="rect" id="Node000008" href="$classEventSystem.html#a7d557111351077f5454f3ef839df55fa" title="Emits event to all registered listeners." alt="" coords="793,180,940,205"/>
+<area shape="poly" id="edge7_Node000007_Node000008" title=" " alt="" coords="733,190,780,190,780,195,733,195"/>
+</map>

@@ -1,6 +1,7 @@
 <map id="RGBLight::setRed" name="RGBLight::setRed">
-<area shape="rect" id="node1" title="Channel&#45;specific setters/getters for template compatibility." alt="" coords="5,31,140,56"/>
-<area shape="rect" id="node2" href="$classEventSystem.html#a7d557111351077f5454f3ef839df55fa" title=" " alt="" coords="200,5,347,31"/>
-<area shape="rect" id="node4" href="$classEventSystem.html#a962434d9ad5d95c624c62938c1b9c89f" title="Access the singleton instance." alt="" coords="188,55,359,80"/>
-<area shape="rect" id="node3" href="$classDynamicArray.html#a521af75e017863b464537d3b6dd1cf14" title=" " alt="" coords="407,5,555,31"/>
+<area shape="rect" id="Node000001" title="Sets red channel value." alt="" coords="5,31,140,56"/>
+<area shape="rect" id="Node000002" href="$classEventSystem.html#a7d557111351077f5454f3ef839df55fa" title="Emits event to all registered listeners." alt="" coords="200,5,347,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="140,32,186,26,187,32,141,37"/>
+<area shape="rect" id="Node000003" href="$classEventSystem.html#a962434d9ad5d95c624c62938c1b9c89f" title="Gets singleton instance." alt="" coords="188,55,359,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="141,49,175,53,174,58,140,54"/>
 </map>

@@ -1,11 +1,8 @@
 <map id="include/Scenes.h" name="include/Scenes.h">
-<area shape="rect" id="node1" title="Scene management and concrete scene implementations." alt="" coords="57,5,187,31"/>
-<area shape="rect" id="node2" href="$CoreSystem_8h.html" title="Core system definitions, interfaces, and memory management." alt="" coords="5,152,119,177"/>
-<area shape="rect" id="node4" href="$Devices_8h.html" title=" " alt="" coords="131,79,217,104"/>
-<area shape="rect" id="node3" title=" " alt="" coords="119,372,203,397"/>
-<area shape="rect" id="node5" href="$sensors_8h.html" title=" " alt="" coords="143,152,227,177"/>
-<area shape="rect" id="node9" title=" " alt="" coords="251,152,377,177"/>
-<area shape="rect" id="node6" href="$DebugConfig_8h.html" title="Global debug configuration macros." alt="" coords="150,299,267,324"/>
-<area shape="rect" id="node7" title=" " alt="" coords="201,225,299,251"/>
-<area shape="rect" id="node8" href="$MemoryMonitor_8h.html" title="RAM usage monitoring utilities." alt="" coords="324,225,461,251"/>
+<area shape="rect" id="Node000001" title="Scene management system for automated lighting control." alt="" coords="5,5,136,31"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="29,152,113,177"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="68,32,52,79,53,110,62,139,57,140,48,111,47,78,63,30"/>
+<area shape="rect" id="Node000003" href="$CoreSystem_8h.html" title="Core system infrastructure for event&#45;driven embedded architecture." alt="" coords="62,79,175,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="81,30,106,66,101,69,76,33"/>
+<area shape="poly" id="edge3_Node000003_Node000002" title=" " alt="" coords="113,106,88,142,84,139,109,103"/>
 </map>

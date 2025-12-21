@@ -1,0 +1,11 @@
+<map id="SimpleLight::~SimpleLight" name="SimpleLight::~SimpleLight">
+<area shape="rect" id="Node000001" title="Destructor." alt="" coords="5,80,200,105"/>
+<area shape="rect" id="Node000002" href="$classDeviceRegistry.html#acea4fa19e872f726874a15dfd6caea98" title="Gets singleton instance." alt="" coords="266,5,449,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="136,77,247,39,279,31,281,36,249,45,138,82"/>
+<area shape="rect" id="Node000003" href="$classEventSystem.html#a962434d9ad5d95c624c62938c1b9c89f" title="Gets singleton instance." alt="" coords="272,55,443,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="200,80,258,75,258,80,201,86"/>
+<area shape="rect" id="Node000004" href="$classEventSystem.html#a5e0cf7b422c86b63495fa8e4c193b971" title="Unregisters listener from all event types." alt="" coords="248,104,467,129"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="201,99,235,102,234,108,200,104"/>
+<area shape="rect" id="Node000005" href="$classDeviceRegistry.html#addf87d18a4b3990fde147246fbd895c0" title="Unregisters device from registry." alt="" coords="260,154,455,194"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="143,103,249,138,278,147,276,152,247,143,141,108"/>
+</map>

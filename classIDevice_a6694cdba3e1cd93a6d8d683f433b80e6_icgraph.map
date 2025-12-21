@@ -1,0 +1,27 @@
+<map id="IDevice::IDevice" name="IDevice::IDevice">
+<area shape="rect" id="Node000001" title="Constructor." alt="" coords="753,240,881,265"/>
+<area shape="rect" id="Node000002" href="$classOutsideLight.html#a7b196738cdc485fa2ad26b9c49a93938" title="Handles sensor events for automation." alt="" coords="497,5,691,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="807,227,795,186,774,136,744,86,725,63,704,44,685,33,687,28,707,40,729,60,748,83,779,134,800,184,812,226"/>
+<area shape="rect" id="Node000003" href="$classSimpleLight.html#a7da88fe16f40360f876a7565fce94ac8" title="Handles received events." alt="" coords="500,55,688,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="803,228,788,197,766,161,738,125,704,95,679,82,682,78,707,90,742,121,770,158,793,195,808,226"/>
+<area shape="rect" id="Node000004" href="$classLoopTimeSensorDevice.html#a2005957310088dc4c2d972a554d0027a" title="Constructor for loop time sensor device." alt="" coords="503,105,685,145"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="793,231,754,194,704,159,677,147,680,142,707,154,757,190,797,227"/>
+<area shape="rect" id="Node000005" href="$classPhotoresistorSensor.html#af7b7686525ac8af7153f66978285f5a5" title="Constructor for light sensor." alt="" coords="514,169,674,209"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="758,239,664,211,665,206,759,233"/>
+<area shape="rect" id="Node000006" href="$classPIRSensorDevice.html#a9cc88634f40d9c177aeede7eef27acb8" title="Constructor for PIR sensor." alt="" coords="491,233,697,273"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="739,255,697,255,697,250,739,250"/>
+<area shape="rect" id="Node000007" href="$classRamSensorDevice.html#ad46dd833608031245971eb0c615b2ca9" title="Constructor for RAM sensor device." alt="" coords="483,297,705,337"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="759,272,665,299,664,294,758,267"/>
+<area shape="rect" id="Node000008" href="$classSimpleLight.html#aa1c82517b03b5a5e3f4ad7321d27163d" title="Constructor for simple light." alt="" coords="502,361,686,387"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="798,278,758,316,707,351,674,364,672,359,704,346,755,312,794,274"/>
+<area shape="rect" id="Node000012" href="$classTemperatureSensor.html#af219fd74514e21e24950feb189b56b11" title="Constructor for temperature sensor." alt="" coords="516,411,672,451"/>
+<area shape="poly" id="edge11_Node000001_Node000012" title=" " alt="" coords="806,279,767,340,739,372,707,400,673,417,671,412,704,396,736,369,763,337,801,276"/>
+<area shape="rect" id="Node000013" href="$classVccSensorDevice.html#ace93a92336e0b33b0e8558d5816d4f0b" title="Constructor for VCC sensor device." alt="" coords="489,475,699,515"/>
+<area shape="poly" id="edge12_Node000001_Node000013" title=" " alt="" coords="812,280,799,321,778,371,747,422,728,445,707,465,689,477,686,473,704,461,725,441,743,419,773,368,794,319,807,278"/>
+<area shape="rect" id="Node000009" href="$classDimmableLight.html#a59b0b7ebe1ba2054a007899e3954e984" title="Constructor for dimmable light." alt="" coords="204,337,435,363"/>
+<area shape="poly" id="edge8_Node000008_Node000009" title=" " alt="" coords="488,367,435,363,435,357,488,362"/>
+<area shape="rect" id="Node000011" href="$classOutsideLight.html#a5dd0d0e24e63cf4401d897199bab370e" title="Constructor for outdoor light." alt="" coords="222,387,417,412"/>
+<area shape="poly" id="edge10_Node000008_Node000011" title=" " alt="" coords="488,386,417,393,417,388,488,381"/>
+<area shape="rect" id="Node000010" href="$classRGBLight.html#ace975f57267c062b34c2ec8f1cde225a" title="Constructor for RGB light." alt="" coords="5,337,156,363"/>
+<area shape="poly" id="edge9_Node000009_Node000010" title=" " alt="" coords="190,353,156,353,156,347,190,347"/>
+</map>

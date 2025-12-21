@@ -1,6 +1,9 @@
 <map id="SceneManager::addScene" name="SceneManager::addScene">
-<area shape="rect" id="node1" title="Activates a scene and adds it to the active list." alt="" coords="5,55,195,80"/>
-<area shape="rect" id="node2" href="$classDynamicArray.html#a0597a43587fc9571429924e4ee8c2f07" title="Adds an element to the array." alt="" coords="243,5,390,31"/>
-<area shape="rect" id="node3" href="$classIScene.html#a839c78c04369addce89f59d4dda798bb" title="Called when scene is activated." alt="" coords="263,55,370,80"/>
-<area shape="rect" id="node4" href="$classDynamicArray.html#a521af75e017863b464537d3b6dd1cf14" title=" " alt="" coords="243,104,391,129"/>
+<area shape="rect" id="Node000001" title="Activates a scene and adds it to the active list." alt="" coords="5,31,195,56"/>
+<area shape="rect" id="Node000002" href="$classIScene.html#a86b15f77aa16b7179fd19b651f0b00a8" title="Sets scene active state and calls appropriate callback." alt="" coords="243,31,377,56"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="195,41,229,41,229,46,195,46"/>
+<area shape="rect" id="Node000003" href="$classIScene.html#aa23ee6afe2d6c296b7fa600b0deee722" title="Called when scene is activated." alt="" coords="434,5,577,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="377,32,420,26,420,32,378,37"/>
+<area shape="rect" id="Node000004" href="$classIScene.html#a2f680a07552216e4303599d95aa78572" title="Called when scene is deactivated." alt="" coords="425,55,585,80"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="378,49,412,53,411,58,377,54"/>
 </map>

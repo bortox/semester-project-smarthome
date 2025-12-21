@@ -1,0 +1,7 @@
+<map id="DimmableLight::setBrightness" name="DimmableLight::setBrightness">
+<area shape="rect" id="Node000001" title="Sets the light brightness." alt="" coords="5,31,224,56"/>
+<area shape="rect" id="Node000002" href="$classEventSystem.html#a7d557111351077f5454f3ef839df55fa" title="Emits event to all registered listeners." alt="" coords="284,5,431,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="224,29,270,24,271,30,224,35"/>
+<area shape="rect" id="Node000003" href="$classEventSystem.html#a962434d9ad5d95c624c62938c1b9c89f" title="Gets singleton instance." alt="" coords="272,55,443,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="224,51,259,55,258,60,224,57"/>
+</map>

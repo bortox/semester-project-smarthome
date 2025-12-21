@@ -1,6 +1,7 @@
 <map id="ButtonInput::onButtonPressed" name="ButtonInput::onButtonPressed">
-<area shape="rect" id="node1" title=" " alt="" coords="5,31,221,56"/>
-<area shape="rect" id="node2" href="$classEventSystem.html#a7d557111351077f5454f3ef839df55fa" title=" " alt="" coords="281,5,428,31"/>
-<area shape="rect" id="node4" href="$classEventSystem.html#a962434d9ad5d95c624c62938c1b9c89f" title="Access the singleton instance." alt="" coords="269,55,440,80"/>
-<area shape="rect" id="node3" href="$classDynamicArray.html#a521af75e017863b464537d3b6dd1cf14" title=" " alt="" coords="488,5,636,31"/>
+<area shape="rect" id="Node000001" title="Called when valid button press is detected." alt="" coords="5,31,221,56"/>
+<area shape="rect" id="Node000002" href="$classEventSystem.html#a7d557111351077f5454f3ef839df55fa" title="Emits event to all registered listeners." alt="" coords="281,5,428,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="221,29,267,24,268,30,222,35"/>
+<area shape="rect" id="Node000003" href="$classEventSystem.html#a962434d9ad5d95c624c62938c1b9c89f" title="Gets singleton instance." alt="" coords="269,55,440,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="222,51,256,55,255,60,221,57"/>
 </map>

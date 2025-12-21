@@ -1,5 +1,0 @@
-<map id="DimmableLight::setBrightnessMultiplier" name="DimmableLight::setBrightnessMultiplier">
-<area shape="rect" id="node1" title="Sets the global brightness multiplier." alt="" coords="228,23,447,63"/>
-<area shape="rect" id="node2" href="$classNightModeScene.html#a70a78f0c23e5be0813c2e02176c0fe8a" title="Called when scene is activated." alt="" coords="5,5,180,31"/>
-<area shape="rect" id="node3" href="$classNightModeScene.html#af8b9de2f687e3fb33d4ea62328b77ddd" title="Called when scene is deactivated." alt="" coords="10,55,175,80"/>
-</map>

@@ -1,4 +1,7 @@
 <map id="DimmableLight::applyHardware" name="DimmableLight::applyHardware">
-<area shape="rect" id="node1" title="Applies current brightness to hardware with gamma correction." alt="" coords="228,5,457,31"/>
-<area shape="rect" id="node2" href="$classDimmableLight.html#a9fb4a392a3f05f05fc989ef0287017d7" title="Periodic update for smooth fading." alt="" coords="5,5,180,31"/>
+<area shape="rect" id="Node000001" title="Applies current brightness to hardware with gamma correction." alt="" coords="411,5,640,31"/>
+<area shape="rect" id="Node000002" href="$classDimmableLight.html#a9fb4a392a3f05f05fc989ef0287017d7" title="Periodic update for smooth fading." alt="" coords="188,5,363,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="397,21,363,21,363,15,397,15"/>
+<area shape="rect" id="Node000003" href="$classRGBLight.html#a0bf99d90ce3fb6d0395e9e40574af43c" title="Periodic update for smooth color fading." alt="" coords="5,5,140,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="174,21,140,21,140,15,174,15"/>
 </map>

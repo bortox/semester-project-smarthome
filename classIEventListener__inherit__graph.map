@@ -1,10 +1,17 @@
 <map id="IEventListener" name="IEventListener">
-<area shape="rect" id="node1" title="Interface for the Observer Pattern." alt="" coords="181,5,295,31"/>
-<area shape="rect" id="node2" href="$classAlarmScene.html" title="Highest priority scene that flashes red on motion detection." alt="" coords="5,79,105,104"/>
-<area shape="rect" id="node3" href="$classButtonInput.html" title=" " alt="" coords="130,79,229,104"/>
-<area shape="rect" id="node4" href="$classMenuPage.html" title="Menu page container with event&#45;driven updates." alt="" coords="253,79,343,104"/>
-<area shape="rect" id="node5" href="$classSimpleLight.html" title="Class for managing a simple on/off light." alt="" coords="367,79,466,104"/>
-<area shape="rect" id="node6" href="$classDimmableLight.html" title="Light with brightness control (dimmer)" alt="" coords="286,152,409,177"/>
-<area shape="rect" id="node8" href="$classOutsideLight.html" title="Outdoor light with sensors and automation." alt="" coords="433,152,537,177"/>
-<area shape="rect" id="node7" href="$classRGBLight.html" title="RGB light with color and brightness control." alt="" coords="306,225,389,251"/>
+<area shape="rect" id="Node000001" title="Interface for event&#45;driven components." alt="" coords="181,5,295,31"/>
+<area shape="rect" id="Node000002" href="$classAlarmScene.html" title="Alarm mode scene &#45; motion&#45;triggered red flash." alt="" coords="5,79,105,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="197,38,86,81,84,76,195,33"/>
+<area shape="rect" id="Node000003" href="$classButtonInput.html" title="Debounced button input handler with device linking." alt="" coords="130,79,229,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="222,43,191,80,187,77,218,40"/>
+<area shape="rect" id="Node000004" href="$classMenuPage.html" title="Menu page container with event&#45;driven updates." alt="" coords="253,79,343,104"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="259,40,290,77,286,80,255,43"/>
+<area shape="rect" id="Node000005" href="$classSimpleLight.html" title="Class for managing a simple on/off light." alt="" coords="367,79,466,104"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="280,33,388,76,386,81,278,38"/>
+<area shape="rect" id="Node000006" href="$classDimmableLight.html" title="Light with brightness control (dimmer)." alt="" coords="286,152,409,177"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="398,116,360,154,357,150,394,112"/>
+<area shape="rect" id="Node000008" href="$classOutsideLight.html" title="Outdoor light with sensors and automation." alt="" coords="433,152,537,177"/>
+<area shape="poly" id="edge7_Node000005_Node000008" title=" " alt="" coords="439,112,476,150,472,154,435,116"/>
+<area shape="rect" id="Node000007" href="$classRGBLight.html" title="RGB light with color and brightness control." alt="" coords="306,225,389,251"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="350,191,350,225,345,225,345,191"/>
 </map>
