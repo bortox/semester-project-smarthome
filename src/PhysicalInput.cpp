@@ -131,18 +131,22 @@ InputManager& InputManager::instance() {
     return inst;
 }
 
+// cppcheck-suppress unusedFunction
 void InputManager::registerButton(ButtonInput* button) {
     _buttons.add(button);
 }
 
+// cppcheck-suppress unusedFunction
 void InputManager::registerPotentiometer(PotentiometerInput* pot) {
     _potentiometers.add(pot);
 }
 
+// cppcheck-suppress unusedFunction
 void InputManager::registerNavButton(NavButtonInput* navBtn) {
     _navButtons.add(navBtn);
 }
 
+// cppcheck-suppress unusedFunction
 void InputManager::updateAll() {
     for (uint8_t i = 0; i < _buttons.size(); i++) {
         _buttons[i]->update();

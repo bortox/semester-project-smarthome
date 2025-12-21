@@ -19,6 +19,7 @@
 IScene::IScene(uint8_t priority) 
     : _active(false), _priority(priority) {}
 
+// cppcheck-suppress unusedFunction
 bool IScene::isActive() const { 
     return _active; 
 }
@@ -44,6 +45,7 @@ SceneManager& SceneManager::instance() {
     return inst;
 }
 
+// cppcheck-suppress unusedFunction
 bool SceneManager::addScene(IScene* scene) {
     if (!scene) return false;
     
@@ -55,6 +57,7 @@ bool SceneManager::addScene(IScene* scene) {
     return _activeScenes.add(scene);
 }
 
+// cppcheck-suppress unusedFunction
 void SceneManager::removeScene(IScene* scene) {
     if (!scene) return;
     
@@ -67,6 +70,7 @@ void SceneManager::removeScene(IScene* scene) {
     }
 }
 
+// cppcheck-suppress unusedFunction
 void SceneManager::clearAll() {
     for (uint8_t i = 0; i < _activeScenes.size(); i++) {
         _activeScenes[i]->setActive(false);
@@ -93,6 +97,7 @@ void SceneManager::update() {
     }
 }
 
+// cppcheck-suppress unusedFunction
 uint8_t SceneManager::getActiveCount() const {
     return _activeScenes.size();
 }
@@ -102,6 +107,7 @@ uint8_t SceneManager::getActiveCount() const {
 NightModeScene::NightModeScene() 
     : IScene(10), _savedMultiplier(100) {}
 
+// cppcheck-suppress unusedFunction
 const char* NightModeScene::getName() const { 
     return "Night Mode"; 
 }
@@ -123,6 +129,7 @@ void NightModeScene::update() {
 PartyScene::PartyScene() 
     : IScene(50), _lastChange(0), _colorIndex(0) {}
 
+// cppcheck-suppress unusedFunction
 const char* PartyScene::getName() const { 
     return "Party Mode"; 
 }
@@ -173,6 +180,7 @@ AlarmScene::AlarmScene()
     : IScene(255), _triggered(false), _flashState(false), 
       _lastFlash(0), _lastMotion(0) {}
 
+// cppcheck-suppress unusedFunction
 const char* AlarmScene::getName() const { 
     return "Alarm Mode"; 
 }

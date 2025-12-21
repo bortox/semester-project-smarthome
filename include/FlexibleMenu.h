@@ -109,7 +109,7 @@ public:
      * @param title Flash string title displayed at top
      * @param parent Parent page (optional, for static hierarchies)
      */
-    MenuPage(const __FlashStringHelper* title, MenuPage* parent = nullptr);
+    explicit MenuPage(const __FlashStringHelper* title, MenuPage* parent = nullptr);
     
     virtual ~MenuPage();
 
@@ -256,7 +256,7 @@ public:
      * @brief Constructs toggle item for device
      * @param device Light device to control
      */
-    DeviceToggleItem(IDevice* device);
+    explicit DeviceToggleItem(IDevice* device);
     
     bool relatesTo(IDevice* dev) override;
     void draw(uint8_t row, bool selected) override;
@@ -335,7 +335,7 @@ public:
         itoa(val, buf, 10);
         LCD_write_str(buf);
         
-        uint8_t cursor_pos = strlen_P((const char*)_label) + 2 + strlen(buf);
+        uint8_t cursor_pos = strlen_P(reinterpret_cast<const char*>(_label)) + 2 + strlen(buf);
         while (cursor_pos < 20) {
             LCD_write_char(' ');
             cursor_pos++;
@@ -539,7 +539,7 @@ public:
      * @brief Constructs PIR display item
      * @param sensor PIR sensor device
      */
-    LivePIRItem(PIRSensorDevice* sensor);
+    explicit LivePIRItem(PIRSensorDevice* sensor);
 
     bool relatesTo(IDevice* dev) override;
     void draw(uint8_t row, bool selected) override;
@@ -644,7 +644,7 @@ public:
      * @brief Constructs scene toggle item
      * @param scene Scene to control
      */
-    SceneToggleItem(IScene* scene);
+    explicit SceneToggleItem(IScene* scene);
 
     void draw(uint8_t row, bool selected) override;
     bool handleInput(InputEvent event) override;

@@ -40,6 +40,7 @@ SensorStats::SensorStats() {
     reset();
 }
 
+// cppcheck-suppress unusedFunction
 void SensorStats::addSample(int16_t value) {
     if (_count >= MAX_SAMPLES) {
         reset();
@@ -51,18 +52,22 @@ void SensorStats::addSample(int16_t value) {
     _count++;
 }
 
+// cppcheck-suppress unusedFunction
 int16_t SensorStats::getMin() const {
     return (_count > 0) ? _min : 0;
 }
 
+// cppcheck-suppress unusedFunction
 int16_t SensorStats::getMax() const {
     return (_count > 0) ? _max : 0;
 }
 
+// cppcheck-suppress unusedFunction
 int16_t SensorStats::getAverage() const {
-    return (_count > 0) ? (int16_t)(_sum / _count) : 0;
+    return (_count > 0) ? static_cast<int16_t>(_sum / _count) : 0;
 }
 
+// cppcheck-suppress unusedFunction
 void SensorStats::reset() {
     _min = MIN_INITIAL;
     _max = MAX_INITIAL;
@@ -83,6 +88,7 @@ SimpleLight::~SimpleLight() {
     EventSystem::instance().removeListener(this);
 }
 
+// cppcheck-suppress unusedFunction
 void SimpleLight::toggle() {
     _state = !_state;
     digitalWrite(_pin, _state ? HIGH : LOW);
@@ -90,9 +96,9 @@ void SimpleLight::toggle() {
 }
 
 void SimpleLight::handleEvent(EventType type, IDevice* source, int value) {
-    (void)type;
-    (void)source;
-    (void)value;
+    static_cast<void>(type);
+    static_cast<void>(source);
+    static_cast<void>(value);
 }
 
 uint8_t& DimmableLight::brightness_multiplier() {
@@ -106,8 +112,9 @@ DimmableLight::DimmableLight(const __FlashStringHelper* name, uint8_t pin)
     const_cast<DeviceType&>(type) = DeviceType::LightDimmable;
 }
 
+// cppcheck-suppress unusedFunction
 void DimmableLight::setBrightness(uint8_t level) {
-    _targetBrightness = constrain(level, 0, 100);
+    _targetBrightness = (level > 100) ? 100 : level;
     if (_state) {
         EventSystem::instance().emit(EventType::DeviceValueChanged, this, _targetBrightness);
     }
@@ -125,21 +132,20 @@ void DimmableLight::update() {
     if (_currentBrightness != target) {
         unsigned long now = millis();
         if (now - _lastUpdate >= MS_PER_STEP) {
-            uint8_t steps = (now - _lastUpdate) / MS_PER_STEP;
+            uint8_t steps = static_cast<uint8_t>((now - _lastUpdate) / MS_PER_STEP);
             _lastUpdate = now;
             
-            for (uint8_t i = 0; i < steps && _currentBrightness != target; i++) {
-                if (_currentBrightness < target) {
-                    _currentBrightness++;
-                } else {
-                    _currentBrightness--;
-                }
+            if (_currentBrightness < target) {
+                _currentBrightness += min(steps, static_cast<uint8_t>(target - _currentBrightness));
+            } else {
+                _currentBrightness -= min(steps, static_cast<uint8_t>(_currentBrightness - target));
             }
             applyHardware();
         }
     }
 }
 
+// cppcheck-suppress unusedFunction
 void DimmableLight::toggle() {
     if (_state) {
         _lastBrightness = _targetBrightness;
@@ -151,12 +157,13 @@ void DimmableLight::toggle() {
     EventSystem::instance().emit(EventType::DeviceStateChanged, this, _state);
 }
 
+// cppcheck-suppress unusedFunction
 void DimmableLight::setBrightnessMultiplier(uint8_t multiplier) {
-    brightness_multiplier() = constrain(multiplier, 0, 100);
+    brightness_multiplier() = (multiplier > 100) ? 100 : multiplier;
 }
 
 void DimmableLight::applyHardware() {
-    uint16_t effective = ((uint16_t)_currentBrightness * brightness_multiplier()) / 100;
+    uint16_t effective = (static_cast<uint16_t>(_currentBrightness) * brightness_multiplier()) / 100;
     uint8_t pwmValue = map(effective, 0, 100, PWM_MIN, PWM_MAX);
     uint8_t gammaCorrected = pgm_read_byte(&GAMMA_LUT[pwmValue]);
     analogWrite(_pin, gammaCorrected);
@@ -171,32 +178,38 @@ RGBLight::RGBLight(const __FlashStringHelper* name, uint8_t pin_r, uint8_t pin_g
     _currentColor = {0, 0, 0};
 }
 
+// cppcheck-suppress unusedFunction
 void RGBLight::setColor(RGBColor c) {
     _targetColor = c;
     EventSystem::instance().emit(EventType::DeviceValueChanged, this, 0);
 }
 
+// cppcheck-suppress unusedFunction
 void RGBLight::setRed(uint8_t value) {
     _targetColor.r = value;
     EventSystem::instance().emit(EventType::DeviceValueChanged, this, 0);
 }
 
+// cppcheck-suppress unusedFunction
 void RGBLight::setGreen(uint8_t value) {
     _targetColor.g = value;
     EventSystem::instance().emit(EventType::DeviceValueChanged, this, 0);
 }
 
+// cppcheck-suppress unusedFunction
 void RGBLight::setBlue(uint8_t value) {
     _targetColor.b = value;
     EventSystem::instance().emit(EventType::DeviceValueChanged, this, 0);
 }
 
+// cppcheck-suppress unusedFunction
 void RGBLight::setPreset(RGBPreset preset) {
     RGBColor c;
-    memcpy_P(&c, &PRESET_COLORS[(uint8_t)preset], sizeof(RGBColor));
+    memcpy_P(&c, &PRESET_COLORS[static_cast<uint8_t>(preset)], sizeof(RGBColor));
     setColor(c);
 }
 
+// cppcheck-suppress unusedFunction
 void RGBLight::setBrightness(uint8_t level) {
     DimmableLight::setBrightness(level);
 }
@@ -204,22 +217,45 @@ void RGBLight::setBrightness(uint8_t level) {
 void RGBLight::update() {
     DimmableLight::update();
     
-    bool colorChanged = false;
     unsigned long now = millis();
     
     if (now - _lastColorUpdate >= MS_PER_STEP) {
-        uint8_t steps = (now - _lastColorUpdate) / MS_PER_STEP;
+        uint8_t steps = static_cast<uint8_t>((now - _lastColorUpdate) / MS_PER_STEP);
         _lastColorUpdate = now;
         
-        for (uint8_t s = 0; s < steps; s++) {
-            if (_currentColor.r < _targetColor.r) { _currentColor.r++; colorChanged = true; }
-            else if (_currentColor.r > _targetColor.r) { _currentColor.r--; colorChanged = true; }
-            
-            if (_currentColor.g < _targetColor.g) { _currentColor.g++; colorChanged = true; }
-            else if (_currentColor.g > _targetColor.g) { _currentColor.g--; colorChanged = true; }
-            
-            if (_currentColor.b < _targetColor.b) { _currentColor.b++; colorChanged = true; }
-            else if (_currentColor.b > _targetColor.b) { _currentColor.b--; colorChanged = true; }
+        bool colorChanged = false;
+        
+        // Red channel fading
+        if (_currentColor.r < _targetColor.r) {
+            uint8_t delta = min(steps, static_cast<uint8_t>(_targetColor.r - _currentColor.r));
+            _currentColor.r += delta;
+            colorChanged = true;
+        } else if (_currentColor.r > _targetColor.r) {
+            uint8_t delta = min(steps, static_cast<uint8_t>(_currentColor.r - _targetColor.r));
+            _currentColor.r -= delta;
+            colorChanged = true;
+        }
+        
+        // Green channel fading
+        if (_currentColor.g < _targetColor.g) {
+            uint8_t delta = min(steps, static_cast<uint8_t>(_targetColor.g - _currentColor.g));
+            _currentColor.g += delta;
+            colorChanged = true;
+        } else if (_currentColor.g > _targetColor.g) {
+            uint8_t delta = min(steps, static_cast<uint8_t>(_currentColor.g - _targetColor.g));
+            _currentColor.g -= delta;
+            colorChanged = true;
+        }
+        
+        // Blue channel fading
+        if (_currentColor.b < _targetColor.b) {
+            uint8_t delta = min(steps, static_cast<uint8_t>(_targetColor.b - _currentColor.b));
+            _currentColor.b += delta;
+            colorChanged = true;
+        } else if (_currentColor.b > _targetColor.b) {
+            uint8_t delta = min(steps, static_cast<uint8_t>(_currentColor.b - _targetColor.b));
+            _currentColor.b -= delta;
+            colorChanged = true;
         }
         
         if (colorChanged) {
@@ -228,6 +264,7 @@ void RGBLight::update() {
     }
 }
 
+// cppcheck-suppress unusedFunction
 void RGBLight::toggle() {
     DimmableLight::toggle();
 }
@@ -236,9 +273,9 @@ void RGBLight::applyColor() {
     uint8_t brightness = currentBrightness();
     uint8_t multiplier = brightness_multiplier();
     
-    uint8_t r = ((uint16_t)_currentColor.r * brightness * multiplier) / 10000;
-    uint8_t g = ((uint16_t)_currentColor.g * brightness * multiplier) / 10000;
-    uint8_t b = ((uint16_t)_currentColor.b * brightness * multiplier) / 10000;
+    uint8_t r = (static_cast<uint16_t>(_currentColor.r) * brightness * multiplier) / 10000;
+    uint8_t g = (static_cast<uint16_t>(_currentColor.g) * brightness * multiplier) / 10000;
+    uint8_t b = (static_cast<uint16_t>(_currentColor.b) * brightness * multiplier) / 10000;
     
     analogWrite(_pin, pgm_read_byte(&GAMMA_LUT[r]));
     analogWrite(_pin_g, pgm_read_byte(&GAMMA_LUT[g]));
@@ -274,16 +311,18 @@ void PhotoresistorSensor::update() {
         
         if (abs(newValue - _lightLevel) >= CHANGE_THRESHOLD) {
             _lightLevel = newValue;
-            _stats.addSample(_lightLevel);
+            _stats.addSample(static_cast<int16_t>(_lightLevel));
             EventSystem::instance().emit(EventType::SensorUpdated, this, _lightLevel);
         }
     }
 }
 
+// cppcheck-suppress unusedFunction
 void PhotoresistorSensor::calibrateCurrentAsMin() {
     _photoSensor.setRawMin(_photoSensor.getRaw());
 }
 
+// cppcheck-suppress unusedFunction
 void PhotoresistorSensor::calibrateCurrentAsMax() {
     _photoSensor.setRawMax(_photoSensor.getRaw());
 }
@@ -350,6 +389,7 @@ LoopTimeSensorDevice::LoopTimeSensorDevice(const __FlashStringHelper* name)
     DeviceRegistry::instance().registerDevice(this);
 }
 
+// cppcheck-suppress unusedFunction
 void LoopTimeSensorDevice::registerLoopTime(uint16_t microseconds) {
     LoopTimeSensor::registerTime(microseconds);
 }
@@ -380,11 +420,13 @@ OutsideLight::~OutsideLight() {
     EventSystem::instance().removeListener(this);
 }
 
+// cppcheck-suppress unusedFunction
 void OutsideLight::setMode(OutsideMode mode) {
     _mode = mode;
     evaluateState();
 }
 
+// cppcheck-suppress unusedFunction
 void OutsideLight::toggle() {
     if (_mode == OutsideMode::OFF) {
         setMode(OutsideMode::ON);
@@ -423,7 +465,7 @@ void OutsideLight::evaluateState() {
 }
 
 void OutsideLight::handleEvent(EventType type, IDevice* source, int value) {
-    (void)value;
+    static_cast<void>(value);
     
     if (type == EventType::SensorUpdated) {
         if (source == _photo || source == _motion) {
@@ -434,43 +476,53 @@ void OutsideLight::handleEvent(EventType type, IDevice* source, int value) {
     }
 }
 
+// cppcheck-suppress unusedFunction
 void DeviceFactory::createSimpleLight(const __FlashStringHelper* name, uint8_t pin) {
     new SimpleLight(name, pin);
 }
 
+// cppcheck-suppress unusedFunction
 void DeviceFactory::createDimmableLight(const __FlashStringHelper* name, uint8_t pin) {
     new DimmableLight(name, pin);
 }
 
+// cppcheck-suppress unusedFunction
 void DeviceFactory::createTemperatureSensor(const __FlashStringHelper* name) {
     new TemperatureSensor(name);
 }
 
+// cppcheck-suppress unusedFunction
 void DeviceFactory::createRGBLight(const __FlashStringHelper* name, uint8_t r, uint8_t g, uint8_t b) {
     new RGBLight(name, r, g, b);
 }
 
+// cppcheck-suppress unusedFunction
 OutsideLight* DeviceFactory::createOutsideLight(const __FlashStringHelper* name, uint8_t pin,
                                                 PhotoresistorSensor* p, PIRSensorDevice* m) {
     return new OutsideLight(name, pin, p, m);
 }
 
+// cppcheck-suppress unusedFunction
 PhotoresistorSensor* DeviceFactory::createPhotoresistorSensor(const __FlashStringHelper* name, uint8_t pin) {
     return new PhotoresistorSensor(name, pin);
 }
 
+// cppcheck-suppress unusedFunction
 PIRSensorDevice* DeviceFactory::createPIRSensor(const __FlashStringHelper* name, uint8_t pin) {
     return new PIRSensorDevice(name, pin);
 }
 
+// cppcheck-suppress unusedFunction
 void DeviceFactory::createRamSensor(const __FlashStringHelper* name) {
     new RamSensorDevice(name);
 }
 
+// cppcheck-suppress unusedFunction
 void DeviceFactory::createVoltageSensor(const __FlashStringHelper* name) {
     new VccSensorDevice(name);
 }
 
+// cppcheck-suppress unusedFunction
 void DeviceFactory::createLoopTimeSensor(const __FlashStringHelper* name) {
     new LoopTimeSensorDevice(name);
 }

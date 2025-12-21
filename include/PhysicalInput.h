@@ -117,7 +117,7 @@ public:
      * @param pin Arduino analog pin number
      * @param linkedLight Dimmable light to control (optional)
      */
-    PotentiometerInput(uint8_t pin, DimmableLight* linkedLight = nullptr);
+    explicit PotentiometerInput(uint8_t pin, DimmableLight* linkedLight = nullptr);
     
     /**
      * @brief Periodic update - reads and applies potentiometer value

@@ -148,7 +148,7 @@ public:
      * @brief Constructor
      * @param pin Arduino analog pin number
      */
-    LightSensor(uint8_t pin) 
+    explicit LightSensor(uint8_t pin) 
         : Sensor<int>(), _pin(pin), _rawMin(0), _rawMax(1023) {
         pinMode(_pin, INPUT);
     }
@@ -209,7 +209,7 @@ public:
      * @brief Constructor
      * @param pin Arduino digital pin number
      */
-    MovementSensor(uint8_t pin) : Sensor<bool>(), _pin(pin) {
+    explicit MovementSensor(uint8_t pin) : Sensor<bool>(), _pin(pin) {
         pinMode(_pin, INPUT);
     }
     
@@ -266,23 +266,23 @@ public:
         uint8_t savedADMUX = ADMUX;
         
 #if defined(__AVR_ATmega32U4__)
-        ADMUX = _BV(REFS0) | _BV(MUX4) | _BV(MUX3) | _BV(MUX2) | _BV(MUX1);
+        ADMUX = static_cast<uint8_t>(_BV(REFS0) | _BV(MUX4) | _BV(MUX3) | _BV(MUX2) | _BV(MUX1));
 #else
-        ADMUX = _BV(REFS0) | _BV(MUX3) | _BV(MUX2) | _BV(MUX1);
+        ADMUX = static_cast<uint8_t>(_BV(REFS0) | _BV(MUX3) | _BV(MUX2) | _BV(MUX1));
 #endif
         
         delayMicroseconds(250);
-        ADCSRA |= _BV(ADSC);
+        ADCSRA |= static_cast<uint8_t>(_BV(ADSC));
         while (bit_is_set(ADCSRA, ADSC));
         
         uint8_t low = ADCL;
         uint8_t high = ADCH;
-        uint16_t adcValue = (high << 8) | low;
+        uint16_t adcValue = static_cast<uint16_t>((high << 8) | low);
         
         ADMUX = savedADMUX;
         
         if (adcValue == 0) return 0;
-        return (int16_t)(1125300L / adcValue);
+        return static_cast<int16_t>(1125300L / adcValue);
     }
 };
 
@@ -329,7 +329,7 @@ public:
      * @return Loop time in microseconds
      */
     int16_t getValue() const override {
-        return (int16_t)_reportedMax;
+        return static_cast<int16_t>(_reportedMax);
     }
     
     /**

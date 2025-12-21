@@ -12,17 +12,30 @@ extern NightModeScene nightMode;
 extern PartyScene partyMode;
 extern AlarmScene alarmMode;
 
+/**
+ * @brief Prints a RAM string to the LCD
+ * @param str Null-terminated string in RAM
+ */
 void MenuItem::printLabel(const char* str) {
     LCD_write_str(str);
 }
 
+/**
+ * @brief Prints a Flash string to the LCD
+ * @param f_str Flash string pointer
+ */
 void MenuItem::printLabel(const __FlashStringHelper* f_str) {
     char buf[21];
-    strncpy_P(buf, (const char*)f_str, 20);
+    strncpy_P(buf, reinterpret_cast<const char*>(f_str), 20);
     buf[20] = 0;
     LCD_write_str(buf);
 }
 
+/**
+ * @brief Constructs a menu page with title and optional parent
+ * @param title Flash string title displayed at top of page
+ * @param parent Parent page for navigation (nullptr for root)
+ */
 MenuPage::MenuPage(const __FlashStringHelper* title, MenuPage* parent)
     : _title(title), _parent(parent), _selected_index(0), _scroll_offset(0), 
       _needs_redraw(true) {
@@ -31,6 +44,9 @@ MenuPage::MenuPage(const __FlashStringHelper* title, MenuPage* parent)
     EventSystem::instance().addListener(this, EventType::SensorUpdated);
 }
 
+/**
+ * @brief Destructor - cleans up event listeners and child items
+ */
 MenuPage::~MenuPage() {
     EventSystem::instance().removeListener(this);
     for (size_t i = 0; i < _items.size(); i++) {
@@ -38,32 +54,64 @@ MenuPage::~MenuPage() {
     }
 }
 
+/**
+ * @brief Adds a menu item to this page
+ * @param item Heap-allocated menu item (page takes ownership)
+ */
 void MenuPage::addItem(MenuItem* item) { 
     _items.add(item); 
 }
 
+/**
+ * @brief Gets menu item at specified index
+ * @param idx Index of item to retrieve
+ * @return Pointer to menu item or nullptr if out of bounds
+ */
 MenuItem* MenuPage::getItem(size_t idx) { 
     return _items[idx]; 
 }
 
+/**
+ * @brief Gets total number of items in this page
+ * @return Item count
+ */
 size_t MenuPage::getItemsCount() const { 
     return _items.size(); 
 }
 
+/**
+ * @brief Gets parent page for back navigation
+ * @return Parent page pointer or nullptr for root
+ */
+// cppcheck-suppress unusedFunction
 MenuPage* MenuPage::getParent() const { 
     return _parent; 
 }
 
+/**
+ * @brief Gets index of currently selected item
+ * @return Selected item index
+ */
 size_t MenuPage::getSelectedIndex() const { 
     return _selected_index; 
 }
 
+/**
+ * @brief Renders this page as a menu item (for nested pages)
+ * @param row LCD row to draw on (0-3)
+ * @param selected True if this item is currently selected
+ */
 void MenuPage::draw(uint8_t row, bool selected) {
     LCD_set_cursor(0, row);
     LCD_write_str(selected ? "> " : "  ");
     printLabel(_title);
 }
 
+/**
+ * @brief Handles navigation input for this page
+ * @param event Input event (UP, DOWN, ENTER, BACK)
+ * @return True if event was handled
+ */
 bool MenuPage::handleInput(InputEvent event) {
     size_t oldIndex = _selected_index;
 
@@ -106,8 +154,17 @@ bool MenuPage::handleInput(InputEvent event) {
     return false;
 }
 
+/**
+ * @brief Handles device events for automatic page updates
+ * @param type Event type received
+ * @param device Device that triggered the event
+ * @param value Event-specific value
+ */
 void MenuPage::handleEvent(EventType type, IDevice* device, int value) {
-    MenuPage* currentPage = NavigationManager::instance().getCurrentPage();
+    static_cast<void>(type);
+    static_cast<void>(value);
+    
+    const MenuPage* currentPage = NavigationManager::instance().getCurrentPage();
     if (currentPage != this) return;
     
     for (size_t i = 0; i < _items.size(); i++) {
@@ -118,34 +175,64 @@ void MenuPage::handleEvent(EventType type, IDevice* device, int value) {
     }
 }
 
+/**
+ * @brief Checks if page needs to be redrawn
+ * @return True if redraw is required
+ */
 bool MenuPage::needsRedraw() const { 
     return _needs_redraw; 
 }
 
+/**
+ * @brief Clears the redraw flag after rendering
+ */
 void MenuPage::clearRedraw() { 
     _needs_redraw = false; 
 }
 
+/**
+ * @brief Forces a full page redraw on next update
+ */
 void MenuPage::forceRedraw() { 
     _needs_redraw = true; 
 }
 
+/**
+ * @brief Private constructor for singleton pattern
+ */
 NavigationManager::NavigationManager() : _initialized(false) {}
 
+/**
+ * @brief Gets the singleton instance
+ * @return Reference to NavigationManager instance
+ */
 NavigationManager& NavigationManager::instance() {
     static NavigationManager inst;
     return inst;
 }
 
+/**
+ * @brief Marks LCD as initialized and ready for use
+ */
+// cppcheck-suppress unusedFunction
 void NavigationManager::setLCD() { 
     _initialized = true; 
 }
 
+/**
+ * @brief Initializes navigation with root menu page
+ * @param root Pre-allocated root menu page
+ */
+// cppcheck-suppress unusedFunction
 void NavigationManager::initialize(MenuPage* root) {
     _stack.add(root);
     draw();
 }
 
+/**
+ * @brief Pushes a new page onto the navigation stack
+ * @param page Heap-allocated page to display
+ */
 void NavigationManager::pushPage(MenuPage* page) {
     if (page) {
         _stack.add(page);
@@ -154,6 +241,9 @@ void NavigationManager::pushPage(MenuPage* page) {
     }
 }
 
+/**
+ * @brief Navigates back to previous page and frees current page
+ */
 void NavigationManager::navigateBack() {
     if (_stack.size() > 1) {
         MenuPage* current = _stack[_stack.size() - 1];
@@ -165,11 +255,19 @@ void NavigationManager::navigateBack() {
     }
 }
 
+/**
+ * @brief Gets the currently displayed page
+ * @return Pointer to current page or nullptr if stack empty
+ */
 MenuPage* NavigationManager::getCurrentPage() {
     if (_stack.size() > 0) return _stack[_stack.size() - 1];
     return nullptr;
 }
 
+/**
+ * @brief Delegates input event to current page
+ * @param event Input event to handle
+ */
 void NavigationManager::handleInput(InputEvent event) {
     MenuPage* current = getCurrentPage();
     if (!current) return;
@@ -195,6 +293,9 @@ void NavigationManager::handleInput(InputEvent event) {
     if (getCurrentPage()) getCurrentPage()->forceRedraw();
 }
 
+/**
+ * @brief Updates display if current page needs redrawing
+ */
 void NavigationManager::update() {
     MenuPage* current = getCurrentPage();
     if (current && current->needsRedraw()) {
@@ -203,6 +304,11 @@ void NavigationManager::update() {
     }
 }
 
+/**
+ * @brief Incrementally updates cursor without full redraw
+ * @param oldIndex Previous selection index
+ * @param newIndex New selection index
+ */
 void NavigationManager::drawIncrementalCursor(size_t oldIndex, size_t newIndex) {
     MenuPage* current = getCurrentPage();
     if (!current || !_initialized) return;
@@ -224,6 +330,9 @@ void NavigationManager::drawIncrementalCursor(size_t oldIndex, size_t newIndex) 
     }
 }
 
+/**
+ * @brief Renders full page with title, items, and scroll indicators
+ */
 void NavigationManager::draw() {
     MenuPage* current = getCurrentPage();
     if (!current || !_initialized) return;
@@ -252,19 +361,37 @@ void NavigationManager::draw() {
     }
 }
 
+/**
+ * @brief Helper to print Flash string to LCD
+ * @param f_str Flash string pointer
+ */
 void NavigationManager::printLabel(const __FlashStringHelper* f_str) {
     char buf[21];
-    strncpy_P(buf, (const char*)f_str, 20);
+    strncpy_P(buf, reinterpret_cast<const char*>(f_str), 20);
     buf[20] = 0;
     LCD_write_str(buf);
 }
 
+/**
+ * @brief Constructs device toggle item
+ * @param device Device to control
+ */
 DeviceToggleItem::DeviceToggleItem(IDevice* device) : _device(device) {}
 
+/**
+ * @brief Checks if this item relates to specified device
+ * @param dev Device to check
+ * @return True if this item controls the device
+ */
 bool DeviceToggleItem::relatesTo(IDevice* dev) { 
     return _device == dev; 
 }
 
+/**
+ * @brief Renders toggle item with device name and state
+ * @param row LCD row to draw on
+ * @param selected True if item is selected
+ */
 void DeviceToggleItem::draw(uint8_t row, bool selected) {
     LCD_set_cursor(0, row);
     LCD_write_str(selected ? "> " : "  ");
@@ -272,11 +399,16 @@ void DeviceToggleItem::draw(uint8_t row, bool selected) {
     LCD_set_cursor(15, row);
     
     if (_device->isLight()) {
-        SimpleLight* light = static_cast<SimpleLight*>(_device);
+        const SimpleLight* light = static_cast<const SimpleLight*>(_device);
         LCD_write_str(light->getState() ? "ON " : "OFF");
     }
 }
 
+/**
+ * @brief Handles input for device toggle
+ * @param event Input event
+ * @return True if event was handled
+ */
 bool DeviceToggleItem::handleInput(InputEvent event) {
     if (event == InputEvent::ENTER && _device->isLight()) {
         static_cast<SimpleLight*>(_device)->toggle();
@@ -285,12 +417,26 @@ bool DeviceToggleItem::handleInput(InputEvent event) {
     return false;
 }
 
+/**
+ * @brief Constructs PIR live display item
+ * @param sensor PIR sensor device to display
+ */
 LivePIRItem::LivePIRItem(PIRSensorDevice* sensor) : _sensor(sensor) {}
 
+/**
+ * @brief Checks if this item relates to specified device
+ * @param dev Device to check
+ * @return True if this item displays the device
+ */
 bool LivePIRItem::relatesTo(IDevice* dev) { 
     return _sensor == dev; 
 }
 
+/**
+ * @brief Renders PIR status with motion detection state
+ * @param row LCD row to draw on
+ * @param selected True if item is selected
+ */
 void LivePIRItem::draw(uint8_t row, bool selected) {
     LCD_set_cursor(0, row);
     LCD_write_str(selected ? "> " : "  ");
@@ -299,19 +445,41 @@ void LivePIRItem::draw(uint8_t row, bool selected) {
     LCD_write_str(_sensor->isMotionDetected() ? "Yes" : "No");
 }
 
+/**
+ * @brief Handles input for PIR item (no action)
+ * @param event Input event
+ * @return Always false (read-only item)
+ */
 bool LivePIRItem::handleInput(InputEvent event) { 
+    static_cast<void>(event);
     return false; 
 }
 
+/**
+ * @brief Constructs light calibration item
+ * @param label Display label
+ * @param sensor Light sensor to calibrate
+ * @param isDark True for dark limit, false for bright limit
+ */
 LightCalibrationItem::LightCalibrationItem(const __FlashStringHelper* label, PhotoresistorSensor* sensor, bool isDark)
     : _label(label), _sensor(sensor), _isDark(isDark) {}
 
+/**
+ * @brief Renders calibration item
+ * @param row LCD row to draw on
+ * @param selected True if item is selected
+ */
 void LightCalibrationItem::draw(uint8_t row, bool selected) {
     LCD_set_cursor(0, row);
     LCD_write_str(selected ? "> " : "  ");
     printLabel(_label);
 }
 
+/**
+ * @brief Handles calibration action on ENTER
+ * @param event Input event
+ * @return True if calibration was performed
+ */
 bool LightCalibrationItem::handleInput(InputEvent event) {
     if (event == InputEvent::ENTER) {
         if (_isDark) {
@@ -326,15 +494,32 @@ bool LightCalibrationItem::handleInput(InputEvent event) {
     return false;
 }
 
+/**
+ * @brief Constructs action item with callback
+ * @param label Display label
+ * @param device Target device for action
+ * @param action Function pointer to execute
+ * @param param Parameter to pass to action
+ */
 ActionItem::ActionItem(const __FlashStringHelper* label, IDevice* device, void (*action)(IDevice*, int), int param)
     : _device(device), _label(label), _action(action), _param(param) {}
 
+/**
+ * @brief Renders action item
+ * @param row LCD row to draw on
+ * @param selected True if item is selected
+ */
 void ActionItem::draw(uint8_t row, bool selected) {
     LCD_set_cursor(0, row);
     LCD_write_str(selected ? "> " : "  ");
     printLabel(_label);
 }
 
+/**
+ * @brief Executes action and navigates back on ENTER
+ * @param event Input event
+ * @return True if action was executed
+ */
 bool ActionItem::handleInput(InputEvent event) {
     if (event == InputEvent::ENTER) {
         _action(_device, _param);
@@ -344,17 +529,36 @@ bool ActionItem::handleInput(InputEvent event) {
     return false;
 }
 
+/**
+ * @brief Constructs submenu item with JIT page builder
+ * @param label Display label
+ * @param builder Function that creates the submenu page
+ * @param context Context data passed to builder
+ */
 SubMenuItem::SubMenuItem(const __FlashStringHelper* label, PageBuilder builder, void* context)
     : _label(label), _builder(builder), _context(context) {}
 
+/**
+ * @brief Returns item type for polymorphic dispatch
+ * @return MenuItemType::SUBMENU
+ */
 MenuItemType SubMenuItem::getType() const { 
     return MenuItemType::SUBMENU; 
 }
 
+/**
+ * @brief Creates submenu page using JIT builder
+ * @return Heap-allocated menu page
+ */
 MenuPage* SubMenuItem::createPage() const { 
     return _builder(_context); 
 }
 
+/**
+ * @brief Renders submenu item with arrow indicator
+ * @param row LCD row to draw on
+ * @param selected True if item is selected
+ */
 void SubMenuItem::draw(uint8_t row, bool selected) {
     LCD_set_cursor(0, row);
     LCD_write_str(selected ? "> " : "  ");
@@ -362,6 +566,11 @@ void SubMenuItem::draw(uint8_t row, bool selected) {
     LCD_write_str(" >");
 }
 
+/**
+ * @brief Handles submenu navigation on ENTER
+ * @param event Input event
+ * @return True if navigation occurred
+ */
 bool SubMenuItem::handleInput(InputEvent event) {
     if (event == InputEvent::ENTER) {
         MenuPage* newPage = createPage();
@@ -371,14 +580,27 @@ bool SubMenuItem::handleInput(InputEvent event) {
     return false;
 }
 
+/**
+ * @brief Constructs back navigation item
+ */
 BackMenuItem::BackMenuItem() {}
 
+/**
+ * @brief Renders back item
+ * @param row LCD row to draw on
+ * @param selected True if item is selected
+ */
 void BackMenuItem::draw(uint8_t row, bool selected) {
     LCD_set_cursor(0, row);
     LCD_write_str(selected ? "> " : "  ");
     LCD_write_str("<< Back");
 }
 
+/**
+ * @brief Handles back navigation on ENTER
+ * @param event Input event
+ * @return True if navigation occurred
+ */
 bool BackMenuItem::handleInput(InputEvent event) {
     if (event == InputEvent::ENTER) {
         NavigationManager::instance().navigateBack();
@@ -387,8 +609,17 @@ bool BackMenuItem::handleInput(InputEvent event) {
     return false;
 }
 
+/**
+ * @brief Constructs scene toggle item
+ * @param scene Scene to control
+ */
 SceneToggleItem::SceneToggleItem(IScene* scene) : _scene(scene) {}
 
+/**
+ * @brief Renders scene item with activation state
+ * @param row LCD row to draw on
+ * @param selected True if item is selected
+ */
 void SceneToggleItem::draw(uint8_t row, bool selected) {
     LCD_set_cursor(0, row);
     LCD_write_str(selected ? "> " : "  ");
@@ -397,6 +628,11 @@ void SceneToggleItem::draw(uint8_t row, bool selected) {
     LCD_write_str(_scene->isActive() ? "ON " : "OFF");
 }
 
+/**
+ * @brief Toggles scene activation on ENTER
+ * @param event Input event
+ * @return True if scene state changed
+ */
 bool SceneToggleItem::handleInput(InputEvent event) {
     if (event == InputEvent::ENTER) {
         if (_scene->isActive()) {
@@ -409,14 +645,29 @@ bool SceneToggleItem::handleInput(InputEvent event) {
     return false;
 }
 
+/**
+ * @brief Action callback to set outside light mode
+ * @param d Device pointer (OutsideLight)
+ * @param v Mode value as integer
+ */
 void MenuBuilder::setOutsideModeAction(IDevice* d, int v) {
     static_cast<OutsideLight*>(d)->setMode(static_cast<OutsideMode>(v));
 }
 
+/**
+ * @brief Action callback to set RGB preset color
+ * @param d Device pointer (RGBLight)
+ * @param v Preset value as integer
+ */
 void MenuBuilder::setRGBPresetAction(IDevice* d, int v) {
     static_cast<RGBLight*>(d)->setPreset(static_cast<RGBPreset>(v));
 }
 
+/**
+ * @brief Builds red channel adjustment page
+ * @param context RGBLight pointer
+ * @return Heap-allocated menu page
+ */
 MenuPage* MenuBuilder::buildRedPage(void* context) {
     RGBLight* light = static_cast<RGBLight*>(context);
     MenuPage* page = new MenuPage(F("Red Channel"), nullptr);
@@ -427,6 +678,11 @@ MenuPage* MenuBuilder::buildRedPage(void* context) {
     return page;
 }
 
+/**
+ * @brief Builds green channel adjustment page
+ * @param context RGBLight pointer
+ * @return Heap-allocated menu page
+ */
 MenuPage* MenuBuilder::buildGreenPage(void* context) {
     RGBLight* light = static_cast<RGBLight*>(context);
     MenuPage* page = new MenuPage(F("Green Channel"), nullptr);
@@ -437,6 +693,11 @@ MenuPage* MenuBuilder::buildGreenPage(void* context) {
     return page;
 }
 
+/**
+ * @brief Builds blue channel adjustment page
+ * @param context RGBLight pointer
+ * @return Heap-allocated menu page
+ */
 MenuPage* MenuBuilder::buildBluePage(void* context) {
     RGBLight* light = static_cast<RGBLight*>(context);
     MenuPage* page = new MenuPage(F("Blue Channel"), nullptr);
@@ -447,6 +708,11 @@ MenuPage* MenuBuilder::buildBluePage(void* context) {
     return page;
 }
 
+/**
+ * @brief Builds brightness adjustment page
+ * @param context DimmableLight pointer
+ * @return Heap-allocated menu page
+ */
 MenuPage* MenuBuilder::buildBrightnessPage(void* context) {
     DimmableLight* light = static_cast<DimmableLight*>(context);
     MenuPage* page = new MenuPage(F("Brightness"), nullptr);
@@ -456,6 +722,11 @@ MenuPage* MenuBuilder::buildBrightnessPage(void* context) {
     return page;
 }
 
+/**
+ * @brief Builds custom color submenu page
+ * @param context RGBLight pointer
+ * @return Heap-allocated menu page
+ */
 MenuPage* MenuBuilder::buildCustomColorPage(void* context) {
     RGBLight* light = static_cast<RGBLight*>(context);
     MenuPage* page = new MenuPage(F("Custom Color"), nullptr);
@@ -469,6 +740,11 @@ MenuPage* MenuBuilder::buildCustomColorPage(void* context) {
     return page;
 }
 
+/**
+ * @brief Builds RGB presets selection page
+ * @param context RGBLight pointer
+ * @return Heap-allocated menu page
+ */
 MenuPage* MenuBuilder::buildRGBPresetsPage(void* context) {
     RGBLight* light = static_cast<RGBLight*>(context);
     MenuPage* page = new MenuPage(F("Select Preset"), NavigationManager::instance().getCurrentPage());
@@ -484,6 +760,11 @@ MenuPage* MenuBuilder::buildRGBPresetsPage(void* context) {
     return page;
 }
 
+/**
+ * @brief Builds RGB light control page
+ * @param context RGBLight pointer
+ * @return Heap-allocated menu page
+ */
 MenuPage* MenuBuilder::buildRGBLightPage(void* context) {
     RGBLight* light = static_cast<RGBLight*>(context);
     MenuPage* page = new MenuPage(F("RGB Light"), NavigationManager::instance().getCurrentPage());
@@ -497,6 +778,11 @@ MenuPage* MenuBuilder::buildRGBLightPage(void* context) {
     return page;
 }
 
+/**
+ * @brief Builds dimmable light control page
+ * @param context DimmableLight pointer
+ * @return Heap-allocated menu page
+ */
 MenuPage* MenuBuilder::buildDimmableLightPage(void* context) {
     DimmableLight* light = static_cast<DimmableLight*>(context);
     MenuPage* page = new MenuPage(F("Dimmable Light"), NavigationManager::instance().getCurrentPage());
@@ -508,6 +794,11 @@ MenuPage* MenuBuilder::buildDimmableLightPage(void* context) {
     return page;
 }
 
+/**
+ * @brief Builds outside light modes selection page
+ * @param context OutsideLight pointer
+ * @return Heap-allocated menu page
+ */
 MenuPage* MenuBuilder::buildOutsideModesPage(void* context) {
     OutsideLight* light = static_cast<OutsideLight*>(context);
     MenuPage* page = new MenuPage(F("Select Mode"), NavigationManager::instance().getCurrentPage());
@@ -521,6 +812,11 @@ MenuPage* MenuBuilder::buildOutsideModesPage(void* context) {
     return page;
 }
 
+/**
+ * @brief Builds outside light control page
+ * @param context OutsideLight pointer
+ * @return Heap-allocated menu page
+ */
 MenuPage* MenuBuilder::buildOutsideLightPage(void* context) {
     OutsideLight* light = static_cast<OutsideLight*>(context);
     MenuPage* page = new MenuPage(F("Outside Light"), NavigationManager::instance().getCurrentPage());
@@ -531,12 +827,18 @@ MenuPage* MenuBuilder::buildOutsideLightPage(void* context) {
     return page;
 }
 
+/**
+ * @brief Builds lights listing page with all light devices
+ * @param context Unused
+ * @return Heap-allocated menu page
+ */
 MenuPage* MenuBuilder::buildLightsPage(void* context) {
+    static_cast<void>(context);
     MenuPage* page = new MenuPage(F("Lights"), NavigationManager::instance().getCurrentPage());
     if (!page) return nullptr;
 
     DeviceRegistry& registry = DeviceRegistry::instance();
-    DynamicArray<IDevice*>& devices = registry.getDevices();
+    const DynamicArray<IDevice*>& devices = registry.getDevices();
     
     for (size_t i = 0; i < devices.size(); i++) {
         IDevice* d = devices[i];
@@ -554,6 +856,11 @@ MenuPage* MenuBuilder::buildLightsPage(void* context) {
     return page;
 }
 
+/**
+ * @brief Builds sensor statistics page
+ * @param context IDevice pointer (sensor)
+ * @return Heap-allocated menu page
+ */
 MenuPage* MenuBuilder::buildSensorStatsPage(void* context) {
     IDevice* device = static_cast<IDevice*>(context);
     MenuPage* page = new MenuPage(F("Statistics"), NavigationManager::instance().getCurrentPage());
@@ -598,10 +905,10 @@ MenuPage* MenuBuilder::buildSensorStatsPage(void* context) {
         page->addItem(makeLiveItem(F("Avg"), stats, &SensorStats::getAverage, F("mV"), false));
         
     } else if (device->type == DeviceType::SensorLoopTime) {
-        LoopTimeSensorDevice* loop = static_cast<LoopTimeSensorDevice*>(device);
-        SensorStats* stats = &loop->getStats();
+        LoopTimeSensorDevice* loopSensor = static_cast<LoopTimeSensorDevice*>(device);
+        SensorStats* stats = &loopSensor->getStats();
         
-        page->addItem(makeLiveItem(device, loop, &LoopTimeSensorDevice::getValue, F("us"), false));
+        page->addItem(makeLiveItem(device, loopSensor, &LoopTimeSensorDevice::getValue, F("us"), false));
         page->addItem(makeLiveItem(F("Min"), stats, &SensorStats::getMin, F("us"), false));
         page->addItem(makeLiveItem(F("Max"), stats, &SensorStats::getMax, F("us"), false));
         page->addItem(makeLiveItem(F("Avg"), stats, &SensorStats::getAverage, F("us"), false));
@@ -611,6 +918,11 @@ MenuPage* MenuBuilder::buildSensorStatsPage(void* context) {
     return page;
 }
 
+/**
+ * @brief Builds light sensor settings page with calibration
+ * @param context PhotoresistorSensor pointer
+ * @return Heap-allocated menu page
+ */
 MenuPage* MenuBuilder::buildLightSettingsPage(void* context) {
     PhotoresistorSensor* light = static_cast<PhotoresistorSensor*>(context);
     MenuPage* page = new MenuPage(F("Light Settings"), NavigationManager::instance().getCurrentPage());
@@ -623,12 +935,18 @@ MenuPage* MenuBuilder::buildLightSettingsPage(void* context) {
     return page;
 }
 
+/**
+ * @brief Builds sensors listing page with all sensor devices
+ * @param context Unused
+ * @return Heap-allocated menu page
+ */
 MenuPage* MenuBuilder::buildSensorsPage(void* context) {
+    static_cast<void>(context);
     MenuPage* page = new MenuPage(F("Sensors"), NavigationManager::instance().getCurrentPage());
     if (!page) return nullptr;
 
     DeviceRegistry& registry = DeviceRegistry::instance();
-    DynamicArray<IDevice*>& devices = registry.getDevices();
+    const DynamicArray<IDevice*>& devices = registry.getDevices();
     
     for (size_t i = 0; i < devices.size(); i++) {
         IDevice* d = devices[i];
@@ -658,7 +976,13 @@ MenuPage* MenuBuilder::buildSensorsPage(void* context) {
     return page;
 }
 
+/**
+ * @brief Builds scenes control page
+ * @param context Unused
+ * @return Heap-allocated menu page
+ */
 MenuPage* MenuBuilder::buildScenesPage(void* context) {
+    static_cast<void>(context);
     MenuPage* page = new MenuPage(F("Scenes"), NavigationManager::instance().getCurrentPage());
     if (!page) return nullptr;
     
@@ -670,6 +994,11 @@ MenuPage* MenuBuilder::buildScenesPage(void* context) {
     return page;
 }
 
+/**
+ * @brief Builds main menu root page
+ * @return Heap-allocated root menu page
+ */
+// cppcheck-suppress unusedFunction
 MenuPage* MenuBuilder::buildMainMenu() {
     MenuPage* root = new MenuPage(F("Main Menu"));
     if (!root) return nullptr;

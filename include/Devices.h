@@ -261,7 +261,6 @@ private:
     RGBColor _targetColor;           ///< Target color for fading
     RGBColor _currentColor;          ///< Current fading color
     unsigned long _lastColorUpdate;  ///< Timestamp of last color fade step
-    static constexpr uint8_t MS_PER_STEP = 2;  ///< Color fade step interval
 
 public:
     /**
@@ -379,7 +378,7 @@ public:
      * @brief Constructor for temperature sensor
      * @param name Device identifier name (Flash string)
      */
-    TemperatureSensor(const __FlashStringHelper* name);
+    explicit TemperatureSensor(const __FlashStringHelper* name);
 
     /**
      * @brief Checks if device is a sensor
@@ -531,7 +530,7 @@ public:
      * @brief Constructor for RAM sensor device
      * @param name Device identifier name (Flash string)
      */
-    RamSensorDevice(const __FlashStringHelper* name);
+    explicit RamSensorDevice(const __FlashStringHelper* name);
 
     /**
      * @brief Checks if device is a sensor
@@ -575,7 +574,7 @@ public:
      * @brief Constructor for VCC sensor device
      * @param name Device identifier name (Flash string)
      */
-    VccSensorDevice(const __FlashStringHelper* name);
+    explicit VccSensorDevice(const __FlashStringHelper* name);
 
     /**
      * @brief Checks if device is a sensor
@@ -619,7 +618,7 @@ public:
      * @brief Constructor for loop time sensor device
      * @param name Device identifier name (Flash string)
      */
-    LoopTimeSensorDevice(const __FlashStringHelper* name);
+    explicit LoopTimeSensorDevice(const __FlashStringHelper* name);
 
     /**
      * @brief Checks if device is a sensor

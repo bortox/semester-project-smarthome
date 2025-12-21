@@ -115,7 +115,7 @@ public:
     bool add(T item) {
         if (_size >= _capacity) {
             uint8_t newCap = _capacity == 0 ? 4 : _capacity + 4;
-            T* newData = (T*)realloc(_data, newCap * sizeof(T));
+            T* newData = static_cast<T*>(realloc(_data, newCap * sizeof(T)));
             if (!newData) return false;
             _data = newData;
             _capacity = newCap;
@@ -244,7 +244,7 @@ public:
      * @brief Unregisters listener from all event types
      * @param listener Pointer to listener object to remove
      */
-    void removeListener(IEventListener* listener) {
+    void removeListener(const IEventListener* listener) {
         for (uint8_t i = 0; i < _listeners.size(); ) {
             if (_listeners[i].listener == listener) {
                 _listeners.remove(i);
@@ -353,7 +353,7 @@ public:
      * @brief Unregisters device from registry
      * @param device Pointer to device to unregister
      */
-    void unregisterDevice(IDevice* device) {
+    void unregisterDevice(const IDevice* device) {
         for (uint8_t i = 0; i < _devices.size(); i++) {
             if (_devices[i] == device) {
                 _devices.remove(i);
